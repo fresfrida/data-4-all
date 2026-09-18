@@ -38,6 +38,13 @@ Production env vars on this project (`vercel env ls production` to confirm) — 
   - Committed (`b04bf36`), pushed to `claude/supabase-connection-status-9rhtx1`, redeployed to
     `https://3goods.vercel.app` via `vercel deploy --prod --yes`. Re-verified against the live
     production URL post-deploy: all 15 images return `200` via `curl` and render in a live browser
+    check (15/15 `complete && naturalWidth>0`, zero console errors).
+  - **Follow-up in the same session**: the user supplied a 16th photo (`children_school_bag.png`) for
+    "the last item" — `item004` "School bag, lightly used", the one original seed item (`item001`–
+    `item008`) that hadn't gotten a photo in the first pass. Copied to
+    `public/demo-items/school-bag.png`, wired up, rebuilt, reseeded, verified live (image loads,
+    `Children Items` category and `School bags` tag render correctly), committed and redeployed
+    alongside the rest. Every original seed item now has a photo.
     check (15/15 `complete && naturalWidth>0`, zero console errors) — confirms `public/demo-items/`
     actually shipped, not just the Supabase row data.
 

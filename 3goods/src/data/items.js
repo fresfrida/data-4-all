@@ -89,7 +89,7 @@ export const ITEMS = [
     deliveryOption: "pickup_only",
     collectionWindows: ["Weekday afternoons"],
     notes: "",
-    photoPaths: [],
+    photoPaths: ["/demo-items/school-bag.png"],
     status: "available",
     createdAt: "2026-09-04T03:00:00.000Z",
   },

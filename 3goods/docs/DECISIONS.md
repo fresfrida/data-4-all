@@ -332,6 +332,10 @@ the two backpack/luggage images was corrected mid-session from a first guess of 
 **Miscellaneous** per explicit user feedback — no existing need-tag fits general bags/luggage, and
 `needTags` is not a required field, so both items ship with an empty tag list rather than a forced
 mismatch.
+Follow-up (same session): the user supplied one more photo, `children_school_bag.png`, for `item004`
+"School bag, lightly used" — the one original seed item that had launched with `photoPaths: []` and
+was still missing one after the initial pass above. Same treatment (static path, not base64). Every
+original seed item (`item001`–`item008`) now has a photo.
 
 ---
 

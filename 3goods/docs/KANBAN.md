@@ -40,14 +40,16 @@ session; see each Done entry's evidence)
 
 - **3G-044** — Populated real item photos from user-supplied stock images (`assets/items/` outside the
   repo, not committed — see DECISIONS.md D-046)
-  - Deliverable: attached a matching photo to 6 existing seed items that had none (`item001`–`item003`,
-    `item005`–`item007`) and added 9 brand-new items (`item009`–`item017`) built around the remaining
-    photos, each with a real title/description/category/condition/area/donor. Images copied into
-    `public/demo-items/` (15 new files) and referenced by static path — same pattern `item008`'s
-    existing photo already used, not base64-in-DB (see D-046 for why). New fixed uuids added to
-    `ids.js` for `item009`–`item017`. One image (`food_to_donate.png`) deliberately skipped as a
-    near-duplicate of two other food photos already used. Backpacks categorized as Miscellaneous per
-    user correction (no category/tag fit them well otherwise).
+  - Deliverable: attached a matching photo to 7 existing seed items that had none (`item001`–`item007`
+    — the 7th, `item004` "School bag, lightly used", added in a follow-up once the user supplied a
+    matching photo after the initial pass) and added 9 brand-new items (`item009`–`item017`) built
+    around the remaining photos, each with a real title/description/category/condition/area/donor.
+    Images copied into `public/demo-items/` (16 files total) and referenced by static path — same
+    pattern `item008`'s existing photo already used, not base64-in-DB (see D-046 for why). New fixed
+    uuids added to `ids.js` for `item009`–`item017`. One image (`food_to_donate.png`) deliberately
+    skipped as a near-duplicate of two other food photos already used. Backpacks categorized as
+    Miscellaneous per user correction (no category/tag fit them well otherwise). Every original seed
+    item (`item001`–`item008`) now has a photo.
   - Deps: none. Acceptance: `npm run build` succeeds, `npm run db:seed` completes without error, live
     browser check that every new/updated item's photo actually renders.
   - Evidence: `npm run build` → succeeds. `npm run db:seed` → `[items] seeded 17 rows` against the

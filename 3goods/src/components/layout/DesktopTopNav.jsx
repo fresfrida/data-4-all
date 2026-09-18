@@ -5,14 +5,11 @@ import { getNavItems } from "./navConfig.js";
 import { LanguageSwitcher } from "../controls/LanguageSwitcher.jsx";
 import { DemoLoginButton } from "../controls/DemoLoginButton.jsx";
 import { HeartHandshakeIcon } from "../icons.jsx";
-import { ROUTES } from "../../lib/constants.js";
 
 export function DesktopTopNav() {
   const session = useSession();
-  const { role } = session;
   const t = useTranslate();
   const items = getNavItems(session, t);
-  const homeRoute = role === "organisation" ? ROUTES.discoverItems : ROUTES.discoverNeeds;
 
   return (
     <header className="sticky top-0 z-30 hidden border-b border-ink-600/10 bg-white/95 backdrop-blur sm:block shadow-xs">

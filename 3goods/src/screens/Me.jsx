@@ -149,8 +149,17 @@ export function Me() {
                             </div>
 
                             <div className="flex items-center gap-2 self-end sm:self-auto flex-wrap">
+                              {matchedConversation && (
+                                <Link
+                                  to={ROUTES.chatDetail(matchedConversation.id)}
+                                  className="rounded-full border border-accent-500 bg-white px-3.5 py-1 text-xs font-bold text-accent-700 hover:bg-accent-50 transition-all"
+                                >
+                                  💬 {t("nav.chat")}
+                                </Link>
+                              )}
+
                               <StatusBadge status={displayStatus} />
-                              
+
                               {request.status === "requested" && (
                                 <button
                                   type="button"
@@ -170,22 +179,6 @@ export function Me() {
                                 >
                                   {request.status === "completed" ? t("actions.reopen") : t("actions.undo")}
                                 </button>
-                              )}
-
-                              {matchedConversation ? (
-                                <Link
-                                  to={ROUTES.chatDetail(matchedConversation.id)}
-                                  className="rounded-full border border-accent-500 bg-white px-3.5 py-1 text-xs font-bold text-accent-700 hover:bg-accent-50 transition-all"
-                                >
-                                  💬 {t("nav.chat")}
-                                </Link>
-                              ) : (
-                                <Link
-                                  to={ROUTES.chatList}
-                                  className="rounded-full border border-ink-600/20 bg-white px-3 py-1 text-xs font-semibold text-ink-700 hover:bg-cream-100"
-                                >
-                                  {t("nav.chat")}
-                                </Link>
                               )}
                             </div>
                           </div>

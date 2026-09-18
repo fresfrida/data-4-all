@@ -18,7 +18,7 @@
     "ctaDonate": "Donate Items",
     "ctaBrowse": "Browse Items",
     "ctaMap": "Relief Map",
-    "statNeeds": "Active Relief Needs",
+    "statDonors": "Registered Donors",
     "statOrgs": "Verified Organisations",
     "statAreas": "Provinces Covered"
   },
@@ -47,6 +47,7 @@
     "postDonation": "Post donation",
     "uploadingPhotos": "Uploading photos…",
     "addNeed": "Add need",
+    "addWindow": "Add",
     "remove": "Remove",
     "send": "Send",
     "viewDetails": "View details",
@@ -83,6 +84,7 @@
     "canDeliver": "I can deliver",
     "pickupOnly": "Pick-up only",
     "collectionWindows": "Collection time windows",
+    "collectionWindowsOptional": "Collection time windows (if necessary)",
     "collectionWindowPlaceholder": "e.g. Weekend mornings",
     "notes": "Notes (optional)",
     "photos": "Photos",
@@ -141,6 +143,7 @@
   "screens": {
     "discoverNeedsIntroPrefix": "See what organisations across Vietnam currently need, then",
     "discoverNeedsByOrgTitle": "Discover needs by Organisation",
+    "discoverNeedsIntro": "Browse what local relief organisations currently need and see who to donate to.",
     "discoverAvailableGoodsTitle": "Discover Available Goods to be Donated",
     "discoverNeedsCta": "post a donation",
     "discoverItemsIntro": "Browse items donors have listed and request what your organisation needs.",

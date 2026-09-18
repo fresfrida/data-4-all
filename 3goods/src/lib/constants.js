@@ -3,7 +3,8 @@
  * never hardcode strings that can drift out of sync with routes.jsx.
  */
 export const ROUTES = {
-  discoverNeeds: "/",
+  home: "/",
+  discoverNeeds: "/organisations",
   donateNew: "/donate/new",
   me: "/me",
   discoverItems: "/discover",

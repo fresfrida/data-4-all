@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { AppShell } from "../components/layout/AppShell.jsx";
+import { Home } from "../screens/Home.jsx";
 import { DiscoverNeeds } from "../screens/DiscoverNeeds.jsx";
 import { DonationForm } from "../screens/DonationForm.jsx";
 import { Me } from "../screens/Me.jsx";
@@ -15,16 +16,17 @@ import { Updates } from "../screens/Updates.jsx";
 import { NotFound } from "../screens/NotFound.jsx";
 
 /**
- * One route table, matching lib/constants.js's ROUTES 1:1. Donor `/` is
- * Discover Needs; every other destination is reachable from nav or from a
- * link inside a screen (see DiscoverNeeds/Me for the donor "Discover
- * needs" link required even off the home route).
+ * One route table, matching lib/constants.js's ROUTES 1:1. `/` is the
+ * lightweight hero landing page (Home); Discover Needs (the needs board)
+ * lives at its own "/organisations" — same pattern as Discover Items at
+ * "/discover" — see DECISIONS.md D-049.
  */
 export function AppRoutes() {
   return (
     <Routes>
       <Route element={<AppShell />}>
-        <Route path="/" element={<DiscoverNeeds />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/organisations" element={<DiscoverNeeds />} />
         <Route path="/donate/new" element={<DonationForm />} />
         <Route path="/me" element={<Me />} />
         <Route path="/discover" element={<DiscoverItems />} />

@@ -18,7 +18,7 @@
     "ctaDonate": "Quyên góp ngay",
     "ctaBrowse": "Xem vật phẩm",
     "ctaMap": "Bản đồ cứu trợ",
-    "statNeeds": "Nhu cầu cứu trợ",
+    "statDonors": "Người quyên góp đã đăng ký",
     "statOrgs": "Tổ chức xác minh",
     "statAreas": "Tỉnh thành phủ sóng"
   },
@@ -47,6 +47,7 @@
     "postDonation": "Đăng quyên góp",
     "uploadingPhotos": "Đang tải ảnh lên…",
     "addNeed": "Thêm nhu cầu",
+    "addWindow": "Thêm",
     "remove": "Xóa",
     "send": "Gửi",
     "viewDetails": "Xem chi tiết",
@@ -83,6 +84,7 @@
     "canDeliver": "Tôi có thể giao",
     "pickupOnly": "Chỉ nhận tại chỗ",
     "collectionWindows": "Thời gian nhận thuận tiện",
+    "collectionWindowsOptional": "Thời gian nhận thuận tiện (nếu cần)",
     "collectionWindowPlaceholder": "ví dụ: Sáng cuối tuần",
     "notes": "Ghi chú (không bắt buộc)",
     "photos": "Hình ảnh",
@@ -141,6 +143,7 @@
   "screens": {
     "discoverNeedsIntroPrefix": "Xem những gì các tổ chức trên khắp Việt Nam đang cần, sau đó",
     "discoverNeedsByOrgTitle": "Nhu cầu cứu trợ theo Tổ chức",
+    "discoverNeedsIntro": "Xem các tổ chức cứu trợ địa phương hiện đang cần gì và nên quyên góp cho ai.",
     "discoverAvailableGoodsTitle": "Khám phá vật phẩm sẵn có được quyên góp",
     "discoverNeedsCta": "đăng một khoản quyên góp",
     "discoverItemsIntro": "Duyệt các vật phẩm mà người quyên góp đã đăng và yêu cầu những gì tổ chức bạn cần.",

@@ -438,6 +438,60 @@ guest bottom nav reads "Organisations / Items Donated / Map" (VI: "Các tổ ch�
 đồ") with no truncation at either breakpoint; logged-in organisation nav confirmed unchanged. Zero
 console errors throughout.
 
+## D-049 — Landing page split into Home (hero only) + Discover Needs moved to its own page; hero stats swap; two copy fixes; Me.jsx bubble order
+Several more user-reported fixes:
+- **Landing page split**: `/` used to be the hero *and* the full "Discover needs by Organisation"
+  board stacked underneath it. Per explicit user request, these are now two pages, mirroring how
+  Discover Items already works: `/` → new `Home.jsx`, hero only (title, guest/login pill, CTA
+  buttons, stats strip); `/organisations` → `DiscoverNeeds.jsx` (unchanged content, just the hero
+  removed and restyled to the same simple header+filter+grid pattern `DiscoverItems.jsx` already
+  uses). `ROUTES.discoverNeeds` changed from `"/"` to `"/organisations"`; added `ROUTES.home = "/"`.
+  Every existing `ROUTES.discoverNeeds` reference (Updates/Me/Footer's "Discover needs" links, the
+  guest nav's "Organisations" item) needed no code change — they already used the constant, not a
+  hardcoded path, so they followed automatically. `NotFound.jsx`'s "back to home" link changed to
+  `ROUTES.home` explicitly (it was pointing at the needs board before, which would now be wrong).
+  Also deleted a bit of pre-existing dead code (`homeRoute` in `DesktopTopNav`/`MobileHeader`, computed
+  but never read since at least 3G-043 — its meaning would have drifted further out of sync with this
+  change, better gone than stale).
+- **Hero stats were already DB-derived, just wrong**: the user assumed the 3 stat tiles were
+  hardcoded; they were always computed from live `organisations`/`needs` queries, but the "10
+  Organisations" / "10 Provinces" numbers were inflated by the still-unresolved stale-duplicate-org
+  issue from earlier in this session (see the "Known issues" carried in HANDOFF.md — investigated
+  twice now, deletion blocked both times by tool-level safety guards on bulk deletes; needs the user's
+  own hand or explicit re-confirmation to finish). Per request, swapped the 3rd tile from "Active
+  Relief Needs" to "Registered Donors" — added `usersService.getDonorCount()` (new file; first
+  service to read the `users` table directly rather than only through `itemsService`'s internal donor
+  name lookups). The other two tiles (orgs, provinces) keep their existing live-query logic unchanged
+  — once the stale rows are actually deleted, all three numbers self-correct with no further code
+  change needed.
+- **`DonationForm.jsx`'s collection-windows "Add" button said "Add need"** — a copy-paste artifact,
+  reusing `actions.addNeed` (genuinely meant for `NeedsManagement`'s add-a-need button) for a
+  completely different action. New `actions.addWindow` key ("Add"/"Thêm"). Field label changed to
+  "Collection time windows (if necessary)" (new `fields.collectionWindowsOptional` key, kept separate
+  from the existing `fields.collectionWindows` key since that one is still used as a factual label on
+  Item Detail, where "(if necessary)" would read oddly).
+- **`Me.jsx`'s request-row bubbles reordered**: Chat now comes first (only shown once a conversation
+  actually exists — i.e. after acceptance; a still-`requested` row has no conversation yet, so no Chat
+  bubble), then the status badge, then Accept/Undo/Reopen. Previously Chat was last, and a generic
+  "Chat" link always showed even pre-acceptance (linking to the whole chat list, not anything
+  specific to that request).
+- **On "why do we have arranging_collection, is this a state?"**: yes, deliberately — it's the real
+  in-between state once an organisation accepts a request but before collection is actually done,
+  advanced via buttons inside `ChatDetail.jsx` (`accepted` → "Mark as arranging collection" →
+  `arranging_collection` → "Mark as completed" → `completed`), tracked because the chat's own UI needs
+  to know which advancement button to show next. `Me.jsx`'s simplified view was already collapsing it
+  correctly (both `accepted` and `arranging_collection` show the same "Undo" button — the status badge
+  text is the only place the distinction surfaces there), so no code change was needed for the
+  behavior described; removing the status itself would be a larger, separate change (touches
+  `REQUEST_STATUSES`, `ChatDetail.jsx`'s advancement flow, D-009's request lifecycle, seed data) not
+  requested here.
+Live-verified (headless Chrome + CDP, mobile 390px): `/` renders hero-only with no console errors;
+`/organisations` renders the needs board with intro text, filters, and org cards, matching
+`DiscoverItems.jsx`'s visual pattern; guest nav's "Organisations" link correctly lands on the new
+page; `DonationForm`'s collection-windows section reads "Collection time windows (if necessary)" +
+"Add"; `Me.jsx` shows Chat first only when applicable (confirmed across `requested` — no chat,
+`arranging_collection` — chat + Undo, rows).
+
 ---
 
 ## Deferred questions (not blocking Phase 1)

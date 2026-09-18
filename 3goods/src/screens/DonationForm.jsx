@@ -299,7 +299,7 @@ export function DonationForm() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <span className="text-xs font-semibold text-ink-700">{t("fields.collectionWindows")}</span>
+        <span className="text-xs font-semibold text-ink-700">{t("fields.collectionWindowsOptional")}</span>
         <div className="flex gap-2">
           <input
             value={windowInput}
@@ -308,7 +308,7 @@ export function DonationForm() {
             placeholder={t("fields.collectionWindowPlaceholder")}
           />
           <button type="button" onClick={addWindow} className="rounded-lg border border-ink-600/20 px-3 text-sm font-semibold">
-            {t("actions.addNeed")}
+            {t("actions.addWindow")}
           </button>
         </div>
         {collectionWindows.length > 0 && (

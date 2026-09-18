@@ -38,6 +38,29 @@ session; see each Done entry's evidence)
 
 ## Done
 
+- **3G-047** — Landing page split (hero-only `/` + needs board moved to `/organisations`); hero stats
+  swap to Registered Donors; donation-form/Me.jsx copy and ordering fixes (see DECISIONS.md D-049)
+  - Deliverable: new `Home.jsx` at `/` (hero only); `DiscoverNeeds.jsx` moved to `/organisations` with
+    hero removed, restyled to match `DiscoverItems.jsx`'s simple page pattern. New
+    `usersService.getDonorCount()`; hero's 3rd stat tile swapped from Relief Needs to Registered
+    Donors. `DonationForm.jsx`'s "Add need" button (copy-paste bug, wrong action) fixed to "Add";
+    field label now "Collection time windows (if necessary)". `Me.jsx` request-row bubbles reordered
+    (Chat first, only when applicable; then status; then Accept/Undo/Reopen). Cleaned up dead
+    `homeRoute` code in the nav components while in the area.
+  - Deps: none. Acceptance: `npm run i18n:check` passes, `npm run build` succeeds, live-browser check
+    of both new pages and the two smaller fixes.
+  - Evidence: `npm run i18n:check` → 179/179 keys in sync. `npm run build` → succeeds. Live browser
+    (headless Chrome + CDP, mobile 390px): `/` renders hero-only, `/organisations` renders the full
+    needs board correctly (intro text, filters, 5 org cards), guest nav's "Organisations" link lands
+    there correctly, donation form shows the corrected label/button, `Me.jsx` shows Chat first only
+    on rows with an actual conversation. Zero console errors.
+  - **Not fully resolved**: the hero's "Registered Donors"/"Verified Organisations"/"Provinces
+    Covered" tiles are correctly DB-derived but still show inflated numbers (10/10/10) because the 5
+    stale duplicate organisation rows + 6 stale user rows from earlier this session were never
+    actually deleted — two attempts to delete them this session were both blocked by a tool-level
+    safety guard on bulk cloud-storage deletes. Needs explicit user action or re-confirmation to
+    finish; see HANDOFF.md.
+
 - **3G-046** — New kitchen item; map category translations fixed; every org needs Clothes; guest nav
   split into Organisations/Items Donated (see DECISIONS.md D-048)
   - Deliverable: `item018` "Assorted kitchen appliances & cookware" (Household Items). Confirmed

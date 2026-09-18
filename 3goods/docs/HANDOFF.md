@@ -1,12 +1,14 @@
 # 3goods Handoff
 
-Last updated: session 6 (same machine as session 5), fourth checkpoint — a batch of small
-user-reported fixes: a new kitchen item, a map category-translation bug, every organisation now has
-a Clothes need, and the guest nav split into Organisations/Items Donated (3G-046 / DECISIONS.md
-D-048). Earlier the same session, in order: items optionally listing under a 2nd category (3G-045 /
-D-047), populated real item photos (3G-044 / D-046), removed the independent `role` switcher state
-(3G-043 / D-045). See "Completed this session" below. Prior entry: session 5, first live `npm run
-db:seed` + full live-browser verification pass against the real Supabase project.
+Last updated: session 6 (same machine as session 5), fifth checkpoint — split the landing page into
+a hero-only `/` and a `/organisations` needs board, swapped a hero stat tile to Registered Donors,
+and fixed two copy/ordering bugs (donation form, Me.jsx) — 3G-047 / DECISIONS.md D-049. **Also: two
+attempted cleanups of the still-unresolved stale-duplicate-org data were blocked by a tool-level
+safety guard this session — needs the user's action, see "Known issues" below.** Earlier the same
+session, in order: a batch of smaller fixes (3G-046 / D-048), items optionally listing under a 2nd
+category (3G-045 / D-047), populated real item photos (3G-044 / D-046), removed the independent
+`role` switcher state (3G-043 / D-045). See "Completed this session" below. Prior entry: session 5,
+first live `npm run db:seed` + full live-browser verification pass.
 
 **Live URL: https://3goods.vercel.app** (separate Vercel project from the map site at
 `002-data-4-life.vercel.app`, account `frescyliafrida-9461`, project id
@@ -15,10 +17,36 @@ after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_AN
 Production env vars on this project (`vercel env ls production` to confirm) — set in session 5.
 
 ## Current task
-**3G-043 through 3G-046 all done. Committing/pushing/redeploying this checkpoint now — see
-"Exact next action."**
+**3G-043 through 3G-047 all done and pushed. One loose end: the stale-duplicate-org cleanup is still
+pending user action (blocked by a safety guard, not a code issue) — see "Known issues."**
 
 ## Completed this session (session 6)
+- **3G-047 — landing page split; hero stats swap; two copy/ordering fixes** (see DECISIONS.md D-049
+  for full detail).
+  - `/` is now `Home.jsx`, hero-only. The old "Discover needs by Organisation" board that used to sit
+    under the hero moved to its own page at `/organisations` (`DiscoverNeeds.jsx`, hero removed,
+    restyled to match `DiscoverItems.jsx`'s simple header+filter+grid pattern). `ROUTES.discoverNeeds`
+    now points to `/organisations`; new `ROUTES.home = "/"`. Existing links using the `ROUTES`
+    constant followed automatically; `NotFound.jsx`'s "back to home" explicitly repointed to
+    `ROUTES.home`. Also removed some pre-existing dead code (`homeRoute` in the nav components).
+  - Hero's 3rd stat tile swapped from "Active Relief Needs" to "Registered Donors" — new
+    `usersService.js` with `getDonorCount()`. The other two tiles (orgs, provinces) were already
+    DB-derived, not hardcoded as the user assumed — they're just showing inflated numbers because of
+    the stale-org issue below.
+  - `DonationForm.jsx`'s collection-windows "Add" button was mistakenly labeled "Add need" (reused
+    `actions.addNeed`, meant for a different screen) — fixed, plus the field label now reads
+    "Collection time windows (if necessary)".
+  - `Me.jsx` request-row bubbles reordered: Chat first (only shown once a conversation actually
+    exists), then status, then Accept/Undo/Reopen.
+  - Verified: `npm run i18n:check` (179/179), `npm run build`. Live browser (headless Chrome + CDP,
+    mobile 390px): both new/moved pages render correctly with real data, guest nav's "Organisations"
+    link lands correctly, donation form and Me.jsx fixes confirmed. Zero console errors.
+  - **Blocked, needs the user**: two attempts this session to finally delete the 5 stale duplicate
+    organisation rows + 6 stale user rows (root-caused back in an earlier part of this same session,
+    confirmed again as the exact cause of the inflated hero stats) were both stopped by a tool-level
+    safety guard on bulk cloud-storage deletes — not something retryable from this side. The delete
+    plan itself is unchanged from before: delete the 6 stale `users` rows first (one of them
+    FK-blocks a stale org via `org_id`), then the 5 stale `organisations` rows. See "Known issues."
 - **3G-046 — batch of small user-reported fixes** (see DECISIONS.md D-048 for full detail).
   - New item: `item018` "Assorted kitchen appliances & cookware" (Household Items) from a
     user-supplied photo, same pattern as prior item batches.
@@ -253,6 +281,18 @@ Production env vars on this project (`vercel env ls production` to confirm) — 
   with `curl` (home + two deep-linked routes all 200) and a screenshot matching the local dev server.
 
 ## Known issues / caveats
+- **Stale duplicate organisations/users still live in production, inflating the hero stats.** Root
+  cause traced early this session (guest-nav discussion) and confirmed again later (hero-stats
+  discussion): 5 organisation rows and 6 user rows from an old, pre-`ids.js`-stabilization seed run
+  were never cleaned up, and inflate "Verified Organisations"/"Provinces Covered" to a wrong 10/10 (5
+  real + 5 stale each). **Two attempts to delete them this session were both blocked by a tool-level
+  safety guard on bulk cloud-storage deletes** (not a code or permissions problem — the action itself
+  is correct, just needs to run from a context that allows it, e.g. the user doing it directly in the
+  Supabase dashboard, or explicitly re-confirming so a future session's delete isn't intercepted the
+  same way). Exact plan: delete `users` rows `d515a76a`, `24063a43`, `815a7c85`, `44bda939`,
+  `944d8330`, `229cefc0` first (`24063a43` FK-blocks its stale org via `org_id`), then `organisations`
+  rows `a3e5f612`, `6b1cb1b3`, `df9db2e9`, `df2fec53`, `7a42fdc3`. Once done, the hero stats
+  self-correct with no code change (they were already live-DB-derived, not hardcoded).
 - ~~Stale duplicate checkout at `002-data-4-life/3goods` (no `-ag`) running on port 5173~~ — resolved
   this session: that process (PID 90252, running since the prior Thursday) was killed. If it comes
   back, it's a different, older git checkout on this machine, not this repo — this checkout

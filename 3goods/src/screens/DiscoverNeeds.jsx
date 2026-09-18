@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAsync } from "../lib/useAsync.js";
-import { useSession } from "../context/SessionContext.jsx";
 import { getNeeds } from "../services/needsService.js";
 import { getOrganisations } from "../services/organisationsService.js";
 import { getCategories, getAreaById } from "../services/referenceDataService.js";
@@ -24,11 +23,13 @@ async function loadNeedsBoard() {
 }
 
 /**
- * Donor & Organisation home ("/"). Browsing published relief needs.
+ * Discover needs by Organisation ("/organisations"). Browsing published
+ * relief needs — the needs-board counterpart to Discover Items. Used to
+ * live on the home page under the hero; split out to its own page so the
+ * landing page ("/") stays a lightweight hero — see DECISIONS.md D-049.
  */
 export function DiscoverNeeds() {
   const { status, data, error, reload } = useAsync(loadNeedsBoard, []);
-  const { role, identity } = useSession();
   const { locale } = useLocale();
   const t = useTranslate();
   const [categoryFilter, setCategoryFilter] = useState(null);
@@ -52,101 +53,20 @@ export function DiscoverNeeds() {
   const categoryLabel = (categoryId) =>
     data.categories.find((c) => c.id === categoryId)?.[locale] ?? data.categories.find((c) => c.id === categoryId)?.en ?? categoryId;
 
-  const totalNeedsCount = data?.needs?.length ?? 0;
-  const orgsCount = data?.organisations?.length ?? 0;
-  const areaCount = Object.keys(data?.areaCache ?? {}).length || 5;
-
   return (
-    <div className="flex flex-col gap-0 w-full">
-      {/* 100% Full-Width Screen Hero Banner */}
-      <section className="relative w-full overflow-hidden bg-sky-950 py-12 sm:py-20 px-4 sm:px-8 text-white shadow-md border-b border-ink-600/10">
-        {/* Bright Natural Volunteer Relief Photo */}
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-85 scale-105 pointer-events-none transition-all duration-700"
-          style={{ backgroundImage: `url('/hero_bg.jpg')` }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-sky-950/80 via-blue-900/40 to-sky-950/70 pointer-events-none" />
-
-        <div className="relative z-10 mx-auto max-w-6xl flex flex-col justify-between gap-6 min-h-[300px]">
-          <div className="flex flex-col gap-4">
-            {/* Context pill: guest vs logged-in identity+role, never both/neither (D-045) */}
-            <div className="flex flex-col items-start gap-2">
-              {identity ? (
-                <div className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3.5 py-1 text-xs font-medium backdrop-blur-md border border-white/25 text-white shadow-xs">
-                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span>👤 {t("demo.loggedInAs", { name: identity.name })} · {t(`role.${role}`)}</span>
-                </div>
-              ) : (
-                <div className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3.5 py-1 text-xs font-medium backdrop-blur-md border border-white/25 text-white shadow-xs">
-                  <span>{t("demo.browsingAsGuest")}</span>
-                </div>
-              )}
-            </div>
-
-            <div className="space-y-2 max-w-2xl">
-              <h1 className="text-2xl sm:text-3xl md:text-5xl font-black tracking-tight leading-tight text-white drop-shadow-md">
-                {t("hero.title")}
-              </h1>
-              <p className="text-xs sm:text-base text-sky-100/95 leading-relaxed font-medium max-w-xl drop-shadow-xs">
-                {t("hero.subtitle")}
-              </p>
-            </div>
-
-            {/* Action Buttons — donor gets the Donate CTA; guest and organisation both browse items */}
-            <div className="flex flex-wrap items-center gap-3 pt-2">
-              {role === "donor" ? (
-                <Link
-                  to={ROUTES.donateNew}
-                  className="inline-flex items-center justify-center rounded-full bg-accent-500 px-6 py-3 text-sm font-bold text-white shadow-lg hover:bg-accent-600 transition-all active:scale-95 min-w-[160px]"
-                >
-                  + {t("hero.ctaDonate")}
-                </Link>
-              ) : (
-                <Link
-                  to={ROUTES.discoverItems}
-                  className="inline-flex items-center justify-center rounded-full bg-accent-500 px-6 py-3 text-sm font-bold text-white shadow-lg hover:bg-accent-600 transition-all active:scale-95 min-w-[160px]"
-                >
-                  📦 {t("hero.ctaBrowse")}
-                </Link>
-              )}
-              <Link
-                to={ROUTES.map}
-                className="inline-flex items-center justify-center rounded-full bg-white/95 px-6 py-3 text-sm font-bold text-ink-900 backdrop-blur-md border border-white hover:bg-white transition-all active:scale-95 min-w-[160px] shadow-md"
-              >
-                🗺️ {t("hero.ctaMap")}
-              </Link>
-            </div>
-          </div>
-
-          {/* Impact Stats Banner */}
-          <div className="grid grid-cols-3 gap-3 sm:gap-6 pt-5 border-t border-white/20">
-            <div className="flex flex-col bg-sky-950/50 rounded-2xl p-3.5 sm:p-4 backdrop-blur-md border border-white/20">
-              <span className="text-xl sm:text-3xl font-black text-white">{totalNeedsCount}</span>
-              <span className="text-[10px] sm:text-xs text-sky-100 font-semibold truncate">{t("hero.statNeeds")}</span>
-            </div>
-            <div className="flex flex-col bg-sky-950/50 rounded-2xl p-3.5 sm:p-4 backdrop-blur-md border border-white/20">
-              <span className="text-xl sm:text-3xl font-black text-white">{orgsCount}</span>
-              <span className="text-[10px] sm:text-xs text-sky-100 font-semibold truncate">{t("hero.statOrgs")}</span>
-            </div>
-            <div className="flex flex-col bg-sky-950/50 rounded-2xl p-3.5 sm:p-4 backdrop-blur-md border border-white/20">
-              <span className="text-xl sm:text-3xl font-black text-white">{areaCount}</span>
-              <span className="text-[10px] sm:text-xs text-sky-100 font-semibold truncate">{t("hero.statAreas")}</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Main Content Area in Standard Container */}
-      <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 flex flex-col gap-6">
-
-      {/* Main Header & Category Filter Bar */}
-      <div className="flex flex-col gap-3 pt-2">
+    <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 flex flex-col gap-4">
+      <div>
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-ink-800">{t("screens.discoverNeedsByOrgTitle")}</h2>
+          <h1 className="text-xl font-bold text-ink-800">{t("screens.discoverNeedsByOrgTitle")}</h1>
           <span className="text-xs text-ink-600 font-medium">
             {t("screens.orgsCount", { count: needsByOrg.length })}
           </span>
         </div>
+        <p className="text-sm text-ink-600">{t("screens.discoverNeedsIntro")}</p>
+      </div>
+
+      {/* Category Filter Bar */}
+      <div className="flex flex-col gap-3">
 
         {/* 8 Categories Filter Bar - Wrapped in Tidy Rows */}
         <div className="flex flex-wrap items-center gap-2 max-w-full">
@@ -231,7 +151,6 @@ export function DiscoverNeeds() {
           })}
         </div>
       )}
-      </div>
     </div>
   );
 }

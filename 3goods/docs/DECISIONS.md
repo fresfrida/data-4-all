@@ -392,6 +392,52 @@ each showing both category badges; Item Detail shows "Books · Children Items ·
 shows 5 organisations (Hanoi Community Pantry restored) with deduped category-name pills. Zero
 console errors.
 
+## D-048 — Guest nav split into Organisations/Items Donated; map's category translations fixed; every org needs Clothes
+Several small user-reported fixes done together:
+- **New item**: `item018` "Assorted kitchen appliances & cookware" (Household Items, tag `cookware`)
+  from a user-supplied photo (`KitchenAppliances.jpg` → `public/demo-items/kitchen-appliances.jpg`),
+  same treatment as 3G-044/3G-045's items.
+- **Rice sack photo "disappeared" — it hadn't.** `item001`'s photo is correctly wired and renders
+  fine; `item001` is deliberately seeded `status: "reserved"` (D-042/D-009 — so logging in
+  immediately shows a real in-progress collection), and Discover Items only lists `"available"` items
+  by default. A reserved item is still visible on its own Item Detail page, just not the browse grid.
+  No code change; confirmed live in production.
+- **Map's "Suggested Relief Item Categories" showed untranslated English for some categories.** Root
+  cause: `MapScreenShell.jsx` had a hardcoded `CATEGORY_NAME_MAP` with a *stale* pre-3goods taxonomy
+  ("Canned Food", "Blankets", "Medical Kits", "Clean Water") that no longer matches what
+  `public/data/donation_items_by_disaster.json` actually returns — which, it turns out, already uses
+  3goods' exact 8 category slugs (confirmed by inspecting the file directly). Any category not in the
+  stale map fell through to the raw untranslated slug. Fixed by deleting the duplicate hardcoded map
+  entirely and looking labels up from `data/categories.js`'s `getCategoryById` (the one real source of
+  truth for category labels) instead — this also means the map can never drift out of sync with the
+  category list again, unlike the hardcoded copy that already had.
+  - Note: this doesn't fully resolve D-012 (whether the map's *taxonomy itself* is authoritative vs.
+    3goods') — it turns out they already agree in practice for this particular data file, which made
+    the immediate bug a translation-lookup bug, not a taxonomy-mismatch bug. Worth re-checking D-012
+    if the map's other data sources (facility categories, disaster-type labels) turn out to diverge.
+- **Every organisation now has a Clothes need** (`need011`–`need015`, one per org) — none had one
+  before despite Clothes being a core category. Alternates `adult_clothes`/`childrens_clothes` tags.
+- **Guest nav reorganised**: replaced the single "Discover" (→ `/`) item with two —
+  "Organisations" (→ `/`, the needs board) and "Items Donated" (→ `/discover`, the items board) —
+  **guest-only**; logged-in donor/organisation nav is unchanged (still exactly 5 items each), per
+  explicit user confirmation after discussing the mobile bottom nav's fixed layout (it evenly splits
+  width across however many items `getNavItems()` returns — was a hardcoded "exactly five" assumption
+  in a comment, now just descriptive, not enforced). Root complaint this addresses: the bottom nav's
+  Map icon visibly jumped position between a 2-item guest bar and a 5-item logged-in bar; guest is now
+  its own consistent 3-item bar (Organisations, Items Donated, Map) rather than an inconsistent 2.
+  - **Found while verifying live**: the desktop top nav's per-item pill width (`w-[128px]`, fixed)
+    truncated both new labels in *both* languages ("Organisati…" / "Items Dona…" in English,
+    "Vật phẩm đ…" in Vietnamese) — not a translation-length-only issue, English overflowed too.
+    Fixed by widening to `w-[152px]` and additionally shortening the Vietnamese `itemsDonated` label
+    from "Vật phẩm đã quyên góp" to "Đồ quyên góp" (still accurate, more consistent in length with
+    this nav's other short labels).
+Live-verified (headless Chrome + CDP, mobile 390px + desktop 1280px, both languages): kitchen item
+renders and filters correctly; rice sack item confirmed intact on both dev and production; map's 8
+suggested categories all translate correctly in EN and VI; needs board shows Clothes on all 5 orgs;
+guest bottom nav reads "Organisations / Items Donated / Map" (VI: "Các tổ chức / Đồ quyên góp / Bản
+đồ") with no truncation at either breakpoint; logged-in organisation nav confirmed unchanged. Zero
+console errors throughout.
+
 ---
 
 ## Deferred questions (not blocking Phase 1)

@@ -1,12 +1,12 @@
 # 3goods Handoff
 
-Last updated: session 6 (same machine as session 5), third checkpoint — items can now optionally list
-under a 2nd category (3G-045 / DECISIONS.md D-047), plus two related UI fixes (needs-board pills,
-login-state banner) and a data bug found along the way (Hanoi Community Pantry's needs had gone
-missing). Earlier the same session: populated real item photos (3G-044 / D-046), and before that,
-removed the independent `role` switcher state (3G-043 / D-045). See "Completed this session" below.
-Prior entry: session 5, first live `npm run db:seed` + full live-browser verification pass against
-the real Supabase project.
+Last updated: session 6 (same machine as session 5), fourth checkpoint — a batch of small
+user-reported fixes: a new kitchen item, a map category-translation bug, every organisation now has
+a Clothes need, and the guest nav split into Organisations/Items Donated (3G-046 / DECISIONS.md
+D-048). Earlier the same session, in order: items optionally listing under a 2nd category (3G-045 /
+D-047), populated real item photos (3G-044 / D-046), removed the independent `role` switcher state
+(3G-043 / D-045). See "Completed this session" below. Prior entry: session 5, first live `npm run
+db:seed` + full live-browser verification pass against the real Supabase project.
 
 **Live URL: https://3goods.vercel.app** (separate Vercel project from the map site at
 `002-data-4-life.vercel.app`, account `frescyliafrida-9461`, project id
@@ -15,10 +15,30 @@ after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_AN
 Production env vars on this project (`vercel env ls production` to confirm) — set in session 5.
 
 ## Current task
-**3G-043, 3G-044, and 3G-045 all done, committed (`7834c30`), pushed, and live in production. Nothing
-blocking — see "Exact next action."**
+**3G-043 through 3G-046 all done. Committing/pushing/redeploying this checkpoint now — see
+"Exact next action."**
 
 ## Completed this session (session 6)
+- **3G-046 — batch of small user-reported fixes** (see DECISIONS.md D-048 for full detail).
+  - New item: `item018` "Assorted kitchen appliances & cookware" (Household Items) from a
+    user-supplied photo, same pattern as prior item batches.
+  - Confirmed `item001`'s rice sack photo was never broken — it's intentionally `reserved`
+    (D-042/D-009), so it's excluded from the browse grid by design but still shows on its own Item
+    Detail page. No code change, just confirmed live.
+  - Fixed the Relief Map's "Suggested Relief Item Categories" showing untranslated English for some
+    categories — `MapScreenShell.jsx` had a stale hardcoded translation map using an old pre-3goods
+    taxonomy; replaced with a lookup against the real `data/categories.js` list (which the actual
+    data file already matched exactly).
+  - Every organisation now has a Clothes need (`need011`–`need015`) — none had before.
+  - Guest-only nav split "Discover" into "Organisations" + "Items Donated"; logged-in donor/org nav
+    unchanged (confirmed with the user before implementing, to avoid overflowing the mobile bottom
+    nav's fixed layout). Found and fixed a desktop nav pill truncation bug in the process (both
+    languages, not just the longer Vietnamese label — widened the pill and shortened the VI label).
+  - Verified: `npm run i18n:check` (176/176), `npm run build`, `npm run db:seed` (18 items, 15
+    needs). Live browser (headless Chrome + CDP, mobile 390px + desktop 1280px, EN + VI): map
+    categories all translate, needs board shows Clothes everywhere, guest nav reads correctly with no
+    truncation at either breakpoint/language, logged-in org nav confirmed unchanged. Zero console
+    errors.
 - **3G-045 — items can optionally list under a 2nd category; two related UI fixes; one data bug found
   and fixed** (see DECISIONS.md D-047 for full detail).
   - `items.secondary_category_id` — a nullable FK to `categories`, added via **manual SQL in the

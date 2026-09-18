@@ -12,17 +12,7 @@ import { NeedChip } from "../../../components/needs/NeedChip.jsx";
 import { useTranslate } from "../../../i18n/useTranslate.js";
 import { useLocale } from "../../../i18n/LocaleContext.jsx";
 import { ROUTES } from "../../../lib/constants.js";
-
-const CATEGORY_NAME_MAP = {
-  "Rice": { en: "Rice & Grains", vi: "Gạo & Lương thực" },
-  "Canned Food": { en: "Canned Food", vi: "Thực phẩm đóng hộp" },
-  "Blankets": { en: "Blankets & Clothes", vi: "Chăn mền & Áo ấm" },
-  "Medical Kits": { en: "Medical Kits", vi: "Dụng cụ y tế" },
-  "Clean Water": { en: "Clean Water", vi: "Nước sạch" },
-  "Clothes": { en: "Clothes", vi: "Quần áo" },
-  "Hygiene Products": { en: "Hygiene Products", vi: "Đồ vệ sinh cá nhân" },
-  "Books": { en: "Books & Stationery", vi: "Sách vở & Đồ dùng" },
-};
+import { getCategoryById } from "../../../data/categories.js";
 
 const DISASTER_TYPE_MAP = {
   "Flood": { en: "Flood", vi: "Lũ lụt" },
@@ -207,7 +197,7 @@ export function MapScreenShell() {
               <div className="flex flex-wrap gap-1.5">
                 {recommendedCategories.length > 0 ? (
                   recommendedCategories.map((cat) => {
-                    const catLabel = CATEGORY_NAME_MAP[cat.name]?.[locale] ?? cat.name;
+                    const catLabel = getCategoryById(cat.name)?.[locale] ?? cat.name;
                     const priorityKey = cat.priority === "high" ? "map.priorityHigh" : cat.priority === "medium" ? "map.priorityMedium" : "map.priorityLow";
                     const priorityLabel = t(priorityKey);
 

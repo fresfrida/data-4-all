@@ -45,6 +45,7 @@ export const ITEM_IDS = {
   item015: "d264aeb4-4b70-41ef-89b5-35c5b6d1a8ad",
   item016: "2bd92481-4ee2-434c-883a-f675045ea84a",
   item017: "2e1e4fe8-6ec9-4540-bc49-46e340b6d1ed",
+  item018: "6b70c9f4-bf1e-4686-8034-3b99cca603b7",
 };
 
 export const NEED_IDS = {
@@ -58,6 +59,11 @@ export const NEED_IDS = {
   need008: "74508d58-0091-4d41-8340-6c4ee3139688",
   need009: "82d53157-447b-4345-85da-47d8a016936e",
   need010: "b2fe6826-ba54-4853-bbd4-142c6fba47b4",
+  need011: "9ab10d78-c7a8-45e2-8458-05e159205393",
+  need012: "33b2b63b-6f87-48d5-a0cc-6d20223fd048",
+  need013: "a28d044f-cf61-4bc0-81fd-5fdf2a4ee55a",
+  need014: "819b49f5-5b7a-4150-ba7f-bd8905ef2c89",
+  need015: "fb9c5510-2e33-42ec-82bb-6e01f114fd11",
 };
 
 export const REQUEST_IDS = {

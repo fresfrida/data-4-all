@@ -38,6 +38,24 @@ session; see each Done entry's evidence)
 
 ## Done
 
+- **3G-046** — New kitchen item; map category translations fixed; every org needs Clothes; guest nav
+  split into Organisations/Items Donated (see DECISIONS.md D-048)
+  - Deliverable: `item018` "Assorted kitchen appliances & cookware" (Household Items). Confirmed
+    `item001`'s rice photo was never broken (it's `reserved`, so it's correctly excluded from the
+    browse grid by design). `MapScreenShell.jsx`'s stale hardcoded category-translation map replaced
+    with a lookup against the real `data/categories.js` list — fixes untranslated category labels on
+    the Relief Map screen. Added a Clothes need to all 5 organisations. Guest-only bottom/top nav now
+    shows "Organisations" + "Items Donated" instead of one "Discover" item; logged-in nav unchanged.
+    Fixed a desktop nav pill truncation bug found while verifying (both languages, not just Vietnamese).
+  - Deps: none. Acceptance: `npm run i18n:check` passes, `npm run build` succeeds, live-browser check
+    of the map, needs board, and guest nav in both languages at both breakpoints.
+  - Evidence: `npm run i18n:check` → 176/176 keys in sync. `npm run build` → succeeds. `npm run
+    db:seed` → `[items] seeded 18 rows`, `[needs] seeded 15 rows`. Live browser (headless Chrome +
+    CDP): Relief Map's "Suggested Relief Item Categories" shows all 8 categories correctly translated
+    in EN and VI; needs board shows Clothes on all 5 orgs; guest nav reads "Organisations / Items
+    Donated / Map" with no truncation at mobile (390px) or desktop (1280px) in either language;
+    logged-in organisation nav confirmed unchanged (still 5 items). Zero console errors.
+
 - **3G-045** — Items support an optional 2nd category; needs-board pills show categories not tags;
   sitewide banner shows login state (see DECISIONS.md D-047)
   - Deliverable: `items.secondary_category_id` (nullable FK, added via manual Supabase SQL — anon

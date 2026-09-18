@@ -11,7 +11,8 @@ export function getNavItems(session, t) {
 
   if (!isLoggedIn) {
     return [
-      { to: ROUTES.discoverNeeds, label: t("nav.discover"), Icon: SearchIcon },
+      { to: ROUTES.discoverNeeds, label: t("nav.organisations"), Icon: BuildingIcon },
+      { to: ROUTES.discoverItems, label: t("nav.itemsDonated"), Icon: SearchIcon },
       { to: ROUTES.map, label: t("nav.map"), Icon: MapPinIcon },
     ];
   }

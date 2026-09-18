@@ -33,7 +33,7 @@ export function DesktopTopNav() {
               to={to}
               end={to === "/"}
               className={({ isActive }) =>
-                `flex w-[128px] shrink-0 items-center justify-center gap-1.5 rounded-full px-2 py-1.5 text-sm font-semibold transition-all ${
+                `flex w-[152px] shrink-0 items-center justify-center gap-1.5 rounded-full px-2 py-1.5 text-sm font-semibold transition-all ${
                   isActive ? "bg-accent-100 text-accent-700 shadow-2xs" : "text-ink-600 hover:text-ink-900 hover:bg-cream-100"
                 }`
               }

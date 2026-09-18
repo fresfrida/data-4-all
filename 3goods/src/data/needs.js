@@ -25,4 +25,11 @@ export const NEEDS = [
 
   { id: NEED_IDS.need009, organisationId: ORG_IDS.careBridge, category: "Children Items", tag: "baby_items", priority: true, createdAt: "2026-08-09T02:00:00.000Z" },
   { id: NEED_IDS.need010, organisationId: ORG_IDS.careBridge, category: "Hygiene Products", tag: "hygiene_products", priority: true, createdAt: "2026-08-09T02:00:00.000Z" },
+
+  // Every organisation also needs Clothes — added so donors always have a Clothes-category match.
+  { id: NEED_IDS.need011, organisationId: ORG_IDS.foodShare, category: "Clothes", tag: "adult_clothes", priority: false, createdAt: "2026-08-11T02:00:00.000Z" },
+  { id: NEED_IDS.need012, organisationId: ORG_IDS.hanoiPantry, category: "Clothes", tag: "adult_clothes", priority: false, createdAt: "2026-08-11T02:00:00.000Z" },
+  { id: NEED_IDS.need013, organisationId: ORG_IDS.booksChildren, category: "Clothes", tag: "childrens_clothes", priority: false, createdAt: "2026-08-11T02:00:00.000Z" },
+  { id: NEED_IDS.need014, organisationId: ORG_IDS.warmHomes, category: "Clothes", tag: "adult_clothes", priority: true, createdAt: "2026-08-11T02:00:00.000Z" },
+  { id: NEED_IDS.need015, organisationId: ORG_IDS.careBridge, category: "Clothes", tag: "childrens_clothes", priority: false, createdAt: "2026-08-11T02:00:00.000Z" },
 ];

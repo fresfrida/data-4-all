@@ -30,7 +30,9 @@
     "chat": "Trò chuyện",
     "me": "Tôi",
     "myOrganisation": "Tổ chức",
-    "discoverNeeds": "Xem nhu cầu"
+    "discoverNeeds": "Xem nhu cầu",
+    "organisations": "Các tổ chức",
+    "itemsDonated": "Đồ quyên góp"
   },
   "role": {
     "donor": "Người quyên góp",

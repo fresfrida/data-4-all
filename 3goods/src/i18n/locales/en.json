@@ -30,7 +30,9 @@
     "chat": "Chat",
     "me": "Me",
     "myOrganisation": "Us",
-    "discoverNeeds": "Discover needs"
+    "discoverNeeds": "Discover needs",
+    "organisations": "Organisations",
+    "itemsDonated": "Items Donated"
   },
   "role": {
     "donor": "Donor",

@@ -1,87 +1,128 @@
 -- 3goods — Supabase schema
--- Run this once in the Supabase dashboard: SQL Editor -> New query -> paste -> Run.
+--
+-- This documents the ACTUAL live production schema (project ref
+-- hizvkpspyglvpgictqif) as reconciled in DECISIONS.md D-042 — it does not
+-- match what an earlier session's schema.sql proposed and this repo's code
+-- briefly assumed. Column names are snake_case, every id is a real
+-- Postgres `uuid` (default gen_random_uuid()), and `categories`/`users` are
+-- real tables rather than static in-app lists. Run this once in a fresh
+-- Supabase project's SQL Editor to reproduce the live shape from scratch;
+-- on the existing live project only the "additive" section below still
+-- needs to be applied (everything above it already exists there).
 --
 -- No real auth in this prototype (see docs/DECISIONS.md D-004), so every
 -- table gets a permissive RLS policy for the anon (public) role — anyone
--- with the anon key can read/write everything, same trust level as the old
+-- with the anon key can read/write everything, same trust level the old
 -- localStorage engine had (zero). Do not reuse this schema for anything
 -- handling real user data without adding real auth + tighter policies first.
 
-create table if not exists items (
-  id text primary key,
-  "donorId" text not null,
-  "donorName" text not null,
-  title text not null,
-  "titleVi" text,
-  category text not null,
-  "needTags" text[] not null default '{}',
-  condition text default '',
-  "areaId" text not null,
-  description text default '',
-  "deliveryOption" text not null,
-  "collectionWindows" text[] not null default '{}',
-  notes text default '',
-  "photoPaths" text[] not null default '{}',
-  status text not null default 'available',
-  "acceptedRequestId" text,
-  "createdAt" timestamptz not null default now()
-);
-
-create table if not exists needs (
-  id text primary key,
-  "organisationId" text not null,
-  category text not null,
-  tag text not null,
-  priority boolean not null default false,
-  "createdAt" timestamptz not null default now()
+create table if not exists categories (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  created_at timestamptz default now()
 );
 
 create table if not exists organisations (
-  id text primary key,
-  name jsonb not null,
-  mission jsonb not null,
-  "areaId" text not null,
-  verified boolean not null default false,
-  "isDemo" boolean not null default true,
-  "pastReceivedItemIds" text[] not null default '{}'
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  city text,
+  description text,
+  verified boolean default false,
+  created_at timestamptz default now()
+);
+
+create table if not exists users (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  role text not null,
+  org_id uuid references organisations (id),
+  created_at timestamptz default now()
+);
+
+create table if not exists items (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  category_id uuid references categories (id),
+  condition text,
+  description text,
+  area text,
+  delivery_option text,
+  collection_windows text,
+  status text default 'available',
+  donor_id uuid references users (id),
+  image_base64 text,
+  created_at timestamptz default now()
+);
+
+create table if not exists needs (
+  id uuid primary key default gen_random_uuid(),
+  org_id uuid references organisations (id),
+  category_id uuid references categories (id),
+  quantity integer,
+  unit text,
+  priority text default 'medium',
+  status text default 'open',
+  created_at timestamptz default now()
 );
 
 create table if not exists requests (
-  id text primary key,
-  "itemId" text not null,
-  "organisationId" text not null,
-  status text not null default 'requested',
-  "createdAt" timestamptz not null default now(),
-  "updatedAt" timestamptz not null default now()
+  id uuid primary key default gen_random_uuid(),
+  item_id uuid references items (id),
+  org_id uuid references organisations (id),
+  status text default 'requested',
+  created_at timestamptz default now()
 );
 
 create table if not exists conversations (
-  id text primary key,
-  "requestId" text,
-  "donorId" text not null,
-  "organisationId" text not null
+  id uuid primary key default gen_random_uuid(),
+  item_id uuid references items (id),
+  org_id uuid references organisations (id),
+  donor_id uuid references users (id),
+  created_at timestamptz default now()
 );
 
 create table if not exists messages (
-  id text primary key,
-  "conversationId" text not null,
-  "senderId" text not null,
-  "senderRole" text not null,
-  text text,
-  "systemCode" text,
-  params jsonb not null default '{}',
-  "createdAt" timestamptz not null default now()
+  id uuid primary key default gen_random_uuid(),
+  conversation_id uuid references conversations (id),
+  sender_id uuid references users (id),
+  body text,
+  image_base64 text,
+  created_at timestamptz default now()
 );
 
+-- === Additive migration (DECISIONS.md D-042) ===
+-- Restores fields the live schema above didn't carry over but that were
+-- real, working 3goods features — done as ALTERs so they're safe to run
+-- against the existing production project without touching seeded data.
+
+alter table organisations add column if not exists name_vi text;
+alter table organisations add column if not exists description_vi text;
+alter table organisations add column if not exists is_demo boolean not null default true;
+alter table organisations add column if not exists past_received_item_ids uuid[] not null default '{}';
+
+alter table items add column if not exists title_vi text;
+alter table items add column if not exists need_tags text[] not null default '{}';
+alter table items add column if not exists notes text;
+alter table items add column if not exists accepted_request_id uuid references requests (id);
+
+alter table needs add column if not exists tag text;
+
+alter table conversations add column if not exists request_id uuid references requests (id);
+
+alter table messages add column if not exists system_code text;
+alter table messages add column if not exists params jsonb not null default '{}';
+alter table messages add column if not exists sender_role text;
+
+-- Notifications / "Updates" feed — brand new table, no existing feature to migrate.
 create table if not exists updates (
-  id text primary key,
-  "userId" text not null,
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null,
   type text not null,
   params jsonb not null default '{}',
-  "linkItemId" text,
-  "linkRequestId" text,
+  link_item_id uuid references items (id),
+  link_request_id uuid references requests (id),
   read boolean not null default false,
-  "createdAt" timestamptz not null default now()
+  created_at timestamptz not null default now()
 );
 
 -- Permissive RLS: enable it (Supabase requires this before policies apply),
@@ -90,7 +131,10 @@ do $$
 declare
   t text;
 begin
-  for t in select unnest(array['items','needs','organisations','requests','conversations','messages','updates'])
+  for t in select unnest(array[
+    'categories','organisations','users','items','needs','requests',
+    'conversations','messages','updates'
+  ])
   loop
     execute format('alter table %I enable row level security', t);
     execute format(
@@ -99,18 +143,3 @@ begin
     );
   end loop;
 end $$;
-
--- Storage bucket for donation photos (D-008 superseded — see DECISIONS.md).
-insert into storage.buckets (id, name, public)
-values ('item-photos', 'item-photos', true)
-on conflict (id) do nothing;
-
-create policy if not exists "public read item-photos"
-  on storage.objects for select
-  to anon, authenticated
-  using (bucket_id = 'item-photos');
-
-create policy if not exists "public upload item-photos"
-  on storage.objects for insert
-  to anon, authenticated
-  with check (bucket_id = 'item-photos');

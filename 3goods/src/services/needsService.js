@@ -1,9 +1,26 @@
 /**
  * Organisation "we currently need" lists.
+ *
+ * The live `needs` table's `priority` column is text (`'high'`/`'medium'`),
+ * not the boolean this app models — `fromRow`/`toInsertRow` translate at
+ * the boundary so the rest of the app keeps working with a boolean, same as
+ * before Supabase's redesign (see DECISIONS.md D-042).
  */
 
 import { getAll, insert, update as dbUpdate, remove as dbRemove } from "../lib/db.js";
 import { AppError } from "../lib/errors.js";
+import { getCategoryDbId, getCategorySlugFromDbId } from "./referenceDataService.js";
+
+async function fromRow(row) {
+  return {
+    id: row.id,
+    organisationId: row.org_id,
+    category: await getCategorySlugFromDbId(row.category_id),
+    tag: row.tag ?? "",
+    priority: row.priority === "high",
+    createdAt: row.created_at,
+  };
+}
 
 /**
  * @param {Object} [filters]
@@ -12,7 +29,8 @@ import { AppError } from "../lib/errors.js";
  * @returns {Promise<import('../data/types.js').Need[]>}
  */
 export async function getNeeds(filters = {}) {
-  let rows = await getAll("needs");
+  const rawRows = await getAll("needs");
+  let rows = await Promise.all(rawRows.map(fromRow));
   if (filters.organisationId) {
     rows = rows.filter((need) => need.organisationId === filters.organisationId);
   }
@@ -31,21 +49,24 @@ export async function createNeed(payload) {
   if (!payload.category) throw new AppError("categoryRequired");
   if (!payload.tag) throw new AppError("needTagRequired");
 
-  return insert(
+  const row = await insert(
     "needs",
     {
-      organisationId: payload.organisationId,
-      category: payload.category,
+      org_id: payload.organisationId,
+      category_id: await getCategoryDbId(payload.category),
       tag: payload.tag,
-      priority: Boolean(payload.priority),
-      createdAt: new Date().toISOString(),
+      priority: payload.priority ? "high" : "medium",
+      status: "open",
+      created_at: new Date().toISOString(),
     },
     "need",
   );
+  return fromRow(row);
 }
 
 export async function setNeedPriority(needId, priority) {
-  return dbUpdate("needs", needId, { priority: Boolean(priority) });
+  const row = await dbUpdate("needs", needId, { priority: priority ? "high" : "medium" });
+  return row ? fromRow(row) : null;
 }
 
 /**

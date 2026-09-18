@@ -117,7 +117,8 @@
     "itemNotAvailable": "This item is no longer available to request.",
     "requestNotFound": "This request no longer exists.",
     "itemForRequestNotFound": "The item for this request no longer exists.",
-    "itemAlreadyReserved": "This item has already been reserved for a different organisation."
+    "itemAlreadyReserved": "This item has already been reserved for a different organisation.",
+    "photoTooLarge": "Photo is too large ({sizeKb}KB) — please choose one under 2MB."
   },
   "notifications": {
     "item_requested": "An organisation requested your item: {itemTitle}",

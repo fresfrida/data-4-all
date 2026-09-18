@@ -11,13 +11,18 @@
  * demonstrate "multiple pending requests, one accepted" (DECISIONS.md D-009)
  * without needing to create them live. `item-006` is left fully available
  * and request-free, for walking through the live request/accept flow.
+ *
+ * IDs (and donorId/acceptedRequestId references) are fixed UUIDs from
+ * data/ids.js — see DECISIONS.md D-042.
  */
+
+import { ITEM_IDS, USER_IDS, REQUEST_IDS } from "./ids.js";
 
 /** @type {Item[]} */
 export const ITEMS = [
   {
-    id: "item-001",
-    donorId: "user-donor-demo",
+    id: ITEM_IDS.item001,
+    donorId: USER_IDS.donorDemo,
     donorName: "Mai Nguyen",
     title: "10kg bag of rice",
     titleVi: "10kg gạo sạch",
@@ -31,12 +36,12 @@ export const ITEMS = [
     notes: "",
     photoPaths: [],
     status: "reserved",
-    acceptedRequestId: "request-001",
+    acceptedRequestId: REQUEST_IDS.request001,
     createdAt: "2026-09-01T03:00:00.000Z",
   },
   {
-    id: "item-002",
-    donorId: "user-donor-demo",
+    id: ITEM_IDS.item002,
+    donorId: USER_IDS.donorDemo,
     donorName: "Mai Nguyen",
     title: "Box of canned food (mixed)",
     titleVi: "Thùng đồ hộp tổng hợp",
@@ -53,8 +58,8 @@ export const ITEMS = [
     createdAt: "2026-09-02T03:00:00.000Z",
   },
   {
-    id: "item-003",
-    donorId: "user-donor-002",
+    id: ITEM_IDS.item003,
+    donorId: USER_IDS.donor002,
     donorName: "Linh Tran",
     title: "Bundle of children's story books (12 books)",
     titleVi: "Bộ sách truyện trẻ em (12 cuốn)",
@@ -71,8 +76,8 @@ export const ITEMS = [
     createdAt: "2026-09-03T03:00:00.000Z",
   },
   {
-    id: "item-004",
-    donorId: "user-donor-003",
+    id: ITEM_IDS.item004,
+    donorId: USER_IDS.donor003,
     donorName: "Duc Pham",
     title: "School bag, lightly used",
     titleVi: "Cặp học sinh (còn mới)",
@@ -89,8 +94,8 @@ export const ITEMS = [
     createdAt: "2026-09-04T03:00:00.000Z",
   },
   {
-    id: "item-005",
-    donorId: "user-donor-004",
+    id: ITEM_IDS.item005,
+    donorId: USER_IDS.donor004,
     donorName: "Thu Le",
     title: "Bag of clean adult clothes (assorted)",
     titleVi: "Túi quần áo người lớn (sạch gọn)",
@@ -107,8 +112,8 @@ export const ITEMS = [
     createdAt: "2026-09-05T03:00:00.000Z",
   },
   {
-    id: "item-006",
-    donorId: "user-donor-demo",
+    id: ITEM_IDS.item006,
+    donorId: USER_IDS.donorDemo,
     donorName: "Mai Nguyen",
     title: "Baby clothes bundle (0-12 months)",
     titleVi: "Túi đồ sơ sinh (0-12 tháng)",
@@ -125,8 +130,8 @@ export const ITEMS = [
     createdAt: "2026-09-06T03:00:00.000Z",
   },
   {
-    id: "item-007",
-    donorId: "user-donor-005",
+    id: ITEM_IDS.item007,
+    donorId: USER_IDS.donor005,
     donorName: "Hoa Vu",
     title: "Hygiene kit supplies (soap, toothpaste, sanitary pads)",
     titleVi: "Bộ nhu yếu phẩm vệ sinh cá nhân",
@@ -143,8 +148,8 @@ export const ITEMS = [
     createdAt: "2026-09-07T03:00:00.000Z",
   },
   {
-    id: "item-008",
-    donorId: "user-donor-002",
+    id: ITEM_IDS.item008,
+    donorId: USER_IDS.donor002,
     donorName: "Linh Tran",
     title: "Stack of folded clothes",
     titleVi: "Chồng quần áo xếp gọn",

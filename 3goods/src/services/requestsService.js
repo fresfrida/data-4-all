@@ -8,6 +8,10 @@
  * conversation exists, posts a system message, and pushes an update to the
  * organisation. A screen calling `acceptRequest` doesn't need to know any
  * of that happened — it just re-reads the item/request afterward.
+ *
+ * The live `requests` table has no `updated_at` column (see DECISIONS.md
+ * D-042) — this file just stops writing/reading it rather than restoring it,
+ * since nothing displays it.
  */
 
 import { getAll, getById, insert, update as dbUpdate } from "../lib/db.js";
@@ -15,6 +19,16 @@ import { getItemById, _markItemReserved } from "./itemsService.js";
 import { ensureConversationForRequest, postSystemMessage } from "./chatService.js";
 import { pushUpdate } from "./updatesService.js";
 import { AppError } from "../lib/errors.js";
+
+function fromRow(row) {
+  return {
+    id: row.id,
+    itemId: row.item_id,
+    organisationId: row.org_id,
+    status: row.status,
+    createdAt: row.created_at,
+  };
+}
 
 /**
  * @param {Object} [filters]
@@ -24,7 +38,7 @@ import { AppError } from "../lib/errors.js";
  * @returns {Promise<import('../data/types.js').DonationRequest[]>}
  */
 export async function getRequests(filters = {}) {
-  let rows = await getAll("requests");
+  let rows = (await getAll("requests")).map(fromRow);
   if (filters.itemId) rows = rows.filter((r) => r.itemId === filters.itemId);
   if (filters.organisationId) rows = rows.filter((r) => r.organisationId === filters.organisationId);
   if (filters.status) rows = rows.filter((r) => r.status === filters.status);
@@ -32,7 +46,8 @@ export async function getRequests(filters = {}) {
 }
 
 export async function getRequestById(id) {
-  return getById("requests", id);
+  const row = await getById("requests", id);
+  return row ? fromRow(row) : null;
 }
 
 /**
@@ -47,17 +62,17 @@ export async function createRequest({ itemId, organisationId }) {
     throw new AppError("itemNotAvailable");
   }
 
-  const request = await insert(
+  const row = await insert(
     "requests",
     {
-      itemId,
-      organisationId,
+      item_id: itemId,
+      org_id: organisationId,
       status: "requested",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      created_at: new Date().toISOString(),
     },
     "request",
   );
+  const request = fromRow(row);
 
   await pushUpdate({
     userId: item.donorId,
@@ -83,14 +98,12 @@ export async function acceptRequest(requestId) {
   const item = await getItemById(request.itemId);
   if (!item) throw new AppError("itemForRequestNotFound");
 
-  const updatedRequest = await dbUpdate("requests", requestId, {
-    status: "accepted",
-    updatedAt: new Date().toISOString(),
-  });
+  const updatedRow = await dbUpdate("requests", requestId, { status: "accepted" });
   await _markItemReserved(item.id, requestId);
 
   const conversation = await ensureConversationForRequest({
     requestId,
+    itemId: item.id,
     donorId: item.donorId,
     organisationId: request.organisationId,
   });
@@ -104,16 +117,18 @@ export async function acceptRequest(requestId) {
     linkRequestId: requestId,
   });
 
-  return updatedRequest;
+  return fromRow(updatedRow);
 }
 
 export async function declineRequest(requestId) {
-  return dbUpdate("requests", requestId, { status: "declined", updatedAt: new Date().toISOString() });
+  const row = await dbUpdate("requests", requestId, { status: "declined" });
+  return row ? fromRow(row) : null;
 }
 
 /** Reverts a specific request back to pending/requested status without affecting other requests. */
 export async function revertRequestToPending(requestId) {
-  return dbUpdate("requests", requestId, { status: "requested", updatedAt: new Date().toISOString() });
+  const row = await dbUpdate("requests", requestId, { status: "requested" });
+  return row ? fromRow(row) : null;
 }
 
 /**
@@ -122,8 +137,9 @@ export async function revertRequestToPending(requestId) {
  * received list so OrganisationProfile has something real to show later.
  */
 export async function updateRequestStatus(requestId, status) {
-  const updated = await dbUpdate("requests", requestId, { status, updatedAt: new Date().toISOString() });
-  if (!updated) return null;
+  const updatedRow = await dbUpdate("requests", requestId, { status });
+  if (!updatedRow) return null;
+  const updated = fromRow(updatedRow);
 
   if (status === "completed") {
     const item = await getItemById(updated.itemId);
@@ -132,7 +148,7 @@ export async function updateRequestStatus(requestId, status) {
       const org = await getOrganisationById(updated.organisationId);
       if (org && !org.pastReceivedItemIds.includes(item.id)) {
         await dbUpdate("organisations", org.id, {
-          pastReceivedItemIds: [...org.pastReceivedItemIds, item.id],
+          past_received_item_ids: [...org.pastReceivedItemIds, item.id],
         });
       }
       await pushUpdate({

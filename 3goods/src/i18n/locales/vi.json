@@ -117,7 +117,8 @@
     "itemNotAvailable": "Vật phẩm này không còn có thể yêu cầu.",
     "requestNotFound": "Yêu cầu này không còn tồn tại.",
     "itemForRequestNotFound": "Vật phẩm của yêu cầu này không còn tồn tại.",
-    "itemAlreadyReserved": "Vật phẩm này đã được giữ cho một tổ chức khác."
+    "itemAlreadyReserved": "Vật phẩm này đã được giữ cho một tổ chức khác.",
+    "photoTooLarge": "Ảnh quá lớn ({sizeKb}KB) — vui lòng chọn ảnh dưới 2MB."
   },
   "notifications": {
     "item_requested": "Một tổ chức đã yêu cầu vật phẩm của bạn: {itemTitle}",

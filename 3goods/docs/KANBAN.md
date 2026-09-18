@@ -35,9 +35,29 @@ session; see each Done entry's evidence)
   desktop width)
 - **3G-037** Accessibility pass (focus states, aria-current, labeled inputs, focus trap in FilterSheet)
 - **3G-039** Proposal doc only: move `features/map` into a standalone repo (paths, deploy settings) — do not execute
-- **3G-040** `docs/MIGRATION.md`: Supabase/Postgres migration plan (auth, photo storage, DB permissions)
 
 ## Done
+
+- **3G-042** — Reconciled the codebase against the actual live Supabase schema (removes 3G-040,
+  which was stale — a real migration happened without going through that planned doc)
+  - Deliverable: `supabase/schema.sql` now documents the real live production schema (project ref
+    `hizvkpspyglvpgictqif`) instead of the shape D-041 assumed, plus an additive-migration section
+    restoring bilingual org text, item Vietnamese titles/need tags/notes, the accepted-request link,
+    need tags, conversation-by-request lookup, and translated system chat messages. Every service
+    (`itemsService`, `needsService`, `organisationsService`, `requestsService`, `chatService`,
+    `updatesService`) gained a `fromRow`/`toRow` mapping layer so screens/components needed zero
+    changes. `storageService.js` was rewritten to base64-encode photos client-side (the live schema
+    has no Storage bucket, just an `image_base64` column). `src/data/ids.js` gives every seed record
+    a fixed uuid so `npm run db:seed` stays idempotent against `uuid`-typed columns. Full detail in
+    DECISIONS.md D-042.
+  - Deps: none. Acceptance: `npm run i18n:check` passes, `npm run build` succeeds.
+  - Evidence: `npm run i18n:check` → 168/168 keys in sync; `npm run build` → succeeds (502 KB JS
+    bundle, gzip 143 KB), same pre-existing `organisationsService.js` dynamic-import warning as
+    before (harmless, unrelated).
+  - **Not yet done**: `npm run db:seed` hasn't actually been run/verified — this session's cloud
+    sandbox can't reach `*.supabase.co` (network egress policy), so seeding and a live-browser
+    verification pass are still needed, from an environment with real network access. The user still
+    needs to confirm the additive SQL in D-042 has been run against the live project.
 
 - **3G-041** — Sitewide Footer component + i18n key growth (undocumented work found on session
   resume, reconciled after the fact — see HANDOFF.md)

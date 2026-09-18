@@ -88,6 +88,51 @@ auth and tighter per-row policies first.
 - Not yet done: real multi-user testing (two browsers/devices seeing the same data), Vercel env vars
   for the live deployment, and a live-browser verification pass — see HANDOFF.md.
 
+## D-042 — Reconciled the codebase against the actual live Supabase schema (supersedes D-041's schema)
+A separate Claude Code session (this repo's cloud/web session) found that the real Supabase project
+the user had already created and partially seeded (project ref `hizvkpspyglvpgictqif`, tagged
+PRODUCTION) does **not** match what D-041's `schema.sql` assumed — it was built independently
+(8 tables: `categories`, `conversations`, `items`, `messages`, `needs`, `organisations`, `requests`,
+`users`), with snake_case columns, real Postgres `uuid` primary keys (`gen_random_uuid()`), a
+normalized `categories` table, and a real `users` table, none of which the D-041 code accounted for.
+Rather than pick one side and redo the other, both were reconciled:
+- **`supabase/schema.sql`** now documents the actual live schema exactly, plus an "additive
+  migration" section (safe `alter table add column if not exists` / new `create table`) that
+  restores fields the live schema simplified away but that were real, working features: bilingual
+  organisation name/description (`name_vi`/`description_vi`), demo/past-donations badges
+  (`is_demo`, `past_received_item_ids`), item Vietnamese titles/need tags/notes (`title_vi`,
+  `need_tags`, `notes`), the "which request got accepted" link (`items.accepted_request_id`), the
+  specific need-tag matching field (`needs.tag`), the conversation-by-request lookup
+  (`conversations.request_id`), and translated system chat messages (`messages.system_code`,
+  `params`, `sender_role`). The notifications/"Updates" feed has no live equivalent at all, so it's
+  a brand-new `updates` table, not a restore.
+- **Every service** (`itemsService`, `needsService`, `organisationsService`, `requestsService`,
+  `chatService`, `updatesService`) now has an internal `fromRow`/`toRow`-style mapping layer between
+  the live snake_case/uuid DB shape and this app's existing camelCase `Item`/`Need`/etc. shapes
+  (`src/data/types.js`) — screens and components were **not** touched, since they only ever went
+  through services. `referenceDataService.js` gained `getCategoryDbId`/`getCategorySlugFromDbId` to
+  translate between the app's stable category slug (e.g. `"Rice"`) and the live `categories.id`
+  uuid (which can't be hardcoded — it was already randomly generated when the user first seeded
+  that table by hand).
+- **`storageService.js` was rewritten**, not just remapped: the live schema stores a single
+  `image_base64` text column per item/message instead of a Storage bucket path, so photo "upload"
+  is now a browser-side `FileReader` base64 read with no network call and no bucket to manage. Only
+  one photo per item is supported now (down from D-041's multiple-photo array) — see the
+  `photoPaths` note in CLAUDE.md.
+- **Seed data got fixed uuids**: `src/data/ids.js` holds one `crypto.randomUUID()` per seed record
+  (organisations, users, items, needs, requests, conversations, messages, updates), replacing the
+  old human-readable string ids (`"item-001"`) that can't be stored in a `uuid` column. Every
+  `src/data/*.js` file and `scripts/seed-supabase.mjs` were updated to use them; the flavour donor
+  names on items 003–008 (Linh Tran, Duc Pham, etc.) are now real `users` rows too, since
+  `items.donor_id` is a foreign key rather than a free-text `donorName`.
+- 3G-040 (`docs/MIGRATION.md`, in KANBAN's Backlog) is stale — a real migration happened without
+  going through that planned doc. Its Backlog entry is removed rather than written up after the
+  fact.
+- Not yet done from this session: the user still needs to run the additive SQL above against the
+  live project (given to them inline, not as a file) if they haven't already; `npm run db:seed`
+  hasn't been run or verified from this environment (this cloud sandbox's network egress doesn't
+  allow reaching `*.supabase.co` — see HANDOFF.md); no live-browser verification pass yet.
+
 ## D-009 — "One accepted organisation per listing" lives in `requestsService`
 `requestsService.acceptRequest(requestId)` is the single place that enforces this: it checks the
 item has no existing accepted request, sets the item to reserved, marks the given request accepted,

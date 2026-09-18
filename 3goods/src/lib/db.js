@@ -16,14 +16,18 @@
  * service does its own `.filter()` on `getAll()`'s result), it's kept only
  * because a couple of screens/services still reference it in comments.
  *
- * IDs: seed records use stable ids like "item-001"; anything created at
- * runtime gets `${prefix}-${timestamp}-${random}` via `makeId`.
+ * IDs: every table's `id` column is a real Postgres `uuid` (see
+ * supabase/schema.sql). Seed records use fixed uuids from data/ids.js so
+ * re-seeding stays idempotent; anything created at runtime gets a fresh
+ * `crypto.randomUUID()` via `makeId` (the `prefix` param is unused now —
+ * kept so call sites didn't need to change when ids stopped being
+ * human-readable strings like "item-001", see DECISIONS.md D-042).
  */
 
 import { supabase } from "./supabaseClient.js";
 
-export function makeId(prefix) {
-  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+export function makeId(_prefix) {
+  return crypto.randomUUID();
 }
 
 export async function getAll(table) {

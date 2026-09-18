@@ -5,8 +5,19 @@
  * VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY set.
  *
  * Idempotent via upsert-on-id: safe to re-run after editing a seed file.
- * Only touches the 7 tables db.js knows about — never `users` (those two
- * demo identities in data/users.js aren't stored anywhere, see db.js).
+ * Ids are the fixed uuids in src/data/ids.js, not Postgres's
+ * gen_random_uuid() default — see DECISIONS.md D-042 — so re-running this
+ * updates the same rows instead of inserting duplicates.
+ *
+ * `categories` is the one table this script doesn't upsert into: those 8
+ * rows were seeded once by hand with DB-generated ids, so this script
+ * queries them by name instead to build a name -> id map for
+ * items.category_id / needs.category_id.
+ *
+ * Seed order matters: items are inserted before requests (so requests can
+ * reference item_id), then a final pass sets items.accepted_request_id —
+ * items and requests reference each other, so that one link can't be set
+ * until both rows exist. Conversations similarly wait until requests exist.
  *
  * Usage: node scripts/seed-supabase.mjs
  */
@@ -22,6 +33,7 @@ import { REQUESTS } from "../src/data/requests.js";
 import { CONVERSATIONS } from "../src/data/conversations.js";
 import { MESSAGES } from "../src/data/messages.js";
 import { UPDATES } from "../src/data/updates.js";
+import { DEMO_DONOR_USER, DEMO_ORG_USER, FLAVOUR_DONOR_USERS } from "../src/data/users.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -56,18 +68,10 @@ if (!url || !anonKey) {
 }
 
 const supabase = createClient(url, anonKey);
+const WINDOW_SEP = " | ";
 
-const TABLES = {
-  organisations: ORGANISATIONS,
-  items: ITEMS,
-  needs: NEEDS,
-  requests: REQUESTS,
-  conversations: CONVERSATIONS,
-  messages: MESSAGES,
-  updates: UPDATES,
-};
-
-for (const [table, rows] of Object.entries(TABLES)) {
+async function upsert(table, rows) {
+  if (rows.length === 0) return;
   const { error } = await supabase.from(table).upsert(rows, { onConflict: "id" });
   if (error) {
     console.error(`[${table}] failed:`, error.message);
@@ -76,4 +80,160 @@ for (const [table, rows] of Object.entries(TABLES)) {
   console.log(`[${table}] seeded ${rows.length} rows.`);
 }
 
-console.log("Done.");
+async function loadCategoryIdByName() {
+  const { data, error } = await supabase.from("categories").select("id, name");
+  if (error) {
+    console.error("[categories] failed to read:", error.message);
+    process.exit(1);
+  }
+  if (!data.length) {
+    console.error(
+      "[categories] table is empty — seed the 8 categories in Supabase before running this script.",
+    );
+    process.exit(1);
+  }
+  const byName = new Map();
+  for (const row of data) byName.set(row.name.toLowerCase(), row.id);
+  return (slug) => {
+    const id = byName.get(slug.toLowerCase());
+    if (!id) throw new Error(`No live category named "${slug}" — check spelling against the categories table.`);
+    return id;
+  };
+}
+
+async function main() {
+  const categoryId = await loadCategoryIdByName();
+
+  await upsert(
+    "organisations",
+    ORGANISATIONS.map((org) => ({
+      id: org.id,
+      name: org.name.en,
+      name_vi: org.name.vi,
+      description: org.mission.en,
+      description_vi: org.mission.vi,
+      city: org.areaId,
+      verified: org.verified,
+      is_demo: org.isDemo,
+      past_received_item_ids: org.pastReceivedItemIds,
+    })),
+  );
+
+  await upsert(
+    "users",
+    [DEMO_DONOR_USER, DEMO_ORG_USER, ...FLAVOUR_DONOR_USERS].map((user) => ({
+      id: user.id,
+      name: user.name,
+      role: user.role,
+      org_id: user.organisationId ?? null,
+    })),
+  );
+
+  await upsert(
+    "items",
+    ITEMS.map((item) => ({
+      id: item.id,
+      title: item.title,
+      title_vi: item.titleVi ?? null,
+      category_id: categoryId(item.category),
+      need_tags: item.needTags ?? [],
+      condition: item.condition ?? "",
+      area: item.areaId,
+      description: item.description ?? "",
+      delivery_option: item.deliveryOption,
+      collection_windows: (item.collectionWindows ?? []).join(WINDOW_SEP),
+      notes: item.notes ?? "",
+      image_base64: item.photoPaths?.[0] ?? null,
+      status: item.status,
+      donor_id: item.donorId,
+      created_at: item.createdAt,
+      // accepted_request_id intentionally omitted — set in the follow-up
+      // pass below, once the referenced request row is guaranteed to exist.
+    })),
+  );
+
+  await upsert(
+    "needs",
+    NEEDS.map((need) => ({
+      id: need.id,
+      org_id: need.organisationId,
+      category_id: categoryId(need.category),
+      tag: need.tag,
+      priority: need.priority ? "high" : "medium",
+      status: "open",
+      created_at: need.createdAt,
+    })),
+  );
+
+  await upsert(
+    "requests",
+    REQUESTS.map((request) => ({
+      id: request.id,
+      item_id: request.itemId,
+      org_id: request.organisationId,
+      status: request.status,
+      created_at: request.createdAt,
+    })),
+  );
+
+  const itemsWithAcceptedRequest = ITEMS.filter((item) => item.acceptedRequestId);
+  for (const item of itemsWithAcceptedRequest) {
+    const { error } = await supabase
+      .from("items")
+      .update({ accepted_request_id: item.acceptedRequestId })
+      .eq("id", item.id);
+    if (error) {
+      console.error(`[items] failed to set accepted_request_id for ${item.id}:`, error.message);
+      process.exit(1);
+    }
+  }
+  if (itemsWithAcceptedRequest.length) {
+    console.log(`[items] linked accepted_request_id on ${itemsWithAcceptedRequest.length} row(s).`);
+  }
+
+  await upsert(
+    "conversations",
+    CONVERSATIONS.map((conversation) => {
+      const request = REQUESTS.find((r) => r.id === conversation.requestId);
+      return {
+        id: conversation.id,
+        item_id: request?.itemId ?? null,
+        org_id: conversation.organisationId,
+        donor_id: conversation.donorId,
+        request_id: conversation.requestId ?? null,
+      };
+    }),
+  );
+
+  await upsert(
+    "messages",
+    MESSAGES.map((message) => ({
+      id: message.id,
+      conversation_id: message.conversationId,
+      sender_id: message.senderId === "system" ? null : message.senderId,
+      sender_role: message.senderRole,
+      body: message.text ?? null,
+      system_code: message.systemCode ?? null,
+      params: message.params ?? {},
+      created_at: message.createdAt,
+    })),
+  );
+
+  await upsert(
+    "updates",
+    UPDATES.map((update) => ({
+      id: update.id,
+      user_id: update.userId,
+      type: update.type,
+      params: update.params ?? {},
+      link_item_id: update.linkItemId ?? null,
+      link_request_id: update.linkRequestId ?? null,
+      read: update.read,
+      created_at: update.createdAt,
+    })),
+  );
+
+  console.log("Done.");
+}
+
+main();

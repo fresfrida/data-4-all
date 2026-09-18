@@ -137,8 +137,11 @@ begin
   ])
   loop
     execute format('alter table %I enable row level security', t);
+    -- CREATE POLICY has no IF NOT EXISTS clause in Postgres — drop first so
+    -- re-running this script stays idempotent instead of erroring.
+    execute format('drop policy if exists "public read/write" on %I', t);
     execute format(
-      'create policy if not exists "public read/write" on %I for all to anon, authenticated using (true) with check (true)',
+      'create policy "public read/write" on %I for all to anon, authenticated using (true) with check (true)',
       t
     );
   end loop;

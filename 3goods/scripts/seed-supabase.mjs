@@ -93,16 +93,29 @@ async function loadCategoryIdByName() {
     process.exit(1);
   }
   const byName = new Map();
-  for (const row of data) byName.set(row.name.toLowerCase(), row.id);
+  for (const row of data) byName.set(row.name.trim().toLowerCase(), row.id);
+  console.log(
+    "[categories] live rows:",
+    data.map((row) => `${JSON.stringify(row.name)} -> ${row.id}`).join(", "),
+  );
   return (slug) => {
-    const id = byName.get(slug.toLowerCase());
-    if (!id) throw new Error(`No live category named "${slug}" — check spelling against the categories table.`);
+    const id = byName.get(slug.trim().toLowerCase());
+    if (!id) {
+      throw new Error(
+        `No live category named "${slug}" — available: ${[...byName.keys()].map((n) => JSON.stringify(n)).join(", ")}`,
+      );
+    }
     return id;
   };
 }
 
 async function main() {
   const categoryId = await loadCategoryIdByName();
+  const itemCategoryIds = ITEMS.map((item) => [item.title, item.category, categoryId(item.category)]);
+  console.log(
+    "[items] resolved category ids:",
+    itemCategoryIds.map(([title, slug, id]) => `${title} (${slug}) -> ${id}`).join("\n  "),
+  );
 
   await upsert(
     "organisations",

@@ -13,9 +13,8 @@ after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_AN
 Production env vars on this project (`vercel env ls production` to confirm) — set in session 5.
 
 ## Current task
-**3G-043 and 3G-044 both done; 3G-044's images are pushed to Supabase and committed locally but the
-Vercel deploy that serves `public/demo-items/` hasn't happened yet this round — see "Exact next
-action."**
+**3G-043 and 3G-044 both done, committed, pushed, and live in production. Nothing blocking — see
+"Exact next action."**
 
 ## Completed this session (session 6)
 - **3G-044 — populated real item photos** (see DECISIONS.md D-046 for full detail). The user supplied
@@ -31,14 +30,16 @@ action."**
   demo content (real donor uploads through `DonationForm` still go through base64 via
   `storageService.js`, unchanged). New fixed uuids for `item009`–`item017` added to `ids.js`. One
   photo (`food_to_donate.png`) deliberately skipped as a near-duplicate.
-  - Verified: `npm run build` succeeds, `npm run db:seed` → `[items] seeded 17 rows` against the live
-    Supabase project with no errors, live browser check (headless Chrome + CDP, mobile 390px) that
-    all 15 photos actually render (`complete && naturalWidth>0` on every `<img>`), spot-checked Item
-    Detail for a new item and an existing item that gained a photo. Zero console errors.
-  - **Not yet done**: committed locally but not pushed, and production hasn't been redeployed — the
-    live Supabase data is already updated (anyone hitting the API sees the new items), but
-    `https://3goods.vercel.app` won't have the new files in `public/demo-items/` until redeployed, so
-    the new items' photos would 404 in production right now. See "Exact next action."
+  - Verified locally: `npm run build` succeeds, `npm run db:seed` → `[items] seeded 17 rows` against
+    the live Supabase project with no errors, live browser check (headless Chrome + CDP, mobile
+    390px) that all 15 photos actually render (`complete && naturalWidth>0` on every `<img>`),
+    spot-checked Item Detail for a new item and an existing item that gained a photo. Zero console
+    errors.
+  - Committed (`b04bf36`), pushed to `claude/supabase-connection-status-9rhtx1`, redeployed to
+    `https://3goods.vercel.app` via `vercel deploy --prod --yes`. Re-verified against the live
+    production URL post-deploy: all 15 images return `200` via `curl` and render in a live browser
+    check (15/15 `complete && naturalWidth>0`, zero console errors) — confirms `public/demo-items/`
+    actually shipped, not just the Supabase row data.
 
 ## Completed earlier this session (session 6)
 - **3G-043 — removed independent `role` state, collapsed to 3 identity states** (see DECISIONS.md
@@ -258,10 +259,8 @@ action."**
   for those.
 
 ## Exact next action
-3G-044 (item photos) is committed, pushed to `claude/supabase-connection-status-9rhtx1`, and
-redeployed to `https://3goods.vercel.app` — see "Completed this session" for the live-verification
-evidence, done after the initial write-up above (docs were written slightly ahead of the push/deploy
-step, per this project's own checkpoint procedure of documenting before switching away from a task).
+Everything from this session is committed, pushed to `claude/supabase-connection-status-9rhtx1`, and
+live on `https://3goods.vercel.app` — see "Completed this session" for the verification evidence.
 Nothing is blocking. One thing worth a deliberate decision rather than just picking up: this branch
 still hasn't been merged to `main` — confirm with the user whether/when to open that PR (carried over
 from session 5, still open).

@@ -96,7 +96,7 @@ export function Me() {
           <p className="text-xs text-ink-600 font-medium">
             Donor Account •{" "}
             <Link to={ROUTES.discoverNeeds} className="font-semibold text-accent-600 hover:underline">
-              {t("nav.discoverNeeds")}
+              {t("nav.organisations")}
             </Link>
           </p>
         </div>

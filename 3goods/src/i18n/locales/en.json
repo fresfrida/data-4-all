@@ -26,11 +26,9 @@
     "updates": "Updates",
     "map": "Map",
     "donate": "Donate",
-    "discover": "Discover",
     "chat": "Chat",
     "me": "Me",
     "myOrganisation": "Us",
-    "discoverNeeds": "Discover needs",
     "organisations": "Organisations",
     "itemsDonated": "Items Donated"
   },
@@ -107,6 +105,7 @@
   "emptyStates": {
     "noItems": "No items here yet.",
     "noNeeds": "No needs listed yet.",
+    "noOrganisationsMatch": "No organisations match your search.",
     "noRequests": "No requests yet.",
     "noConversations": "No conversations yet.",
     "noUpdates": "You're all caught up."
@@ -148,6 +147,7 @@
     "discoverNeedsCta": "post a donation",
     "discoverItemsIntro": "Browse items donors have listed and request what your organisation needs.",
     "searchItems": "Search items…",
+    "searchOrganisations": "Search organisations…",
     "allFilter": "All",
     "donationFormIntro": "List an item another organisation can request and collect.",
     "donationFormRoleGate": "This page is for donors — you're logged in as an organisation.",
@@ -159,7 +159,7 @@
     "postFirstDonationHint": "Post your first donation from the + button below.",
     "requestsMadeHeading": "Requests made",
     "itemFallbackLabel": "Item",
-    "verifiedBadge": "✓ Verified (demo)",
+    "verifiedBadge": "✓ Verified",
     "demoOrgBadge": "Demonstration organisation",
     "demoOrgBadgeLong": "Demonstration organisation — fictional, not a real charity.",
     "needsHeading": "Needs",
@@ -210,8 +210,9 @@
     "allVietnam": "All Vietnam",
     "verifiedOrg": "Verified Org",
     "regionalContext": "Regional Risk Context",
-    "priorityHigh": "high",
-    "priorityMedium": "medium",
-    "priorityLow": "low"
+    "priorityHigh": "High",
+    "priorityMedium": "Medium",
+    "priorityLow": "Low",
+    "priorityKeyTitle": "Priority"
   }
 }

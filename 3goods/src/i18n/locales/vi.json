@@ -26,11 +26,9 @@
     "updates": "Cập nhật",
     "map": "Bản đồ",
     "donate": "Quyên góp",
-    "discover": "Khám phá",
     "chat": "Trò chuyện",
     "me": "Tôi",
     "myOrganisation": "Tổ chức",
-    "discoverNeeds": "Xem nhu cầu",
     "organisations": "Các tổ chức",
     "itemsDonated": "Đồ quyên góp"
   },
@@ -107,6 +105,7 @@
   "emptyStates": {
     "noItems": "Chưa có vật phẩm nào.",
     "noNeeds": "Chưa có nhu cầu nào được đăng.",
+    "noOrganisationsMatch": "Không có tổ chức nào khớp với tìm kiếm của bạn.",
     "noRequests": "Chưa có yêu cầu nào.",
     "noConversations": "Chưa có cuộc trò chuyện nào.",
     "noUpdates": "Bạn đã xem hết thông báo."
@@ -148,6 +147,7 @@
     "discoverNeedsCta": "đăng một khoản quyên góp",
     "discoverItemsIntro": "Duyệt các vật phẩm mà người quyên góp đã đăng và yêu cầu những gì tổ chức bạn cần.",
     "searchItems": "Tìm vật phẩm…",
+    "searchOrganisations": "Tìm tổ chức…",
     "allFilter": "Tất cả",
     "donationFormIntro": "Đăng một vật phẩm để tổ chức khác có thể yêu cầu và đến nhận.",
     "donationFormRoleGate": "Trang này dành cho người quyên góp — bạn đang đăng nhập với vai trò tổ chức.",
@@ -159,7 +159,7 @@
     "postFirstDonationHint": "Đăng khoản quyên góp đầu tiên của bạn từ nút + bên dưới.",
     "requestsMadeHeading": "Yêu cầu đã gửi",
     "itemFallbackLabel": "Vật phẩm",
-    "verifiedBadge": "✓ Đã xác minh (demo)",
+    "verifiedBadge": "✓ Đã xác minh",
     "demoOrgBadge": "Tổ chức minh họa",
     "demoOrgBadgeLong": "Tổ chức minh họa — hư cấu, không phải tổ chức từ thiện thật.",
     "needsHeading": "Nhu cầu",
@@ -210,8 +210,9 @@
     "allVietnam": "Toàn Việt Nam",
     "verifiedOrg": "Tổ chức xác minh",
     "regionalContext": "Bối cảnh rủi ro khu vực",
-    "priorityHigh": "cao",
-    "priorityMedium": "vừa",
-    "priorityLow": "thấp"
+    "priorityHigh": "Cao",
+    "priorityMedium": "Trung bình",
+    "priorityLow": "Thấp",
+    "priorityKeyTitle": "Mức ưu tiên"
   }
 }

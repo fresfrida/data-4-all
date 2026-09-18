@@ -1,6 +1,8 @@
 # 3goods Handoff
 
-Last updated: session 6 (same machine as session 5), fifth checkpoint — split the landing page into
+Last updated: session 6, sixth checkpoint — 3G-048 punch-list pass (D-050): footer/nav rename, real
+scored map heatmap + priority key bar, live hero stats with count-up, Organisations search, `/` = hero +
+Organisations board again, stale live rows deleted. Previous checkpoint (same session): fifth checkpoint — split the landing page into
 a hero-only `/` and a `/organisations` needs board, swapped a hero stat tile to Registered Donors,
 and fixed two copy/ordering bugs (donation form, Me.jsx) — 3G-047 / DECISIONS.md D-049. **Also: two
 attempted cleanups of the still-unresolved stale-duplicate-org data were blocked by a tool-level
@@ -17,10 +19,29 @@ after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_AN
 Production env vars on this project (`vercel env ls production` to confirm) — set in session 5.
 
 ## Current task
-**3G-043 through 3G-047 all done and pushed. One loose end: the stale-duplicate-org cleanup is still
-pending user action (blocked by a safety guard, not a code issue) — see "Known issues."**
+**3G-043 through 3G-048 done. No loose ends — the stale-duplicate rows were deleted in 3G-048.**
 
 ## Completed this session (session 6)
+- **3G-048 — punch-list pass** (see DECISIONS.md D-050 for the reasoning behind each choice).
+  - Labels: footer, Updates/Me links and the logged-in organisation nav use `nav.organisations` /
+    `nav.itemsDonated`. (The guest nav already did — top nav/hero CTAs never shared the old keys.) Old
+    `nav.discover`/`nav.discoverNeeds` removed. "Items Donated" wraps to 2 lines in the 5-slot logged-in
+    bottom nav at 375px — acceptable, but easy to revert if unwanted.
+  - `/` = hero + `OrganisationsBoard`; `/organisations` = the same board full-page (reverses D-049's
+    hero-only split per the user). Search filters by org name (EN+VI) and area.
+  - Hero stats: donors = `users.role='donor'`; verified orgs = `verified=true` only; provinces = distinct
+    organisation areas; count-up on scroll into view (respects prefers-reduced-motion).
+  - Map: `public/data/vn_provinces.geojson` is now the scored data from `3goods-map/data/vn_map_data.js`
+    (it was raw GADM with no score fields, so every layer rendered "no data"). Wrapper maps the real
+    fields (`disaster_score`, `poverty_rate`, `coverage_gap_score`, `disaster_types`, `poverty_region`);
+    `features/map/heatColors.js` re-fills provinces with a grey-anchored ramp after each vendor render.
+    Chips keep red/amber/grey, drop the "(high)" text (kept as sr-only), and sit under a High/Medium/Low key bar.
+  - Banner: login state bold, disclaimer regular. "Verified (demo)" → "Verified" (separate demo badge kept).
+  - `item001` rice photo: nothing to fix — live row already has `/demo-items/rice-sack.png` (D-046); it is
+    `reserved`, so it is not in the Discover Items grid, only on its detail page.
+  - Live Supabase: deleted 6 stale `users` + 5 stale `organisations` rows (ids in the old note); no other
+    table referenced them. Live counts now 5 donors / 4 verified orgs / 5 areas.
+  - Verified: i18n:check 180/180, build OK, CDP screenshots at 375/1280 in EN + VI, zero console errors.
 - **3G-047 — landing page split; hero stats swap; two copy/ordering fixes** (see DECISIONS.md D-049
   for full detail).
   - `/` is now `Home.jsx`, hero-only. The old "Discover needs by Organisation" board that used to sit
@@ -281,7 +302,8 @@ pending user action (blocked by a safety guard, not a code issue) — see "Known
   with `curl` (home + two deep-linked routes all 200) and a screenshot matching the local dev server.
 
 ## Known issues / caveats
-- **Stale duplicate organisations/users still live in production, inflating the hero stats.** Root
+- ~~**Stale duplicate organisations/users still live in production, inflating the hero stats.**~~ Resolved
+  in 3G-048 (deleted with user approval). Original note: Root
   cause traced early this session (guest-nav discussion) and confirmed again later (hero-stats
   discussion): 5 organisation rows and 6 user rows from an old, pre-`ids.js`-stabilization seed run
   were never cleaned up, and inflate "Verified Organisations"/"Provinces Covered" to a wrong 10/10 (5

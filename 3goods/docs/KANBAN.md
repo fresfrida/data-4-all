@@ -38,6 +38,24 @@ session; see each Done entry's evidence)
 
 ## Done
 
+- **3G-048** — Punch-list pass: footer/nav rename, real heatmap + priority key bar, live hero stats with
+  count-up, Organisations search, home = hero + Organisations board (see DECISIONS.md D-050)
+  - Deliverable: footer/Updates/Me links and the logged-in organisation nav now use the existing
+    `nav.organisations` / `nav.itemsDonated` keys (dead `nav.discover`/`nav.discoverNeeds` removed).
+    Shared `OrganisationsBoard` (search by org name/area + category chips) rendered on both `/` (under the
+    hero) and `/organisations`. Hero stats: donors (`users.role='donor'`), verified organisations only,
+    distinct organisation areas, each with a scroll-into-view count-up (`useCountUp`). Map: scored
+    province data wired in (was raw GADM with no scores → every province "no data"), wrapper-side grey-anchored
+    ramp (`heatColors.js`), priority chips lose the "(high)" text and gain a High/Medium/Low key bar, invented
+    fallback scores removed. Banner: login state bold, disclaimer regular. "Verified (demo)" → "Verified".
+    Also fixed: mobile footer hidden under the fixed bottom nav; stat labels truncating at 375px; double ✓ on
+    the org card badge. Live data: deleted the 5 stale orgs + 6 stale users (user-approved).
+  - Deps: none. Acceptance: `npm run i18n:check`, `npm run build`, 375px + 1280px checks in EN + VI.
+  - Evidence: `npm run i18n:check` → 180/180 keys in sync. `npm run build` → succeeds. Live browser
+    (headless Chrome + CDP): Home/Organisations/Map/footer at 375px and 1280px in EN and VI; search "hanoi" →
+    1 org, "zzzz" → empty state in VI; hero stats read 5/4/5 and count up from 0; map layers colour with
+    greys at the low end; logged-in org nav + "✓ Verified" + separate demo badge. Zero console errors.
+
 - **3G-047** — Landing page split (hero-only `/` + needs board moved to `/organisations`); hero stats
   swap to Registered Donors; donation-form/Me.jsx copy and ordering fixes (see DECISIONS.md D-049)
   - Deliverable: new `Home.jsx` at `/` (hero only); `DiscoverNeeds.jsx` moved to `/organisations` with
@@ -54,7 +72,7 @@ session; see each Done entry's evidence)
     needs board correctly (intro text, filters, 5 org cards), guest nav's "Organisations" link lands
     there correctly, donation form shows the corrected label/button, `Me.jsx` shows Chat first only
     on rows with an actual conversation. Zero console errors.
-  - **Not fully resolved**: the hero's "Registered Donors"/"Verified Organisations"/"Provinces
+  - **Resolved in 3G-048**: the stale rows were deleted with the user's approval. Original note: the hero's "Registered Donors"/"Verified Organisations"/"Provinces
     Covered" tiles are correctly DB-derived but still show inflated numbers (10/10/10) because the 5
     stale duplicate organisation rows + 6 stale user rows from earlier this session were never
     actually deleted — two attempts to delete them this session were both blocked by a tool-level

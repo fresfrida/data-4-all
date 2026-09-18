@@ -23,13 +23,13 @@ export function AppShell() {
       <div className="shrink-0 z-30">
         <MobileHeader />
         <DesktopTopNav />
-        <div className="border-b border-accent-200 bg-accent-50 px-4 py-1.5 text-center text-[11px] font-medium text-accent-700">
-          {t("demo.banner")} {loginStateText}
+        <div className="border-b border-accent-200 bg-accent-50 px-4 py-1.5 text-center text-[11px] font-normal text-accent-700">
+          {t("demo.banner")} <strong className="font-bold text-accent-800">{loginStateText}</strong>
         </div>
       </div>
 
       {/* Middle Scrollable Content Area */}
-      <main className="flex-1 overflow-y-auto flex flex-col justify-between">
+      <main className="flex-1 overflow-y-auto flex flex-col justify-between pb-16 sm:pb-0">
         <div className="w-full flex-1">
           <Outlet />
         </div>

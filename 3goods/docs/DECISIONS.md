@@ -492,6 +492,53 @@ page; `DonationForm`'s collection-windows section reads "Collection time windows
 "Add"; `Me.jsx` shows Chat first only when applicable (confirmed across `requested` — no chat,
 `arranging_collection` — chat + Undo, rows).
 
+## D-050 — Punch-list pass: shared Organisations board on `/` and `/organisations`; real map scores; live hero stats
+- **Home = hero + Organisations board again (reverses D-049's split).** Per the user, `/` shows the hero
+  *and* the Organisations board; `/organisations` still shows it full-page. Implemented once as
+  `components/needs/OrganisationsBoard.jsx` (h2 on `/` because the hero owns the h1); `DiscoverNeeds.jsx` is a
+  thin wrapper. No pagination yet (user: "if required in the future").
+- **Labels**: the guest nav already used `nav.organisations`/`nav.itemsDonated`; only the footer, two
+  Updates/Me links and the logged-in organisation nav still used the old `nav.discover*` keys. Chose a global
+  rename to the two existing keys and deleted the dead ones. Side effect: "Items Donated" wraps to two lines in
+  the 5-slot organisation bottom nav at 375px (D-048 had avoided this by leaving that nav alone).
+- **Hero stats**: donors = `users.role = 'donor'` (already fetched-cheap, one table read; distinct
+  `items.donor_id` would miss donors who haven't listed anything); verified organisations = `verified = true`;
+  provinces = distinct `areaId` across organisations (all orgs, not just verified — "where we operate").
+  `AREAS` has 8 entries including "Mekong Delta" (a region), so its length is not "provinces". "All use ++" was
+  read as "count-up animation for all three" (`useCountUp`, IntersectionObserver, reduced-motion safe).
+- **Stale live rows deleted** (user-approved, exact ids from HANDOFF): 6 `users`, then 5 `organisations`. Checked
+  first that no other table referenced them (only one stale user → one stale org). Not reversible; the seed
+  script would re-create canonical rows only.
+- **The heatmap was never coloured**: `public/data/vn_provinces.geojson` was raw GADM boundaries (63 features,
+  zero score fields), so every province hit the vendor "no data" fill (blue-tinted `#94a3b8`) and
+  `properties.province` never matched anything (panel fell back to "Vietnam" with made-up 8.2 / 16.8% / 65%
+  numbers). Replaced it with the scored FeatureCollection from `3goods-map/data/vn_map_data.js` (data copy, the
+  root-site-first rule for vendor *code* is untouched) and mapped the real field names in the wrapper
+  (`poverty_pct`→`poverty_rate`, `coverage_gap`→`coverage_gap_score`, single `disaster_type`→`disaster_types`
+  split on "; ", item-needs key "Typhoon"→"Storm", default province "Ha Tinh"→"HàTĩnh"). Province names in the
+  data have no spaces ("HàTĩnh"); `formatProvince` re-inserts them for display. Invented fallback numbers removed
+  (CLAUDE.md: never invent a score) — a missing value shows "—". Per-province recommended categories merge all of
+  a province's disaster types, keeping the highest priority per category. Nearby-organisation matching used to
+  compare org *names* with the province and never matched; replaced with an explicit area-id → province table.
+- **Greyscale**: vendor `scoreRamp` starts at a warm stone grey and paints no-data blue-slate. Rather than edit
+  vendor code, `features/map/heatColors.js` re-fills the `.province` paths after each vendor render using the same
+  gold/terracotta/maroon stops but anchored at neutral grey (136,136,136) with neutral grey (160,160,160) for no
+  data. Re-applied after every `setField`/`setShowFacilities` (both re-render the SVG).
+- **Priority chips**: "(high)" text stripped; red/amber/grey now map to high/medium/low (low was amber before).
+  Priority stays available to screen readers via an `sr-only` span + `title`. A High/Medium/Low key bar sits above
+  the chips. `map.priority*` locale strings are now capitalised because the key bar reuses them.
+- **Banner**: "Please log in." / "Logged in as X." is `<strong>`, the disclaimer is `font-normal`.
+- **"Verified (demo)" → "Verified"** (`screens.verifiedBadge`, both locales). The standalone demo badge on every
+  card/profile was already separate and stays. `OrganisationCard` also prepended its own "✓", giving a double tick;
+  removed the prefix there.
+- **"What is OSM Pins?"**: the "Show OSM Pins" toggle shows OpenStreetMap community facility points (hospitals,
+  shelters, etc.) — context from the map data set, never registered 3goods organisations (CLAUDE.md map data
+  separation rule, task 3G-023). Copy left unchanged pending the user's decision.
+- **rice photo (item001)**: no change — live row already has `/demo-items/rice-sack.png` (D-046 keeps bundled seed
+  photos as static paths, not base64); it's `reserved`, so it's absent from the Discover Items grid by design.
+- Small fixes found while verifying: the fixed mobile bottom nav covered the footer (added `pb-16 sm:pb-0` to
+  `<main>`); hero stat labels truncated at 375px (allowed to wrap).
+
 ---
 
 ## Deferred questions (not blocking Phase 1)

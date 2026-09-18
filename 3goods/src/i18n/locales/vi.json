@@ -63,6 +63,8 @@
   "fields": {
     "title": "Tên vật phẩm",
     "titlePlaceholder": "ví dụ: 1 bao gạo 10kg",
+    "titleVi": "Tên tiếng Việt (không bắt buộc)",
+    "titleViPlaceholder": "ví dụ: 10kg gạo sạch",
     "category": "Danh mục",
     "selectCategory": "Chọn một danh mục",
     "condition": "Tình trạng",

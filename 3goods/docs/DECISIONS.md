@@ -133,7 +133,20 @@ Rather than pick one side and redo the other, both were reconciled:
   hasn't been run or verified from this environment (this cloud sandbox's network egress doesn't
   allow reaching `*.supabase.co` — see HANDOFF.md); no live-browser verification pass yet.
 
-## D-009 — "One accepted organisation per listing" lives in `requestsService`
+## D-043 — Real donors can optionally add a Vietnamese title; no auto-translation
+Follow-up to D-042: user raised that `items.title_vi` only ever gets populated for hand-authored
+seed data — a real donor posting through `DonationForm` had no way to provide one, so every live
+item would show only its English title to Vietnamese-language viewers too. Considered three options:
+a shared generic `translations` table (rejected — adds a join/extra query for 2 fields on 2 tables,
+pure overhead at this scale, doesn't address the actual gap anyway), real machine translation via an
+API (rejected — network latency + cost + an API dependency, and reverses the existing "never
+auto-translate user content" rule from D-016/D-017), or a plain optional second input (chosen).
+`DonationForm` now has an optional "Vietnamese title" field next to the required English one —
+blank is fine, falls back to the English title exactly like seed data already does via
+`item.titleVi ?? item.title`. Deliberately scoped to *title only* (not description/notes/condition):
+title is the one field shown in item cards, search results, and chat headers, so it carries the most
+value per bit of added form friction; other fields stay English-only user content, consistent with
+the app's existing "shown exactly as typed" policy for everything else a donor writes. — "One accepted organisation per listing" lives in `requestsService`
 `requestsService.acceptRequest(requestId)` is the single place that enforces this: it checks the
 item has no existing accepted request, sets the item to reserved, marks the given request accepted,
 and leaves other pending requests on that item as-is in storage but displays them as "no longer

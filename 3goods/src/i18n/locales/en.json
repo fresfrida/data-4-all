@@ -63,6 +63,8 @@
   "fields": {
     "title": "Item title",
     "titlePlaceholder": "e.g. 10kg bag of rice",
+    "titleVi": "Vietnamese title (optional)",
+    "titleViPlaceholder": "e.g. 10kg gạo sạch",
     "category": "Category",
     "selectCategory": "Select a category",
     "condition": "Condition",

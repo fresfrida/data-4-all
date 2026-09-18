@@ -26,6 +26,7 @@ export function DonationForm() {
   const navigate = useNavigate();
 
   const [title, setTitle] = useState("");
+  const [titleVi, setTitleVi] = useState("");
   const [category, setCategory] = useState("");
   const [tags, setTags] = useState([]);
   const [condition, setCondition] = useState("");
@@ -88,6 +89,7 @@ export function DonationForm() {
         donorId: identity.id,
         donorName: identity.name,
         title,
+        titleVi,
         category,
         needTags: tags,
         condition,
@@ -139,6 +141,16 @@ export function DonationForm() {
           onChange={(e) => setTitle(e.target.value)}
           className="rounded-lg border border-ink-600/20 px-3 py-2 text-sm"
           placeholder={t("fields.titlePlaceholder")}
+        />
+      </label>
+
+      <label className="flex flex-col gap-1.5">
+        <span className="text-xs font-semibold text-ink-700">{t("fields.titleVi")}</span>
+        <input
+          value={titleVi}
+          onChange={(e) => setTitleVi(e.target.value)}
+          className="rounded-lg border border-ink-600/20 px-3 py-2 text-sm"
+          placeholder={t("fields.titleViPlaceholder")}
         />
       </label>
 

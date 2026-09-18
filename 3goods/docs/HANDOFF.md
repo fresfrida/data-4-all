@@ -1,9 +1,10 @@
 # 3goods Handoff
 
-Last updated: session 6 (same machine as session 5) — removed the independent `role` switcher state
-per explicit user request (3G-043 / DECISIONS.md D-045, supersedes D-004), committed, pushed, and
-redeployed to production. See "Completed this session" below. Prior entry: session 5, first live
-`npm run db:seed` + full live-browser verification pass against the real Supabase project.
+Last updated: session 6 (same machine as session 5), second checkpoint — populated real item photos
+from user-supplied stock images (3G-044 / DECISIONS.md D-046), after earlier in the same session
+removing the independent `role` switcher state (3G-043 / D-045). See "Completed this session" below.
+Prior entry: session 5, first live `npm run db:seed` + full live-browser verification pass against
+the real Supabase project.
 
 **Live URL: https://3goods.vercel.app** (separate Vercel project from the map site at
 `002-data-4-life.vercel.app`, account `frescyliafrida-9461`, project id
@@ -12,10 +13,34 @@ after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_AN
 Production env vars on this project (`vercel env ls production` to confirm) — set in session 5.
 
 ## Current task
-**3G-043 (role-state simplification) done and deployed — see "Completed this session" below. Nothing
-blocking; see "Priority list" for what's next.**
+**3G-043 and 3G-044 both done; 3G-044's images are pushed to Supabase and committed locally but the
+Vercel deploy that serves `public/demo-items/` hasn't happened yet this round — see "Exact next
+action."**
 
 ## Completed this session (session 6)
+- **3G-044 — populated real item photos** (see DECISIONS.md D-046 for full detail). The user supplied
+  16 stock photos in `assets/items/` (a folder next to, not inside, `3goods/` — outside this repo,
+  never committed). Attached a photo to 6 existing seed items that had none (10kg bag of rice, Box of
+  canned food, Bundle of children's story books, Bag of clean adult clothes, Baby clothes bundle,
+  Hygiene kit supplies) and created 9 brand-new items around the remaining photos (pantry staples,
+  chapter books, winter clothes, boxed clothes & shoes, lightly used clothes & shoes, two hygiene
+  items, two Miscellaneous bag/luggage items — categorized Miscellaneous per the user's correction
+  mid-session, not Household Items as first guessed). Images copied into `public/demo-items/`
+  (15 files) and referenced by static path, matching the pattern `item008`'s original photo already
+  used — not base64-in-DB, to avoid bloating the `items` table with ~1MB+ of text per row for bundled
+  demo content (real donor uploads through `DonationForm` still go through base64 via
+  `storageService.js`, unchanged). New fixed uuids for `item009`–`item017` added to `ids.js`. One
+  photo (`food_to_donate.png`) deliberately skipped as a near-duplicate.
+  - Verified: `npm run build` succeeds, `npm run db:seed` → `[items] seeded 17 rows` against the live
+    Supabase project with no errors, live browser check (headless Chrome + CDP, mobile 390px) that
+    all 15 photos actually render (`complete && naturalWidth>0` on every `<img>`), spot-checked Item
+    Detail for a new item and an existing item that gained a photo. Zero console errors.
+  - **Not yet done**: committed locally but not pushed, and production hasn't been redeployed — the
+    live Supabase data is already updated (anyone hitting the API sees the new items), but
+    `https://3goods.vercel.app` won't have the new files in `public/demo-items/` until redeployed, so
+    the new items' photos would 404 in production right now. See "Exact next action."
+
+## Completed earlier this session (session 6)
 - **3G-043 — removed independent `role` state, collapsed to 3 identity states** (see DECISIONS.md
   D-045 for full detail; supersedes D-004). Summary:
   - `SessionContext.jsx`: `role` is now `identity?.role ?? null`, never stored; `setRole` deleted;
@@ -233,13 +258,15 @@ blocking; see "Priority list" for what's next.**
   for those.
 
 ## Exact next action
-Everything pending at the start of session 6 is done: the 3G-043 role-state simplification is
-committed and pushed to `claude/supabase-connection-status-9rhtx1`, live-verified, and redeployed to
-`https://3goods.vercel.app`. Nothing is blocking — pick up the priority list below. One thing worth a
-deliberate decision rather than just picking up: this branch still hasn't been merged to `main` —
-confirm with the user whether/when to open that PR (carried over from session 5, still open).
+3G-044 (item photos) is committed, pushed to `claude/supabase-connection-status-9rhtx1`, and
+redeployed to `https://3goods.vercel.app` — see "Completed this session" for the live-verification
+evidence, done after the initial write-up above (docs were written slightly ahead of the push/deploy
+step, per this project's own checkpoint procedure of documenting before switching away from a task).
+Nothing is blocking. One thing worth a deliberate decision rather than just picking up: this branch
+still hasn't been merged to `main` — confirm with the user whether/when to open that PR (carried over
+from session 5, still open).
 
-### Priority list (unblocked — 3G-042 and 3G-043 are both verified live end to end, including production)
+### Priority list (unblocked — 3G-042, 3G-043, and 3G-044 are all verified live end to end, including production)
 1. Phase 2 map integration (3G-020 onward) — the next big feature area, per the original priority
    order (map was always meant to come after the core journey).
 2. Phase 3 polish items: 3G-035 (FilterSheet), 3G-036 (the two remaining desktop screenshots above),

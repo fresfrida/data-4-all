@@ -38,6 +38,25 @@ session; see each Done entry's evidence)
 
 ## Done
 
+- **3G-044** — Populated real item photos from user-supplied stock images (`assets/items/` outside the
+  repo, not committed — see DECISIONS.md D-046)
+  - Deliverable: attached a matching photo to 6 existing seed items that had none (`item001`–`item003`,
+    `item005`–`item007`) and added 9 brand-new items (`item009`–`item017`) built around the remaining
+    photos, each with a real title/description/category/condition/area/donor. Images copied into
+    `public/demo-items/` (15 new files) and referenced by static path — same pattern `item008`'s
+    existing photo already used, not base64-in-DB (see D-046 for why). New fixed uuids added to
+    `ids.js` for `item009`–`item017`. One image (`food_to_donate.png`) deliberately skipped as a
+    near-duplicate of two other food photos already used. Backpacks categorized as Miscellaneous per
+    user correction (no category/tag fit them well otherwise).
+  - Deps: none. Acceptance: `npm run build` succeeds, `npm run db:seed` completes without error, live
+    browser check that every new/updated item's photo actually renders.
+  - Evidence: `npm run build` → succeeds. `npm run db:seed` → `[items] seeded 17 rows` against the
+    live Supabase project, no FK/category errors. Live browser (headless Chrome + CDP, mobile 390px):
+    Discover Items shows 15 photos, all 15 report `complete && naturalWidth>0` (no broken images);
+    spot-checked Item Detail for a new item (Assorted pantry staples — both need-tags rendered) and
+    an existing item that got a new photo (10kg bag of rice, still correctly `Reserved`). Zero console
+    errors.
+
 - **3G-043** — Removed independent `role` state; collapsed to exactly 3 identity states (logged out /
   Donor / Organisation) — see DECISIONS.md D-045 (supersedes D-004)
   - Deliverable: `role` is now derived from `identity?.role` in `SessionContext.jsx`, never stored

@@ -312,6 +312,27 @@ Organisation both load real seeded data), a guest viewing Item Detail sees no Re
 crash), a logged-in organisation viewing the same item does see it. Zero console errors throughout
 (previously-seen React Router v7 future-flag warnings are pre-existing and unrelated).
 
+## D-046 — Seed item photos: static `public/demo-items/` paths, not base64-in-DB
+User supplied 16 stock photos (`assets/items/` — a folder outside `3goods/`, not committed, not part
+of this repo) to populate real item photos: 6 attached to existing seed items that had none, 9 became
+brand-new items (3G-044). These are large PNGs (up to ~830KB each); base64-encoding all 15 into the
+`items.image_base64` column (as D-042 does for a real donor's live-uploaded photo via
+`storageService.js`) would mean ~1MB+ of text per row and a materially heavier `items` table for
+purely bundled demo content. Used the same pattern `item008`'s original photo already established
+instead: copy the file into `public/demo-items/`, reference it by its static `/demo-items/<name>.png`
+path in `photoPaths[0]`. `seed-supabase.mjs` passes `photoPaths[0]` straight through as
+`image_base64` either way — the column doesn't care whether the string is a data URI or a path, and
+`<img src={photo}>` in `ItemDetail`/`ItemCard` renders both identically, so no code changed. **This
+split is deliberate and should stay**: bundled/seed demo photos → static public path; a real donor's
+own upload through `DonationForm` → base64 via `storageService.js` (unchanged, still the only way to
+get a new photo into the live app without editing `public/` and re-seeding).
+One image (`food_to_donate.png`) was deliberately not used — near-duplicate of two other food photos
+already assigned, and its bread/apples/garlic don't fit any category well. Category assignment for
+the two backpack/luggage images was corrected mid-session from a first guess of "Household Items" to
+**Miscellaneous** per explicit user feedback — no existing need-tag fits general bags/luggage, and
+`needTags` is not a required field, so both items ship with an empty tag list rather than a forced
+mismatch.
+
 ---
 
 ## Deferred questions (not blocking Phase 1)

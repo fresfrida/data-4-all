@@ -36,6 +36,15 @@ export const ITEM_IDS = {
   item006: "d4a97222-f490-4d1e-b97b-3cb02da719e2",
   item007: "5e33288b-ee6d-4c4f-a3c2-bbaffd670243",
   item008: "9ee544d3-3b84-4b16-a788-3dc195ad862a",
+  item009: "ed2971f7-61b7-4faa-8398-569e19ae2402",
+  item010: "7653edf6-ccaf-4f8f-92bf-206dd9b8b1d4",
+  item011: "a09e7f74-41bf-4fd9-84a5-0794d911cea6",
+  item012: "a9185314-4253-4145-9f03-624c2c589486",
+  item013: "3db55f46-960a-43c8-b33a-6622881baef3",
+  item014: "914dcec3-1cf8-4352-8e15-319d91fb1d5f",
+  item015: "d264aeb4-4b70-41ef-89b5-35c5b6d1a8ad",
+  item016: "2bd92481-4ee2-434c-883a-f675045ea84a",
+  item017: "2e1e4fe8-6ec9-4540-bc49-46e340b6d1ed",
 };
 
 export const NEED_IDS = {

@@ -361,6 +361,15 @@ categories. These are different questions with different answers:
     under") that excludes whatever the primary category currently is.
   - Applied to the two children's-books items (`item003`, `item010`): `category: "Books"` +
     `secondaryCategory: "Children Items"`.
+  - **Follow-up, same session**: user asked to review the full 17-item catalog for other genuine
+    cases. Added 2 more — `item006` "Baby clothes bundle (0-12 months)" (`Clothes` +
+    `secondaryCategory: "Children Items"` — baby-specific clothing, same logic as the books) and
+    `item009` "Assorted pantry staples" (`Non-Perishable Food` + `secondaryCategory: "Rice"` — its own
+    description names rice as a contents item). Deliberately left the rest single-category: a few had
+    only incidental mentions of a second category (e.g. "Lightly used clothes & shoes" mentions a
+    couple of kids' sneakers inside an otherwise general adult-clothes bin; "Assorted backpacks" are
+    generic hiking bags, not specifically school bags) — general rule applied: a second category is
+    for items that are *predominantly* about that category, not items that merely touch on it.
 - **Found and fixed along the way**: while reviewing the needs board, discovered Hanoi Community
   Pantry had **zero** live `needs` rows even though `src/data/needs.js` defines two for it
   (`need003`/`need004`) — root cause unclear (predates this session, not caused by anything done

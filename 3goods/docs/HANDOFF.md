@@ -7,13 +7,17 @@ been blocked in session 4's cloud sandbox. See "Completed this session" below. P
 DECISIONS.md D-042).
 
 **Live URL: https://3goods.vercel.app** (separate Vercel project from the map site at
-`002-data-4-life.vercel.app`, account `frescyliafrida-9461`). Redeploy with `vercel deploy --prod
---yes` from inside `3goods/` after any change you want reflected there. Not redeployed this session —
-this session's changes are dev-server-verified only; see "Exact next action."
+`002-data-4-life.vercel.app`, account `frescyliafrida-9461`, project id
+`prj_nhnDkGhaFGNGYOX7wqY0x0ymKGpT`). Redeploy with `vercel deploy --prod --yes` from inside `3goods/`
+after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY` are set as
+Production env vars on this project (`vercel env ls production` to confirm) — added this session,
+were missing before (a stale HANDOFF note said the whole project was gone; it wasn't, it had been
+recreated in a session between 4 and 5 without an env vars or a HANDOFF update, and the last deploy
+on it had been running with no Supabase connection at all until this session's redeploy).
 
 ## Current task
-**3G-042 fully verified live this session (see below). Next: commit the pending diff, clean up test
-data, redeploy — see "Exact next action."**
+**3G-042 fully verified live and now deployed to production — see "Completed this session" below.
+Nothing blocking; see "Prior priority list" for what's next.**
 
 ## Completed this session (session 5)
 - **`npm run db:seed` run and verified against the live Supabase project** for the first time —
@@ -42,6 +46,23 @@ data, redeploy — see "Exact next action."**
   itself predates this session — found uncommitted at session start — this session added the write-up
   and the live verification evidence).
 - KANBAN.md 3G-042 updated from "code-level done" to fully verified.
+- **Killed the stale duplicate dev server** on port 5173 (`002-data-4-life/3goods`, no `-ag` — a
+  different, older checkout on this machine; see D-044-adjacent note removed below, now resolved).
+- **Deleted the 6 test-data item rows** found live (5 "Smoke Test Donation Item" + 1 "Live QA test
+  donation (delete me)" this session's own testing added — 7 total including a duplicate found at
+  cleanup time) plus their dependent `requests`/`conversations`/`messages` rows, in FK-safe order
+  (cleared one item's self-referencing `accepted_request_id` first, then messages → conversation →
+  requests → items). Verified 0 rows remain matching those titles.
+- **Committed and pushed** the D-044 fix + RoleSwitcher + messages.js fix + this session's docs
+  updates to `claude/supabase-connection-status-9rhtx1` (commit `442084d`).
+- **Found and fixed a real deployment gap**: the live `3goods` Vercel project (recreated at some point
+  between session 4 and 5, evidently without a HANDOFF update) had **no env vars set at all** —
+  `vercel env ls production` came back empty, meaning its most recent deploy (9h before this session)
+  was running with no Supabase connection. Set `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` as
+  Production env vars, then `vercel deploy --prod --yes` from inside `3goods/`. Verified live:
+  `curl` 200 on `/` and the `/discover` deep link, and a live browser check of
+  `https://3goods.vercel.app/discover` rendering exactly the 7 real seeded items (post-cleanup) with
+  no console errors.
 
 ## Completed prior session (session 4)
 - **3G-042 — reconciled the codebase against the real live Supabase schema.** The user had already
@@ -126,26 +147,15 @@ data, redeploy — see "Exact next action."**
   with `curl` (home + two deep-linked routes all 200) and a screenshot matching the local dev server.
 
 ## Known issues / caveats
-- **A second, stale checkout exists on this machine at
-  `/Users/ff/Desktop/ProjectsAI/ProjectsHackathons/002-data-4-life/3goods` (no `-ag` suffix) with its
-  own `npm run dev` left running since Thursday, bound to port 5173.** It's a different, older git
-  state (missing the automatic-JSX-runtime dev transform working correctly — hitting it threw
-  `ReferenceError: React is not defined` and rendered blank) and is *not* the repo this session (or
-  any prior 3goods session) has been working in — this checkout (`002-data-4-life-ag`) runs on
-  **port 5174**. Found by this session when an early smoke-test screenshot came back blank/erroring;
-  cost real time to diagnose (`lsof -iTCP:5173`/`:5174` is the fast way to tell them apart). Worth
-  killing that stray process (`lsof -ti:5173 | xargs kill`) or deleting that checkout entirely if it's
-  not intentionally kept around — check with the user first, it wasn't investigated further this
-  session beyond confirming it's a different directory.
-- **Live Supabase `items` table has test-data pollution**: 5 pre-existing rows titled "Smoke Test
-  Donation Item" (category Rice, all reusing the same bundled clothes photo — clearly leftover from
-  earlier manual UI testing, not from `db:seed`) plus 1 new row this session's live-test added,
-  titled "Live QA test donation (delete me)". None of this came from `src/data/items.js` / the seed
-  script (which only ever upserts its own 8 fixed-uuid rows) — it's accumulated through the actual
-  donation form UI. Harmless (valid rows, doesn't break anything) but visible in a live demo. Delete
-  via the Supabase dashboard's table editor (project ref `hizvkpspyglvpgictqif`) — filter `items` by
-  `title` containing "Smoke Test" or "delete me" before deleting, not by `donor_id`, since real seed
-  items share the same demo donor.
+- ~~Stale duplicate checkout at `002-data-4-life/3goods` (no `-ag`) running on port 5173~~ — resolved
+  this session: that process (PID 90252, running since the prior Thursday) was killed. If it comes
+  back, it's a different, older git checkout on this machine, not this repo — this checkout
+  (`002-data-4-life-ag`) is the one to develop against, and its dev server should come up on 5173
+  again now that the port is free (it was previously forced to 5174).
+- ~~Live Supabase test-data pollution~~ — resolved this session: deleted the 6 "Smoke Test Donation
+  Item" rows and 1 "Live QA test donation (delete me)" row (7 total — see "Completed this session")
+  plus their dependent requests/conversations/messages. The live `items` table now holds only the 8
+  real seed rows (7 available + `10kg bag of rice`, reserved).
 - No git repository exists anywhere in `002-data-4-life/` — this Kanban is the only change record.
   (Note: `002-data-4-life-ag`, this checkout's parent folder, *is* a git repo — that's a different,
   newer setup from the plain `002-data-4-life` folder referenced by the point above and elsewhere in
@@ -156,9 +166,11 @@ data, redeploy — see "Exact next action."**
   imported, from `requestsService.updateRequestStatus`'s lazy import) is harmless and unrelated to
   this session's work — not touched, would be a one-line refactor (make the import static) if it's
   ever worth silencing.
-- `npm run dev` (localhost:5173) was left running in the background; the headless Chrome verification
-  instance (port 9444) was stopped at the end of this session. A fresh session should feel free to
-  restart either — nothing depends on keeping them alive across sessions.
+- This checkout's `npm run dev` (PID 19631, was on port 5174 while 5173 was occupied by the stale
+  checkout above — now that that's killed, a restart would claim 5173) was left running in the
+  background; the headless Chrome verification instances were stopped at the end of the session. A
+  fresh session should feel free to restart either — nothing depends on keeping them alive across
+  sessions.
 - Desktop-width verification this session covered Discover Items, Item Detail, My Organisation, Chat
   Detail, and Updates (via the i18n verification pass) in addition to what Phase 1 already checked;
   ChatList and NeedsManagement have only been checked at mobile width across both sessions combined —
@@ -188,22 +200,16 @@ data, redeploy — see "Exact next action."**
   a real thrown error in the browser — `ErrorState`/`useAsync` wiring was verified by code path only
   for those.
 
-## Exact next action (3G-042 is now fully live-verified — see "Completed this session (session 5)")
-1. **Commit the pending diff** (was uncommitted at this session's start, now live-verified): the
-   `requireLogin`/`loggedInIdentity` race-condition fix (D-044) across `SessionContext.jsx`,
-   `DonationForm.jsx`, `ItemDetail.jsx`, `NeedsManagement.jsx`, `ChatDetail.jsx`'s `senderId` fix, the
-   new `RoleSwitcher` nav control in `DesktopTopNav.jsx`/`MobileHeader.jsx`, and the `messages.js`
-   sender-id correction. Not committed by this session — commits are user-requested only.
-2. **Clean up live test data** — delete the "Smoke Test Donation Item" ×5 and "Live QA test donation
-   (delete me)" rows from the live `items` table (see "Known issues" above for how).
-3. **Resolve the stray duplicate checkout** on port 5173 (see "Known issues" above) — confirm with
-   the user whether to kill it, delete the checkout, or leave it; it's not part of this repo's history.
-4. Redeploy to Vercel once the above is done — the `3goods` project referenced earlier in this file no
-   longer exists under the connected account (`list_projects` returned empty in session 4), so it
-   needs to be recreated from wherever the deploy actually happens, and its env vars
-   (`VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY`) set fresh.
+## Exact next action
+Everything that was pending at the start of session 5 is now done: the D-044 diff is committed
+(`442084d`) and pushed to `claude/supabase-connection-status-9rhtx1`, live test data is cleaned up,
+the stray duplicate dev server is killed, and production (`https://3goods.vercel.app`) is redeployed
+with `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY` set and live-verified. Nothing is blocking — pick up
+the priority list below. One thing worth a deliberate decision rather than just picking up: this
+branch (`claude/supabase-connection-status-9rhtx1`) hasn't been merged to `main` — confirm with the
+user whether/when to open that PR.
 
-### Prior priority list (now unblocked — 3G-042 is verified live)
+### Priority list (unblocked — 3G-042 is verified live end to end, including production)
 1. Phase 2 map integration (3G-020 onward) — the next big feature area, per the original priority
    order (map was always meant to come after the core journey).
 2. Phase 3 polish items: 3G-035 (FilterSheet), 3G-036 (the two remaining desktop screenshots above),
@@ -219,14 +225,11 @@ npm run i18n:check   # quick sanity check that locale files are still in sync
 ```
 
 ## Decisions genuinely needing the user
-- ~~Confirm the D-042 additive SQL has actually been run against the live Supabase project~~ —
-  resolved this session: `npm run db:seed` completing with no FK violations confirms it was run.
-- OK to commit the pending diff (D-044 fix + RoleSwitcher + messages.js fix)? Not committed
-  automatically — see "Exact next action" #1.
-- OK to delete the stray test-data rows from the live `items` table, and/or kill or delete the stray
-  duplicate checkout on port 5173? See "Known issues" and "Exact next action" #2–3 — left alone this
-  session pending confirmation, since both touch state outside this repo (a live database and a
-  second checkout on disk).
+- All of session 5's pending confirmations (D-042 additive SQL, committing the diff, deleting
+  test-data rows, the stray duplicate checkout) were resolved this session per explicit user
+  instruction — see "Completed this session" and "Exact next action" above.
+- Whether/when to merge `claude/supabase-connection-status-9rhtx1` into `main` — not done this
+  session, no PR opened.
 - If continuing into Phase 2, worth a quick confirmation on D-012 (3goods' category taxonomy vs. the
   root map site's) before wiring the map API client, since that's the point where the two
   taxonomies would first sit side by side in one screen.

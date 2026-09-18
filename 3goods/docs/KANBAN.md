@@ -65,11 +65,16 @@ session; see each Done entry's evidence)
     `requireLogin`/`loggedInIdentity` race-condition fix (see D-044) with zero crashes and a clean
     console (only pre-existing React Router v7 future-flag warnings, unrelated). 3G-042 is now fully
     verified, not just built.
-  - **Found, not yet cleaned up**: the live `items` table has 5 pre-existing "Smoke Test Donation
-    Item" rows plus 1 new one added by this session's DonationForm live-test (title "Live QA test
-    donation (delete me)") — leftover from earlier manual UI testing against this same project, not
-    from `db:seed`. Harmless (real schema, doesn't break anything) but worth deleting before a demo.
-    See HANDOFF.md.
+  - **Test-data cleanup**: found 6 pre-existing "Smoke Test Donation Item" rows plus 1 new one added
+    by this session's own DonationForm live-test (title "Live QA test donation (delete me)") —
+    leftover from earlier manual UI testing against this same project, not from `db:seed`. Deleted
+    all 7 plus their dependent requests/conversations/messages (FK-safe order), per explicit user
+    instruction. Live `items` table now holds only the 8 real seed rows.
+  - **Deployed**: committed + pushed (`442084d`), then `vercel deploy --prod --yes` to the existing
+    `3goods` Vercel project after discovering and setting its (previously missing)
+    `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY` env vars — see HANDOFF.md. Verified live at
+    https://3goods.vercel.app/discover rendering the real (now-clean) seed data with no console
+    errors.
 
 - **3G-041** — Sitewide Footer component + i18n key growth (undocumented work found on session
   resume, reconciled after the fact — see HANDOFF.md)

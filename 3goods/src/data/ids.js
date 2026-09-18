@@ -25,6 +25,10 @@ export const USER_IDS = {
   donor003: "9b27c92a-867c-47ed-a29c-95959c98a635",
   donor004: "90959bb8-0e65-4e68-a065-b25da2b81e2f",
   donor005: "bb261e64-f863-4117-811a-457442ffb79a",
+  orgFoodShare: "9534c5df-19b0-4815-9578-0c12ba849e71",
+  orgBooksChildren: "2a952f0e-981c-43e1-909a-7dcec7c49d44",
+  orgWarmHomes: "8319b0fb-c339-49da-b022-e340c7ea7fdf",
+  orgCareBridge: "a689ec08-005e-4035-ad32-27da28eeefb1",
 };
 
 export const ITEM_IDS = {

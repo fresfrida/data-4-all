@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { safeGetItem, safeSetItem, safeRemoveItem } from "../lib/localStorage.js";
-import { DEMO_DONOR_USER, DEMO_ORG_USER } from "../data/users.js";
 
 /**
  * There are exactly three identity states: logged out (guest), logged in as
@@ -13,7 +12,6 @@ import { DEMO_DONOR_USER, DEMO_ORG_USER } from "../data/users.js";
  */
 
 const STORAGE_KEY = "3goods.session";
-const DEMO_IDENTITY_BY_ROLE = { donor: DEMO_DONOR_USER, organisation: DEMO_ORG_USER };
 
 const SessionContext = createContext(null);
 
@@ -41,8 +39,9 @@ export function SessionProvider({ children }) {
     safeSetItem(STORAGE_KEY, JSON.stringify(session));
   }, [session]);
 
-  const loginAs = (role) => {
-    setSession({ isLoggedIn: true, identity: DEMO_IDENTITY_BY_ROLE[role] });
+  /** @param {import('../data/types.js').User} identity a seeded donor/organisation account, from usersService.getLoginIdentities() */
+  const loginAs = (identity) => {
+    setSession({ isLoggedIn: true, identity });
   };
 
   const logout = () => {
@@ -71,9 +70,9 @@ export function SessionProvider({ children }) {
     setLoginPrompt({ open: true, pendingAction: action });
   };
 
-  const resolveLoginPrompt = (role) => {
-    loginAs(role);
-    loginPrompt.pendingAction?.(DEMO_IDENTITY_BY_ROLE[role]);
+  const resolveLoginPrompt = (identity) => {
+    loginAs(identity);
+    loginPrompt.pendingAction?.(identity);
     setLoginPrompt({ open: false });
   };
 

@@ -539,6 +539,25 @@ page; `DonationForm`'s collection-windows section reads "Collection time windows
 - Small fixes found while verifying: the fixed mobile bottom nav covered the footer (added `pb-16 sm:pb-0` to
   `<main>`); hero stat labels truncated at 375px (allowed to wrap).
 
+## D-051 — Demo login picks a specific seeded account; tab title; em dashes
+- **Picker, not a fixed pair.** The login prompt is two steps: role, then a list of real accounts. All seeded
+  accounts are selectable (5 donors, 5 organisations); no subset. Still a demo: no password, same
+  "demo access only" notice. `SessionContext.loginAs(identity)` and `resolveLoginPrompt(identity)` take the
+  identity object; the hardcoded `DEMO_IDENTITY_BY_ROLE` table was removed. A session already stored in
+  localStorage keeps working (same identity shape).
+- **Source of the list**: `usersService.getLoginIdentities()` reads `users` + `organisations`. Donors are
+  `users.role = 'donor'`. Organisation identities join each organisation to its `users` row via `org_id`:
+  `id` is the users row id, `organisationId` the organisations row id, `name` the English org name (an
+  organisation with no users row would silently not appear).
+- **Why 4 new `users` rows**: chat messages FK `sender_id` to `users(id)`, and organisation screens use
+  `identity.id` as the sender, so an organisation without its own users row could log in but not chat. Only
+  Hanoi Community Pantry had one. Added rows for the other four (`OTHER_ORG_USERS`, ids in `ids.js`) and
+  upserted them live by id. They have role `organisation`, so the "Registered Donors" stat is unchanged.
+- **Tab title** is `3goods` in `index.html`; no route sets `document.title`.
+- **Em dashes** replaced only in `en.json`/`vi.json` values (9 each): colon for "label: detail", period for
+  two-sentence gates, parentheses for the "(fictional, not a real charity)" aside. Placeholders like
+  `{sizeKb}` untouched.
+
 ---
 
 ## Deferred questions (not blocking Phase 1)

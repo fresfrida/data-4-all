@@ -1,7 +1,7 @@
 {
   "app": { "name": "3goods", "tagline": "Quyên góp. Yêu cầu. Điều phối." },
   "demo": {
-    "banner": "Dữ liệu minh họa — tất cả tổ chức và người quyên góp ở đây đều là hư cấu.",
+    "banner": "Dữ liệu minh họa: tất cả tổ chức và người quyên góp ở đây đều là hư cấu.",
     "bannerLoggedInAs": "Đang đăng nhập với vai trò {role}.",
     "bannerPleaseLogIn": "Vui lòng đăng nhập.",
     "loginPrompt": "Đăng nhập",
@@ -10,7 +10,11 @@
     "loggedInAs": "Tài khoản demo: {name}",
     "browsingAsGuest": "Đang xem với tư cách khách",
     "logout": "Đăng xuất",
-    "notSecure": "Chỉ dùng để trải nghiệm — không cần mật khẩu, không phải tài khoản thật."
+    "chooseDonor": "Chọn người quyên góp để đăng nhập",
+    "chooseOrganisation": "Chọn tổ chức để đăng nhập",
+    "noAccounts": "Không tìm thấy tài khoản demo nào.",
+    "back": "Quay lại",
+    "notSecure": "Chỉ dùng để trải nghiệm. Không cần mật khẩu, không phải tài khoản thật."
   },
   "hero": {
     "title": "Điều phối Quyên góp & Cứu trợ Thiên tai tại Việt Nam",
@@ -127,7 +131,7 @@
     "requestNotFound": "Yêu cầu này không còn tồn tại.",
     "itemForRequestNotFound": "Vật phẩm của yêu cầu này không còn tồn tại.",
     "itemAlreadyReserved": "Vật phẩm này đã được giữ cho một tổ chức khác.",
-    "photoTooLarge": "Ảnh quá lớn ({sizeKb}KB) — vui lòng chọn ảnh dưới 2MB."
+    "photoTooLarge": "Ảnh quá lớn ({sizeKb}KB). Vui lòng chọn ảnh dưới 2MB."
   },
   "notifications": {
     "item_requested": "Một tổ chức đã yêu cầu vật phẩm của bạn: {itemTitle}",
@@ -150,10 +154,10 @@
     "searchOrganisations": "Tìm tổ chức…",
     "allFilter": "Tất cả",
     "donationFormIntro": "Đăng một vật phẩm để tổ chức khác có thể yêu cầu và đến nhận.",
-    "donationFormRoleGate": "Trang này dành cho người quyên góp — bạn đang đăng nhập với vai trò tổ chức.",
-    "meRoleGate": "Trang này dành cho người quyên góp — bạn đang đăng nhập với vai trò tổ chức.",
-    "myOrganisationRoleGate": "Trang này dành cho tổ chức — bạn đang đăng nhập với vai trò người quyên góp.",
-    "needsManagementRoleGate": "Trang này dành cho tổ chức — bạn đang đăng nhập với vai trò người quyên góp.",
+    "donationFormRoleGate": "Trang này dành cho người quyên góp. Bạn đang đăng nhập với vai trò tổ chức.",
+    "meRoleGate": "Trang này dành cho người quyên góp. Bạn đang đăng nhập với vai trò tổ chức.",
+    "myOrganisationRoleGate": "Trang này dành cho tổ chức. Bạn đang đăng nhập với vai trò người quyên góp.",
+    "needsManagementRoleGate": "Trang này dành cho tổ chức. Bạn đang đăng nhập với vai trò người quyên góp.",
     "guestBrowsingTitle": "Bạn đang duyệt với tư cách khách.",
     "myDonationsHeading": "Các khoản quyên góp của tôi",
     "postFirstDonationHint": "Đăng khoản quyên góp đầu tiên của bạn từ nút + bên dưới.",
@@ -161,12 +165,12 @@
     "itemFallbackLabel": "Vật phẩm",
     "verifiedBadge": "✓ Đã xác minh",
     "demoOrgBadge": "Tổ chức minh họa",
-    "demoOrgBadgeLong": "Tổ chức minh họa — hư cấu, không phải tổ chức từ thiện thật.",
+    "demoOrgBadgeLong": "Tổ chức minh họa (hư cấu, không phải tổ chức từ thiện thật).",
     "needsHeading": "Nhu cầu",
     "needsIntro": "Cho người quyên góp biết tổ chức của bạn hiện đang cần gì.",
     "currentlyNeedsHeading": "Hiện đang cần",
     "pastReceivedHeading": "Các khoản đã nhận trước đây",
-    "matchesNeedNote": "Vật phẩm này có thể phù hợp với một nhu cầu đã đăng của tổ chức bạn — đây chỉ là gợi ý, không phải xác nhận.",
+    "matchesNeedNote": "Vật phẩm này có thể phù hợp với một nhu cầu đã đăng của tổ chức bạn. Đây chỉ là gợi ý, không phải xác nhận.",
     "donatedByLabel": "Quyên góp bởi {name}",
     "itemNoLongerExists": "Vật phẩm này không còn tồn tại.",
     "conversationNoLongerExists": "Cuộc trò chuyện này không còn tồn tại.",

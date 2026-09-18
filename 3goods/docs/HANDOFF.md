@@ -1,6 +1,7 @@
 # 3goods Handoff
 
-Last updated: session 6, sixth checkpoint — 3G-048 punch-list pass (D-050): footer/nav rename, real
+Last updated: session 6, seventh checkpoint: 3G-049 / D-051 (tab title "3goods", demo login picks any seeded
+donor/organisation, em dashes out of locale copy). Previous: sixth checkpoint — 3G-048 punch-list pass (D-050): footer/nav rename, real
 scored map heatmap + priority key bar, live hero stats with count-up, Organisations search, `/` = hero +
 Organisations board again, stale live rows deleted. Previous checkpoint (same session): fifth checkpoint — split the landing page into
 a hero-only `/` and a `/organisations` needs board, swapped a hero stat tile to Registered Donors,
@@ -19,9 +20,18 @@ after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_AN
 Production env vars on this project (`vercel env ls production` to confirm) — set in session 5.
 
 ## Current task
-**3G-043 through 3G-048 done. No loose ends — the stale-duplicate rows were deleted in 3G-048.**
+**3G-043 through 3G-049 done. No loose ends.**
 
 ## Completed this session (session 6)
+- **3G-049 — tab title, per-account demo login, em dashes** (DECISIONS.md D-051).
+  - `<title>` is `3goods`. Login prompt: role, then pick a specific seeded account (all 5 donors, all 5
+    organisations) from `usersService.getLoginIdentities()`. `loginAs(identity)` / `resolveLoginPrompt(identity)`.
+  - Only Hanoi Community Pantry had an organisation `users` row; added 4 more (`OTHER_ORG_USERS`) and upserted
+    them live (targeted upsert, not a full re-seed). `npm run db:seed` includes them now. Live `users` = 10 rows
+    (5 donors + 5 organisations); hero donor stat still 5.
+  - Locale values: no "—" left in `en.json`/`vi.json`. Code comments, docs and seed content (item descriptions,
+    org missions) were out of scope and may still contain them.
+  - Verified: i18n:check 184/184, build OK, CDP checks at 375/1280 in EN + VI, zero console errors.
 - **3G-048 — punch-list pass** (see DECISIONS.md D-050 for the reasoning behind each choice).
   - Labels: footer, Updates/Me links and the logged-in organisation nav use `nav.organisations` /
     `nav.itemsDonated`. (The guest nav already did — top nav/hero CTAs never shared the old keys.) Old

@@ -1,7 +1,7 @@
 {
   "app": { "name": "3goods", "tagline": "Donate. Request. Coordinate." },
   "demo": {
-    "banner": "Demonstration data — all organisations and donors shown here are fictional.",
+    "banner": "Demonstration data: all organisations and donors shown here are fictional.",
     "bannerLoggedInAs": "Logged in as {role}.",
     "bannerPleaseLogIn": "Please log in.",
     "loginPrompt": "Log in",
@@ -10,7 +10,11 @@
     "loggedInAs": "Demo account: {name}",
     "browsingAsGuest": "Browsing as guest",
     "logout": "Log out",
-    "notSecure": "Demo access only — no password, not a real account."
+    "chooseDonor": "Choose a donor to log in as",
+    "chooseOrganisation": "Choose an organisation to log in as",
+    "noAccounts": "No demo accounts found.",
+    "back": "Back",
+    "notSecure": "Demo access only. No password, not a real account."
   },
   "hero": {
     "title": "Direct Disaster Relief & Item Coordination in Vietnam",
@@ -127,7 +131,7 @@
     "requestNotFound": "This request no longer exists.",
     "itemForRequestNotFound": "The item for this request no longer exists.",
     "itemAlreadyReserved": "This item has already been reserved for a different organisation.",
-    "photoTooLarge": "Photo is too large ({sizeKb}KB) — please choose one under 2MB."
+    "photoTooLarge": "Photo is too large ({sizeKb}KB). Please choose one under 2MB."
   },
   "notifications": {
     "item_requested": "An organisation requested your item: {itemTitle}",
@@ -150,10 +154,10 @@
     "searchOrganisations": "Search organisations…",
     "allFilter": "All",
     "donationFormIntro": "List an item another organisation can request and collect.",
-    "donationFormRoleGate": "This page is for donors — you're logged in as an organisation.",
-    "meRoleGate": "This page is for donors — you're logged in as an organisation.",
-    "myOrganisationRoleGate": "This page is for organisations — you're logged in as a donor.",
-    "needsManagementRoleGate": "This page is for organisations — you're logged in as a donor.",
+    "donationFormRoleGate": "This page is for donors. You're logged in as an organisation.",
+    "meRoleGate": "This page is for donors. You're logged in as an organisation.",
+    "myOrganisationRoleGate": "This page is for organisations. You're logged in as a donor.",
+    "needsManagementRoleGate": "This page is for organisations. You're logged in as a donor.",
     "guestBrowsingTitle": "You're browsing as a guest.",
     "myDonationsHeading": "My donations",
     "postFirstDonationHint": "Post your first donation from the + button below.",
@@ -161,12 +165,12 @@
     "itemFallbackLabel": "Item",
     "verifiedBadge": "✓ Verified",
     "demoOrgBadge": "Demonstration organisation",
-    "demoOrgBadgeLong": "Demonstration organisation — fictional, not a real charity.",
+    "demoOrgBadgeLong": "Demonstration organisation (fictional, not a real charity).",
     "needsHeading": "Needs",
     "needsIntro": "Let donors know what your organisation currently needs.",
     "currentlyNeedsHeading": "Currently needs",
     "pastReceivedHeading": "Past received donations",
-    "matchesNeedNote": "This looks like it may match one of your organisation's listed needs — a suggestion only, not a guarantee.",
+    "matchesNeedNote": "This looks like it may match one of your organisation's listed needs. It's a suggestion only, not a guarantee.",
     "donatedByLabel": "Donated by {name}",
     "itemNoLongerExists": "This item no longer exists.",
     "conversationNoLongerExists": "This conversation no longer exists.",

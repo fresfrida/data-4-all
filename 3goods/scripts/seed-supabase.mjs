@@ -33,7 +33,7 @@ import { REQUESTS } from "../src/data/requests.js";
 import { CONVERSATIONS } from "../src/data/conversations.js";
 import { MESSAGES } from "../src/data/messages.js";
 import { UPDATES } from "../src/data/updates.js";
-import { DEMO_DONOR_USER, DEMO_ORG_USER, FLAVOUR_DONOR_USERS } from "../src/data/users.js";
+import { DEMO_DONOR_USER, DEMO_ORG_USER, FLAVOUR_DONOR_USERS, OTHER_ORG_USERS } from "../src/data/users.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -136,7 +136,7 @@ async function main() {
 
   await upsert(
     "users",
-    [DEMO_DONOR_USER, DEMO_ORG_USER, ...FLAVOUR_DONOR_USERS].map((user) => ({
+    [DEMO_DONOR_USER, DEMO_ORG_USER, ...OTHER_ORG_USERS, ...FLAVOUR_DONOR_USERS].map((user) => ({
       id: user.id,
       name: user.name,
       role: user.role,

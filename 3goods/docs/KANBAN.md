@@ -38,6 +38,19 @@ session; see each Done entry's evidence)
 
 ## Done
 
+- **3G-049** — Tab title is just "3goods"; demo login picks a specific seeded donor/organisation; em dashes
+  removed from user-facing copy (see DECISIONS.md D-051)
+  - Deliverable: `index.html` `<title>` → `3goods` (nothing sets `document.title` per route). Login is now
+    two steps: role, then a live list from new `usersService.getLoginIdentities()` (5 donors, 5
+    organisations). `SessionContext.loginAs`/`resolveLoginPrompt` take an identity object instead of a role;
+    the hardcoded role→identity table is gone. 4 new organisation `users` rows (`OTHER_ORG_USERS`, new ids in
+    `ids.js`, added to the seed script and upserted live). 9 em dashes rewritten in each of `en.json`/`vi.json`.
+  - Deps: none. Acceptance: `npm run i18n:check`, `npm run build`, 375px + 1280px checks in EN + VI.
+  - Evidence: `npm run i18n:check` → 184/184 keys in sync; `npm run build` → succeeds; 0 "—" left in either
+    locale file. Live browser (headless Chrome + CDP): picker lists 5 donors / 5 organisations (EN + VI, 375px +
+    1280px); logging in as Care Bridge Da Nang lands on its own My Organisation page; logging in as Duc Pham shows
+    "Demo account: Duc Pham · Donor"; `document.title` = "3goods". Zero console errors.
+
 - **3G-048** — Punch-list pass: footer/nav rename, real heatmap + priority key bar, live hero stats with
   count-up, Organisations search, home = hero + Organisations board (see DECISIONS.md D-050)
   - Deliverable: footer/Updates/Me links and the logged-in organisation nav now use the existing

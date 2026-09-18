@@ -20,7 +20,7 @@ async function loadNeedsManagement(organisationId) {
 
 /** Organisation publishes/edits its own "we currently need" list. */
 export function NeedsManagement() {
-  const { role, identity, requireLogin } = useSession();
+  const { role, isLoggedIn, identity, requireLogin } = useSession();
   const { locale } = useLocale();
   const t = useTranslate();
   const organisationId = identity?.organisationId;
@@ -32,6 +32,24 @@ export function NeedsManagement() {
   const [priority, setPriority] = useState(false);
   // Raw error object, not a pre-translated string — see D-017.
   const [formError, setFormError] = useState(null);
+
+  if (!isLoggedIn) {
+    return (
+      <EmptyState
+        title={t("screens.guestBrowsingTitle")}
+        hint={t("demo.notSecure")}
+        action={
+          <button
+            type="button"
+            onClick={() => requireLogin(() => {})}
+            className="rounded-full bg-accent-500 px-4 py-2 text-sm font-semibold text-white hover:bg-accent-600"
+          >
+            {t("demo.loginAsOrganisation")}
+          </button>
+        }
+      />
+    );
+  }
 
   if (role !== "organisation") {
     return (

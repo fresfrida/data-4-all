@@ -34,6 +34,26 @@ export function MyOrganisation() {
   const organisationId = identity?.organisationId;
   const { status, data, error, reload } = useAsync(() => loadMyOrganisation(organisationId), [organisationId]);
 
+  if (!isLoggedIn) {
+    return (
+      <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6">
+        <EmptyState
+          title={t("screens.guestBrowsingTitle")}
+          hint={t("demo.notSecure")}
+          action={
+            <button
+              type="button"
+              onClick={() => requireLogin(() => {})}
+              className="rounded-full bg-accent-500 px-4 py-2 text-sm font-semibold text-white hover:bg-accent-600"
+            >
+              {t("demo.loginAsOrganisation")}
+            </button>
+          }
+        />
+      </div>
+    );
+  }
+
   if (role !== "organisation") {
     return (
       <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6">

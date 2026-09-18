@@ -2,10 +2,11 @@
   "app": { "name": "3goods", "tagline": "Donate. Request. Coordinate." },
   "demo": {
     "banner": "Demonstration data — all organisations and donors shown here are fictional.",
-    "loginPrompt": "Switch demo role",
-    "loginAsDonor": "Switch to Donor (demo)",
-    "loginAsOrganisation": "Switch to Organisation (demo)",
+    "loginPrompt": "Log in",
+    "loginAsDonor": "Log in as Donor (demo)",
+    "loginAsOrganisation": "Log in as Organisation (demo)",
     "loggedInAs": "Demo account: {name}",
+    "browsingAsGuest": "Browsing as guest",
     "logout": "Log out",
     "notSecure": "Demo access only — no password, not a real account."
   },
@@ -13,7 +14,7 @@
     "title": "Direct Disaster Relief & Item Coordination in Vietnam",
     "subtitle": "Connecting donors directly with verified local relief organisations to deliver essential goods during disaster response.",
     "ctaDonate": "Donate Items",
-    "ctaBrowse": "Browse Needs",
+    "ctaBrowse": "Browse Items",
     "ctaMap": "Relief Map",
     "statNeeds": "Active Relief Needs",
     "statOrgs": "Verified Organisations",
@@ -31,8 +32,7 @@
   },
   "role": {
     "donor": "Donor",
-    "organisation": "Organisation",
-    "switchLabel": "Viewing as"
+    "organisation": "Organisation"
   },
   "actions": {
     "request": "Request item",
@@ -141,10 +141,10 @@
     "searchItems": "Search items…",
     "allFilter": "All",
     "donationFormIntro": "List an item another organisation can request and collect.",
-    "donationFormRoleGate": "Switch to the Donor view (top of the page) to post a donation.",
-    "meRoleGate": "Switch to the Donor view (top of the page) to see your donations.",
-    "myOrganisationRoleGate": "Switch to the Organisation view (top of the page) to see your organisation.",
-    "needsManagementRoleGate": "Switch to the Organisation view (top of the page) to manage published needs.",
+    "donationFormRoleGate": "This page is for donors — you're logged in as an organisation.",
+    "meRoleGate": "This page is for donors — you're logged in as an organisation.",
+    "myOrganisationRoleGate": "This page is for organisations — you're logged in as a donor.",
+    "needsManagementRoleGate": "This page is for organisations — you're logged in as a donor.",
     "guestBrowsingTitle": "You're browsing as a guest.",
     "myDonationsHeading": "My donations",
     "postFirstDonationHint": "Post your first donation from the + button below.",

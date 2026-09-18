@@ -2,10 +2,11 @@
   "app": { "name": "3goods", "tagline": "Quyên góp. Yêu cầu. Điều phối." },
   "demo": {
     "banner": "Dữ liệu minh họa — tất cả tổ chức và người quyên góp ở đây đều là hư cấu.",
-    "loginPrompt": "Chuyển vai trò demo",
-    "loginAsDonor": "Chuyển sang Người quyên góp (demo)",
-    "loginAsOrganisation": "Chuyển sang Tổ chức (demo)",
+    "loginPrompt": "Đăng nhập",
+    "loginAsDonor": "Đăng nhập với vai trò Người quyên góp (demo)",
+    "loginAsOrganisation": "Đăng nhập với vai trò Tổ chức (demo)",
     "loggedInAs": "Tài khoản demo: {name}",
+    "browsingAsGuest": "Đang xem với tư cách khách",
     "logout": "Đăng xuất",
     "notSecure": "Chỉ dùng để trải nghiệm — không cần mật khẩu, không phải tài khoản thật."
   },
@@ -13,7 +14,7 @@
     "title": "Điều phối Quyên góp & Cứu trợ Thiên tai tại Việt Nam",
     "subtitle": "Kết nối trực tiếp nhà hảo tâm với các tổ chức cứu trợ địa phương được xác minh để chuyển nhu yếu phẩm đến đúng nơi cần.",
     "ctaDonate": "Quyên góp ngay",
-    "ctaBrowse": "Xem nhu cầu",
+    "ctaBrowse": "Xem vật phẩm",
     "ctaMap": "Bản đồ cứu trợ",
     "statNeeds": "Nhu cầu cứu trợ",
     "statOrgs": "Tổ chức xác minh",
@@ -31,8 +32,7 @@
   },
   "role": {
     "donor": "Người quyên góp",
-    "organisation": "Tổ chức",
-    "switchLabel": "Đang xem với vai trò"
+    "organisation": "Tổ chức"
   },
   "actions": {
     "request": "Yêu cầu vật phẩm",
@@ -141,10 +141,10 @@
     "searchItems": "Tìm vật phẩm…",
     "allFilter": "Tất cả",
     "donationFormIntro": "Đăng một vật phẩm để tổ chức khác có thể yêu cầu và đến nhận.",
-    "donationFormRoleGate": "Chuyển sang chế độ xem Người quyên góp (phía trên) để đăng quyên góp.",
-    "meRoleGate": "Chuyển sang chế độ xem Người quyên góp (phía trên) để xem các khoản quyên góp của bạn.",
-    "myOrganisationRoleGate": "Chuyển sang chế độ xem Tổ chức (phía trên) để xem tổ chức của bạn.",
-    "needsManagementRoleGate": "Chuyển sang chế độ xem Tổ chức (phía trên) để quản lý nhu cầu đã đăng.",
+    "donationFormRoleGate": "Trang này dành cho người quyên góp — bạn đang đăng nhập với vai trò tổ chức.",
+    "meRoleGate": "Trang này dành cho người quyên góp — bạn đang đăng nhập với vai trò tổ chức.",
+    "myOrganisationRoleGate": "Trang này dành cho tổ chức — bạn đang đăng nhập với vai trò người quyên góp.",
+    "needsManagementRoleGate": "Trang này dành cho tổ chức — bạn đang đăng nhập với vai trò người quyên góp.",
     "guestBrowsingTitle": "Bạn đang duyệt với tư cách khách.",
     "myDonationsHeading": "Các khoản quyên góp của tôi",
     "postFirstDonationHint": "Đăng khoản quyên góp đầu tiên của bạn từ nút + bên dưới.",

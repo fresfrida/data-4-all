@@ -3,8 +3,10 @@ import { safeGetItem, safeSetItem, safeRemoveItem } from "../lib/localStorage.js
 import { DEMO_DONOR_USER, DEMO_ORG_USER } from "../data/users.js";
 
 /**
- * `role` (which nav/UI renders) and `session` (demo-logged-in identity) are
- * deliberately separate concerns — see DECISIONS.md D-004. This is the only
+ * There are exactly three identity states: logged out (guest), logged in as
+ * Donor, logged in as Organisation. `role` is derived from `identity.role`,
+ * never stored independently — see DECISIONS.md D-045 (supersedes D-004,
+ * which had `role` as separate freely-switchable state). This is the only
  * context that persists to localStorage besides LocaleContext; both go
  * through src/lib/localStorage.js, never touching window.localStorage
  * directly here either.
@@ -20,38 +22,33 @@ function readInitial() {
   if (raw) {
     try {
       const parsed = JSON.parse(raw);
-      if (parsed.role === "donor" || parsed.role === "organisation") return parsed;
+      if (parsed.isLoggedIn && (parsed.identity?.role === "donor" || parsed.identity?.role === "organisation")) {
+        return { isLoggedIn: true, identity: parsed.identity };
+      }
     } catch {
       // fall through to default
     }
   }
-  return { role: "donor", isLoggedIn: false, identity: null };
+  return { isLoggedIn: false, identity: null };
 }
 
 export function SessionProvider({ children }) {
   const [session, setSession] = useState(readInitial);
   const [loginPrompt, setLoginPrompt] = useState({ open: false });
+  const role = session.identity?.role ?? null;
 
   useEffect(() => {
     safeSetItem(STORAGE_KEY, JSON.stringify(session));
   }, [session]);
 
   const loginAs = (role) => {
-    setSession({ role, isLoggedIn: true, identity: DEMO_IDENTITY_BY_ROLE[role] });
+    setSession({ isLoggedIn: true, identity: DEMO_IDENTITY_BY_ROLE[role] });
   };
 
   const logout = () => {
-    // "Returns to a public browsing state" — identity clears, but the nav
-    // keeps showing whichever role's view was last active (D-004).
-    setSession((prev) => ({ role: prev.role, isLoggedIn: false, identity: null }));
-  };
-
-  const setRole = (role) => {
-    setSession((prev) => ({
-      role,
-      isLoggedIn: prev.isLoggedIn,
-      identity: prev.isLoggedIn ? DEMO_IDENTITY_BY_ROLE[role] : null,
-    }));
+    // Returns everyone to the same neutral guest state — no role carries
+    // over post-logout (D-045).
+    setSession({ isLoggedIn: false, identity: null });
   };
 
   /**
@@ -85,15 +82,15 @@ export function SessionProvider({ children }) {
   const value = useMemo(
     () => ({
       ...session,
+      role,
       loginAs,
       logout,
-      setRole,
       requireLogin,
       loginPromptOpen: loginPrompt.open,
       resolveLoginPrompt,
       dismissLoginPrompt,
     }),
-    [session, loginPrompt],
+    [session, role, loginPrompt],
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;

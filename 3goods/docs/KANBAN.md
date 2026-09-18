@@ -38,6 +38,34 @@ session; see each Done entry's evidence)
 
 ## Done
 
+- **3G-043** — Removed independent `role` state; collapsed to exactly 3 identity states (logged out /
+  Donor / Organisation) — see DECISIONS.md D-045 (supersedes D-004)
+  - Deliverable: `role` is now derived from `identity?.role` in `SessionContext.jsx`, never stored
+    independently; `RoleSwitcher.jsx` deleted along with its usage in `DesktopTopNav.jsx`/
+    `MobileHeader.jsx`; the existing `DemoLoginButton` ("Log in"/"Log out") is now the sole header
+    identity control, opening the existing `DemoLoginPrompt` Donor/Organisation picker. `logout()`
+    always returns to the same neutral guest state. `DonationForm.jsx`/`NeedsManagement.jsx`/
+    `MyOrganisation.jsx`/`Me.jsx` reordered to check `!isLoggedIn` before a role mismatch, so a guest
+    gets a login prompt instead of a "wrong role" message; `ChatDetail.jsx` gained the same
+    `!isLoggedIn` guard `ChatList.jsx` already had (was a latent gap). Home page hero
+    (`DiscoverNeeds.jsx`) restored the original 3-CTA design intent: guest/organisation see "Browse
+    Items" + "Relief Map", logged-in donor sees "Donate Items" instead; the two always-assumed-logged-
+    in context pills collapsed to one "Browsing as guest" pill (logged out) or one merged "Logged in
+    as {name} · {role}" pill (logged in). Translation copy updated in both locales to match (`Log in`
+    instead of `Switch demo role`, etc).
+  - Deps: none. Acceptance: `npm run i18n:check` passes, `npm run build` succeeds, live-browser pass
+    at mobile + desktop confirming all 3 states and the transitions between them.
+  - Evidence: `npm run i18n:check` → 170/170 keys in sync; `npm run build` → succeeds (504 KB JS
+    bundle, gzip 143 KB), same pre-existing `organisationsService.js` warning, unrelated. Live browser
+    (headless Chrome + CDP) at mobile (390px) and desktop (1280px): guest home (Log in button,
+    Browsing-as-guest pill, Browse Items + Map CTAs, no Donate CTA); `/donate/new` as guest shows the
+    login prompt, not a role-mismatch message; login-as-Donor (merged pill, Donate CTA, donor nav);
+    an organisation-only page visited while logged in as donor shows the new mismatch copy; logout
+    returns to the identical guest state; login-as-Organisation with Needs Management and My
+    Organisation both loading real seeded Supabase data; guest viewing Item Detail sees no Request
+    button (no crash); logged-in organisation viewing the same item does see it. Zero console errors
+    (pre-existing React Router v7 future-flag warnings only).
+
 - **3G-042** — Reconciled the codebase against the actual live Supabase schema (removes 3G-040,
   which was stale — a real migration happened without going through that planned doc)
   - Deliverable: `supabase/schema.sql` now documents the real live production schema (project ref

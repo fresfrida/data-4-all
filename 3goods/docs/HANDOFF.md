@@ -1,25 +1,50 @@
 # 3goods Handoff
 
-Last updated: session 5 (user's local machine, real network access) — ran `npm run db:seed` against
-the live Supabase project for the first time and did a full live-browser verification pass; both had
-been blocked in session 4's cloud sandbox. See "Completed this session" below. Prior entry: session 4
-(cloud/web session), reconciled the codebase against the actual live Supabase database (3G-042 /
-DECISIONS.md D-042).
+Last updated: session 6 (same machine as session 5) — removed the independent `role` switcher state
+per explicit user request (3G-043 / DECISIONS.md D-045, supersedes D-004), committed, pushed, and
+redeployed to production. See "Completed this session" below. Prior entry: session 5, first live
+`npm run db:seed` + full live-browser verification pass against the real Supabase project.
 
 **Live URL: https://3goods.vercel.app** (separate Vercel project from the map site at
 `002-data-4-life.vercel.app`, account `frescyliafrida-9461`, project id
 `prj_nhnDkGhaFGNGYOX7wqY0x0ymKGpT`). Redeploy with `vercel deploy --prod --yes` from inside `3goods/`
 after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY` are set as
-Production env vars on this project (`vercel env ls production` to confirm) — added this session,
-were missing before (a stale HANDOFF note said the whole project was gone; it wasn't, it had been
-recreated in a session between 4 and 5 without an env vars or a HANDOFF update, and the last deploy
-on it had been running with no Supabase connection at all until this session's redeploy).
+Production env vars on this project (`vercel env ls production` to confirm) — set in session 5.
 
 ## Current task
-**3G-042 fully verified live and now deployed to production — see "Completed this session" below.
-Nothing blocking; see "Prior priority list" for what's next.**
+**3G-043 (role-state simplification) done and deployed — see "Completed this session" below. Nothing
+blocking; see "Priority list" for what's next.**
 
-## Completed this session (session 5)
+## Completed this session (session 6)
+- **3G-043 — removed independent `role` state, collapsed to 3 identity states** (see DECISIONS.md
+  D-045 for full detail; supersedes D-004). Summary:
+  - `SessionContext.jsx`: `role` is now `identity?.role ?? null`, never stored; `setRole` deleted;
+    `logout()` always resets to the same neutral `{ isLoggedIn: false, identity: null }`.
+  - `RoleSwitcher.jsx` deleted; `DesktopTopNav.jsx`/`MobileHeader.jsx` no longer render it. The
+    existing `DemoLoginButton` ("Log in"/"Log out") is now the only header identity control.
+  - `DonationForm.jsx`/`NeedsManagement.jsx`/`MyOrganisation.jsx`/`Me.jsx`: added/reordered an
+    `!isLoggedIn` check before the role-mismatch check, reusing the `EmptyState` + login-prompt
+    pattern already established in `Me.jsx`/`Updates.jsx`/`ChatList.jsx`. `ChatDetail.jsx` gained the
+    same `!isLoggedIn` guard (previously had none at all — a pre-existing gap, not a regression).
+  - `DiscoverNeeds.jsx` hero: restored the original 3-CTA intent per user confirmation — guest and
+    organisation see "Browse Items" + "Relief Map", logged-in donor sees "Donate Items" instead; two
+    always-logged-in-assuming pills collapsed to one guest pill or one merged logged-in pill.
+  - Translation copy updated in `en.json`/`vi.json` to match (both files, key parity maintained).
+  - Stopped, per explicit user confirmation, on two points that were genuinely ambiguous rather than
+    guessing: what the guest hero CTA should say (resolved: restore the original "Browse Items"
+    design rather than inventing new copy), and what the guest context pill should say (resolved:
+    "Browsing as guest").
+  - Verified live: `npm run i18n:check` (170/170), `npm run build`, and a full headless-Chrome-+-CDP
+    browser pass at mobile (390px) and desktop (1280px) — guest state, login-as-Donor, an
+    organisation-only page visited as donor (new mismatch copy), logout back to the identical guest
+    state, login-as-Organisation (Needs Management + My Organisation both load real seeded data),
+    guest Item Detail (no Request button, no crash) vs. logged-in-organisation Item Detail (button
+    present). Zero console errors (pre-existing React Router v7 future-flag warnings only).
+  - Committed (`git log` for the exact hash — see commit message "Remove independent role switcher
+    state..."), pushed to `claude/supabase-connection-status-9rhtx1`, redeployed to
+    `https://3goods.vercel.app` via `vercel deploy --prod --yes`, verified live post-deploy.
+
+## Completed prior session (session 5)
 - **`npm run db:seed` run and verified against the live Supabase project** for the first time —
   blocked in session 4's cloud sandbox by network egress policy, works cleanly from this local
   machine. All 8 seed items' `category_id` resolved correctly via the categories name→id map, no FK
@@ -192,6 +217,13 @@ Nothing blocking; see "Prior priority list" for what's next.**
   real seeded data: Discover Items, Item Detail, organisation Request flow from logged-out (D-044
   path), Needs Management, Chat list/detail + live message send, DonationForm submit-while-logged-out
   (D-044 path) — all clean, no crashes, no unexpected console errors.
+- **(session 6)** `npm run i18n:check` → 170/170 keys in sync. `npm run build` → succeeds (504 KB JS
+  bundle, gzip 143 KB). Live browser pass (headless Chrome + CDP, mobile 390px + desktop 1280px)
+  covering the full identity-state matrix: guest home/nav/hero, `/donate/new` as guest (login prompt,
+  not role-mismatch), login-as-Donor, an organisation-only page visited as donor (mismatch copy),
+  logout (back to identical guest state), login-as-Organisation with Needs Management + My
+  Organisation loading real data, guest vs. logged-in-organisation Item Detail (Request button
+  present only for the latter). Zero console errors (pre-existing React Router v7 warnings only).
 
 ## Checks still needed
 - ChatList and NeedsManagement at desktop width specifically (see caveat above).
@@ -201,15 +233,13 @@ Nothing blocking; see "Prior priority list" for what's next.**
   for those.
 
 ## Exact next action
-Everything that was pending at the start of session 5 is now done: the D-044 diff is committed
-(`442084d`) and pushed to `claude/supabase-connection-status-9rhtx1`, live test data is cleaned up,
-the stray duplicate dev server is killed, and production (`https://3goods.vercel.app`) is redeployed
-with `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY` set and live-verified. Nothing is blocking — pick up
-the priority list below. One thing worth a deliberate decision rather than just picking up: this
-branch (`claude/supabase-connection-status-9rhtx1`) hasn't been merged to `main` — confirm with the
-user whether/when to open that PR.
+Everything pending at the start of session 6 is done: the 3G-043 role-state simplification is
+committed and pushed to `claude/supabase-connection-status-9rhtx1`, live-verified, and redeployed to
+`https://3goods.vercel.app`. Nothing is blocking — pick up the priority list below. One thing worth a
+deliberate decision rather than just picking up: this branch still hasn't been merged to `main` —
+confirm with the user whether/when to open that PR (carried over from session 5, still open).
 
-### Priority list (unblocked — 3G-042 is verified live end to end, including production)
+### Priority list (unblocked — 3G-042 and 3G-043 are both verified live end to end, including production)
 1. Phase 2 map integration (3G-020 onward) — the next big feature area, per the original priority
    order (map was always meant to come after the core journey).
 2. Phase 3 polish items: 3G-035 (FilterSheet), 3G-036 (the two remaining desktop screenshots above),
@@ -226,8 +256,10 @@ npm run i18n:check   # quick sanity check that locale files are still in sync
 
 ## Decisions genuinely needing the user
 - All of session 5's pending confirmations (D-042 additive SQL, committing the diff, deleting
-  test-data rows, the stray duplicate checkout) were resolved this session per explicit user
-  instruction — see "Completed this session" and "Exact next action" above.
+  test-data rows, the stray duplicate checkout) were resolved in session 5 per explicit user
+  instruction.
+- Session 6's two genuinely-ambiguous hero-copy questions (guest CTA, guest context pill) were both
+  confirmed with the user before implementing — see DECISIONS.md D-045 for the resolutions.
 - Whether/when to merge `claude/supabase-connection-status-9rhtx1` into `main` — not done this
   session, no PR opened.
 - If continuing into Phase 2, worth a quick confirmation on D-012 (3goods' category taxonomy vs. the

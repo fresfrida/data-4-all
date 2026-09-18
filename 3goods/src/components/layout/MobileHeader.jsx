@@ -2,7 +2,6 @@ import { NavLink } from "react-router-dom";
 import { useSession } from "../../context/SessionContext.jsx";
 import { useTranslate } from "../../i18n/useTranslate.js";
 import { LanguageSwitcher } from "../controls/LanguageSwitcher.jsx";
-import { RoleSwitcher } from "../controls/RoleSwitcher.jsx";
 import { DemoLoginButton } from "../controls/DemoLoginButton.jsx";
 import { HeartHandshakeIcon } from "../icons.jsx";
 import { ROUTES } from "../../lib/constants.js";
@@ -23,9 +22,6 @@ export function MobileHeader() {
           <LanguageSwitcher />
           <DemoLoginButton />
         </div>
-      </div>
-      <div className="mt-2 flex justify-center">
-        <RoleSwitcher />
       </div>
     </header>
   );

@@ -75,15 +75,18 @@ export function DiscoverNeeds() {
 
         <div className="relative z-10 mx-auto max-w-6xl flex flex-col justify-between gap-6 min-h-[300px]">
           <div className="flex flex-col gap-4">
-            {/* Stacked Context Pill 1 (Role) & Pill 2 (Demo Account) */}
+            {/* Context pill: guest vs logged-in identity+role, never both/neither (D-045) */}
             <div className="flex flex-col items-start gap-2">
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/25 px-3.5 py-1 text-xs font-semibold backdrop-blur-md border border-white/30 shadow-xs text-white">
-                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>{t("role.switchLabel")}: {t(`role.${role}`)}</span>
-              </div>
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3.5 py-1 text-xs font-medium backdrop-blur-md border border-white/25 text-white shadow-xs">
-                <span>👤 {t("demo.loggedInAs", { name: identity?.name || "Demo user" })}</span>
-              </div>
+              {identity ? (
+                <div className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3.5 py-1 text-xs font-medium backdrop-blur-md border border-white/25 text-white shadow-xs">
+                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>👤 {t("demo.loggedInAs", { name: identity.name })} · {t(`role.${role}`)}</span>
+                </div>
+              ) : (
+                <div className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3.5 py-1 text-xs font-medium backdrop-blur-md border border-white/25 text-white shadow-xs">
+                  <span>{t("demo.browsingAsGuest")}</span>
+                </div>
+              )}
             </div>
 
             <div className="space-y-2 max-w-2xl">
@@ -95,21 +98,21 @@ export function DiscoverNeeds() {
               </p>
             </div>
 
-            {/* Action Buttons */}
+            {/* Action Buttons — donor gets the Donate CTA; guest and organisation both browse items */}
             <div className="flex flex-wrap items-center gap-3 pt-2">
-              {role === "organisation" ? (
-                <Link
-                  to={ROUTES.discoverItems}
-                  className="inline-flex items-center justify-center rounded-full bg-accent-500 px-6 py-3 text-sm font-bold text-white shadow-lg hover:bg-accent-600 transition-all active:scale-95 min-w-[160px]"
-                >
-                  📦 {t("nav.discover")}
-                </Link>
-              ) : (
+              {role === "donor" ? (
                 <Link
                   to={ROUTES.donateNew}
                   className="inline-flex items-center justify-center rounded-full bg-accent-500 px-6 py-3 text-sm font-bold text-white shadow-lg hover:bg-accent-600 transition-all active:scale-95 min-w-[160px]"
                 >
                   + {t("hero.ctaDonate")}
+                </Link>
+              ) : (
+                <Link
+                  to={ROUTES.discoverItems}
+                  className="inline-flex items-center justify-center rounded-full bg-accent-500 px-6 py-3 text-sm font-bold text-white shadow-lg hover:bg-accent-600 transition-all active:scale-95 min-w-[160px]"
+                >
+                  📦 {t("hero.ctaBrowse")}
                 </Link>
               )}
               <Link

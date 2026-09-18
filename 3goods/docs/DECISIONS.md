@@ -16,7 +16,7 @@ The five donor tabs (Updates, Map, +, Chat, Me) don't literally include Discover
 per user: it's the default route reached via the header logo, **and** a visible "Discover needs"
 link is placed on the donor Updates screen and Me screen so it's never hidden behind the logo alone.
 
-## D-004 — `role` and `session` (demo login) are separate state
+## D-004 — `role` and `session` (demo login) are separate state (superseded by D-045)
 - `role`: which nav/UI renders (`donor` | `organisation`). Freely switchable via `RoleSwitcher` for
   testing, independent of login state.
 - `session`: `{ isLoggedIn, identity }`, set by demo login/logout, persisted to `localStorage`
@@ -28,6 +28,12 @@ state" means logged-out, not nav-less).
 Demo login identities: logging in as Donor uses a fixed demo donor user; logging in as Organisation
 attaches to one seeded organisation record (so "My Organisation" has real seed data to show as
 "yours"). Both are visibly labeled as demo, never asked for a password.
+
+**Superseded by D-045**: independent `role` state turned out to produce a 4th, confusing UI state —
+a guest could flavor themselves as "donor" or "organisation" before ever logging in, so a
+role-mismatch message could show to someone who was never actually logged in as anything. D-045
+removes `role` as separate state entirely; the demo login identities and their "visibly labeled as
+demo, no password" property described above are unchanged.
 
 ## D-005 — One category field, tags underneath, no duplicate field
 The map's four shared categories (Food, Household Items, Clothes, Books) are the only `category`
@@ -255,6 +261,56 @@ the prompt path resolves it inline.
 Live-verified this session (see 3G-042 in KANBAN.md): request-while-logged-out, donation-post-while-
 logged-out, and chat-message-send all exercised this exact path against the real Supabase-backed app
 with no crash.
+
+## D-045 — Removed independent `role` state; there are exactly three identity states (supersedes D-004)
+User-requested (3G-043): collapse the 4-state model (guest-flavored-donor, guest-flavored-org,
+logged-in-donor, logged-in-org) down to the 3 states the product actually has — logged out (guest),
+logged in as Donor, logged in as Organisation. `role` is no longer stored; it's derived at render
+time as `identity?.role ?? null` (`SessionContext.jsx`). Concretely:
+- `readInitial()`/`session` shape dropped the separate `role` field — just `{ isLoggedIn, identity }`.
+  A stored session is only ever restored if `isLoggedIn` is true and `identity.role` is valid;
+  anything else falls back to the single logged-out default.
+- `logout()` now resets to that same `{ isLoggedIn: false, identity: null }` state unconditionally —
+  no more "clears identity but leaves role alone." Every logout returns to the identical neutral
+  guest state, regardless of which role was active before.
+- `setRole()` and `RoleSwitcher.jsx` are deleted outright — there is no way to pick a role before
+  logging in. `DemoLoginButton.jsx` (existing component, unchanged) is now the only header identity
+  control: "Log in" when logged out (opens `DemoLoginPrompt`, the existing Donor/Organisation demo
+  picker — same modal `requireLogin`-gated actions already used), "Log out" when logged in.
+- Every screen that gated on `role !== "donor"`/`role !== "organisation"` directly
+  (`DonationForm.jsx`, `NeedsManagement.jsx`, `MyOrganisation.jsx`, `Me.jsx`) now checks
+  `!isLoggedIn` *first* and shows a login prompt (reusing the `EmptyState` + `requireLogin(() => {})`
+  pattern `Me.jsx`/`Updates.jsx`/`ChatList.jsx` already had) — the role-mismatch message only shows
+  for the rare case of actually being logged in as the *other* role (e.g. an organisation directly
+  visiting `/me`). Copy changed from "Switch to the X view (top of the page)" (referenced the deleted
+  switcher) to "This page is for X — you're logged in as Y." `ChatDetail.jsx` had no login gate at
+  all (a latent gap, not previously flagged since it doesn't early-return on `role`) — given the same
+  `!isLoggedIn` guard for consistency with `ChatList.jsx`.
+- `ItemDetail.jsx`'s `role === "organisation"` Request-button gate needed no code change — it now
+  naturally reads as "only a logged-in organisation sees this," since a guest's derived `role` is
+  `null`. Decided against adding a guest-facing "log in to request" prompt in its place (kept scope
+  minimal, not requested).
+- Home page hero (`DiscoverNeeds.jsx`) restores the original 3-CTA design intent (documented in
+  HANDOFF.md's session-2 notes: "Donate Items", "Relief Heatmap", "Browse Items" — "Browse Items"
+  had been dropped somewhere along the way and folded into a role-conditional slot). Guest and
+  organisation both see "📦 Browse Items" (→ `/discover`, no login needed — browsing already works
+  without an account) + "🗺️ Relief Map"; only a logged-in donor sees "+ Donate Items" in that slot.
+  Confirmed with the user rather than guessed, since "Donate Items" for a guest would imply a
+  register flow that doesn't exist. The two context pills ("Viewing as: {role}" / "Demo account:
+  {name}", both assumed always-logged-in) collapsed to: a single "Browsing as guest" pill when
+  logged out, or one merged "Logged in as {name} · {role}" pill when logged in.
+- Translation copy updated in both `en.json`/`vi.json`: `demo.loginPrompt` "Switch demo role" → "Log
+  in"; `demo.loginAsDonor`/`loginAsOrganisation` "Switch to X (demo)" → "Log in as X (demo)"; added
+  `demo.browsingAsGuest`; removed unused `role.switchLabel`; `hero.ctaBrowse` "Browse Needs" → "Browse
+  Items" (was defined but never wired into the JSX until now).
+Live-verified this session (headless Chrome + CDP, mobile 390px and desktop 1280px): guest home page
+(Log in button, Browsing-as-guest pill, Browse Items + Map CTAs, no Donate CTA), `/donate/new` as
+guest shows the login prompt not a role-mismatch message, login-as-Donor (merged pill, Donate CTA,
+donor nav), visiting an organisation-only page while logged in as donor shows the new mismatch copy,
+logout returns to the exact same guest state, login-as-Organisation (Needs Management and My
+Organisation both load real seeded data), a guest viewing Item Detail sees no Request button (no
+crash), a logged-in organisation viewing the same item does see it. Zero console errors throughout
+(previously-seen React Router v7 future-flag warnings are pre-existing and unrelated).
 
 ---
 

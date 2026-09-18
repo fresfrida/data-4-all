@@ -9,6 +9,7 @@ import { useSession } from "../context/SessionContext.jsx";
 import { useLocale } from "../i18n/LocaleContext.jsx";
 import { useTranslate } from "../i18n/useTranslate.js";
 import { LoadingState } from "../components/feedback/LoadingState.jsx";
+import { EmptyState } from "../components/feedback/EmptyState.jsx";
 import { NeedChip } from "../components/needs/NeedChip.jsx";
 import { ROUTES } from "../lib/constants.js";
 
@@ -17,10 +18,10 @@ async function loadFormReferenceData() {
   return { areas, categories };
 }
 
-/** Donor posts a donation. Gated to donor role + demo login (D-004/D-005). */
+/** Donor posts a donation. Gated to donor role + demo login (D-045/D-005). */
 export function DonationForm() {
   const { status, data } = useAsync(loadFormReferenceData, []);
-  const { role, identity, requireLogin } = useSession();
+  const { role, isLoggedIn, requireLogin } = useSession();
   const { locale } = useLocale();
   const t = useTranslate();
   const navigate = useNavigate();
@@ -47,6 +48,24 @@ export function DonationForm() {
   const [tagOptions, setTagOptions] = useState([]);
 
   if (status === "loading" || !data) return <LoadingState />;
+
+  if (!isLoggedIn) {
+    return (
+      <EmptyState
+        title={t("screens.guestBrowsingTitle")}
+        hint={t("demo.notSecure")}
+        action={
+          <button
+            type="button"
+            onClick={() => requireLogin(() => {})}
+            className="rounded-full bg-accent-500 px-4 py-2 text-sm font-semibold text-white hover:bg-accent-600"
+          >
+            {t("demo.loginAsDonor")}
+          </button>
+        }
+      />
+    );
+  }
 
   if (role !== "donor") {
     return (

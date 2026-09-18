@@ -35,14 +35,6 @@ export function Me() {
   const donorId = identity?.id;
   const { status, data, error, reload } = useAsync(() => loadMyDonations(donorId), [donorId]);
 
-  if (role !== "donor") {
-    return (
-      <div className="rounded-card border border-dashed border-ink-600/20 bg-white/60 p-6 text-center text-sm text-ink-600">
-        {t("screens.meRoleGate")}
-      </div>
-    );
-  }
-
   if (!isLoggedIn) {
     return (
       <EmptyState
@@ -58,6 +50,14 @@ export function Me() {
           </button>
         }
       />
+    );
+  }
+
+  if (role !== "donor") {
+    return (
+      <div className="rounded-card border border-dashed border-ink-600/20 bg-white/60 p-6 text-center text-sm text-ink-600">
+        {t("screens.meRoleGate")}
+      </div>
     );
   }
 

@@ -1,0 +1,47 @@
+{
+  "_source": "Compiled from IFRC/Vietnam Red Cross emergency appeals (MDRVN004, MDRVN006, MDRVN020) and NGO drought-response reporting (UNICEF Vietnam, Save the Children, Samaritan's Purse) on the 2024 Mekong Delta drought, remapped onto this platform's fixed 8 donation categories (rice, clothes, books, household items, non-perishable food, hygiene products, children items, miscellaneous).",
+  "_schema": "categories is the fixed, stable taxonomy -- add/remove disaster types or edit items/priority/phase freely without touching index.html; it renders whatever categories are present for each disaster_type generically. priority: high|medium|low. phase: immediate (0-72h) or short_term (weeks).",
+  "categories": ["Rice", "Clothes", "Books", "Household Items", "Non-Perishable Food", "Hygiene Products", "Children Items", "Miscellaneous"],
+  "by_disaster_type": {
+    "Storm": {
+      "Rice": { "priority": "high", "phase": "immediate", "items": ["Rice"] },
+      "Non-Perishable Food": { "priority": "high", "phase": "immediate", "items": ["Instant noodles", "Bottled water", "Canned food", "Dried food"] },
+      "Household Items": { "priority": "high", "phase": "immediate", "items": ["Flashlights", "Blankets", "Mosquito nets", "Water containers", "Tarpaulins / roofing sheets", "Cooking utensils", "Raincoats"] },
+      "Hygiene Products": { "priority": "high", "phase": "immediate", "items": ["Soap", "Water purification tablets", "Sanitary pads", "Hand sanitizer"] },
+      "Clothes": { "priority": "medium", "phase": "short_term", "items": ["Replacement clothing", "Rain gear"] },
+      "Children Items": { "priority": "medium", "phase": "immediate", "items": ["Children's clothing", "Diapers", "Infant formula"] },
+      "Books": { "priority": "low", "phase": "short_term", "items": ["School textbooks", "Notebooks", "Stationery"] },
+      "Miscellaneous": { "priority": "low", "phase": "short_term", "items": ["Candles", "Batteries", "Work gloves", "Rope"] }
+    },
+    "Flood": {
+      "Rice": { "priority": "high", "phase": "immediate", "items": ["Rice"] },
+      "Non-Perishable Food": { "priority": "high", "phase": "immediate", "items": ["Instant noodles", "Bottled water", "Canned food"] },
+      "Household Items": { "priority": "high", "phase": "immediate", "items": ["Blankets", "Mosquito nets", "Cooking utensils", "Water containers"] },
+      "Hygiene Products": { "priority": "high", "phase": "immediate", "items": ["Soap", "Water purification tablets", "Sanitary pads", "Disinfectant"] },
+      "Clothes": { "priority": "medium", "phase": "short_term", "items": ["Replacement clothing"] },
+      "Children Items": { "priority": "medium", "phase": "short_term", "items": ["Children's clothing", "Diapers", "Infant formula"] },
+      "Books": { "priority": "medium", "phase": "short_term", "items": ["School textbooks lost to water damage", "Notebooks", "Uniforms"] },
+      "Miscellaneous": { "priority": "low", "phase": "short_term", "items": ["Candles", "Garbage bags", "Batteries"] }
+    },
+    "Drought": {
+      "Rice": { "priority": "medium", "phase": "short_term", "items": ["Rice"] },
+      "Non-Perishable Food": { "priority": "medium", "phase": "short_term", "items": ["Non-perishable staples", "Canned food"] },
+      "Household Items": { "priority": "high", "phase": "short_term", "items": ["Large water storage tanks (1,000-2,000L)", "Ceramic water filters", "19L water jugs"] },
+      "Hygiene Products": { "priority": "medium", "phase": "short_term", "items": ["Water purification tablets", "Soap"] },
+      "Clothes": { "priority": "low", "phase": "short_term", "items": [] },
+      "Children Items": { "priority": "medium", "phase": "short_term", "items": ["Infant formula", "Children's nutrition supplements"] },
+      "Books": { "priority": "low", "phase": "short_term", "items": [] },
+      "Miscellaneous": { "priority": "low", "phase": "short_term", "items": [] }
+    },
+    "Wildfire": {
+      "Rice": { "priority": "low", "phase": "short_term", "items": [] },
+      "Non-Perishable Food": { "priority": "medium", "phase": "immediate", "items": ["Bottled water", "Ready-to-eat food"] },
+      "Household Items": { "priority": "high", "phase": "immediate", "items": ["Temporary shelter materials", "Blankets", "Flashlights"] },
+      "Hygiene Products": { "priority": "high", "phase": "immediate", "items": ["Masks (smoke / dust)", "Soap", "Eye drops"] },
+      "Clothes": { "priority": "high", "phase": "short_term", "items": ["Replacement clothing (often burned)"] },
+      "Children Items": { "priority": "medium", "phase": "short_term", "items": ["Children's clothing", "Infant formula"] },
+      "Books": { "priority": "low", "phase": "short_term", "items": [] },
+      "Miscellaneous": { "priority": "low", "phase": "short_term", "items": [] }
+    }
+  }
+}

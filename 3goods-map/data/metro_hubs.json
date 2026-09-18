@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Ho Chi Minh City",
+    "lat": 10.8231,
+    "lon": 106.6297,
+    "population": 9300000
+  },
+  { "name": "Hanoi", "lat": 21.0285, "lon": 105.8542, "population": 8400000 },
+  {
+    "name": "Hai Phong",
+    "lat": 20.8449,
+    "lon": 106.6881,
+    "population": 2100000
+  },
+  { "name": "Can Tho", "lat": 10.0452, "lon": 105.7469, "population": 1250000 },
+  { "name": "Da Nang", "lat": 16.0544, "lon": 108.2022, "population": 1200000 }
+]

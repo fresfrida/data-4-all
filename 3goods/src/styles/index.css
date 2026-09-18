@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Keep focus rings visible for keyboard users — never strip these globally. */
+:focus-visible {
+  outline: 2px solid theme("colors.accent.600");
+  outline-offset: 2px;
+}

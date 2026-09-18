@@ -1,0 +1,1379 @@
+name,category,subtype,lat,lon,addr_city,addr_province,addr_street,osm_type,osm_id
+Bếp Ăn 0 Đồng Chú Long,social_facility,soup_kitchen,10.75134,106.62062,,,Đường số 4,node,13120817489
+Can thiệp sớm Hùng Vương,social_facility,day_care,21.04843,105.78418,Hà Nội,Hà Nội,Ngõ 234 Hoàng Quốc Việt,node,11211967774
+Câu Lạc Bộ Hưu Trí,social_facility,group_home,10.03524,105.77349,,,,node,5251201008
+Cơ Sở Bảo Trợ Tâm Đức,social_facility,shelter,10.76592,106.70537,,,,node,7559549346
+Cơ sở Cai nghiện Ma túy Số 2,social_facility,group_home,11.75939,108.13065,,,,way,1253457915
+Cơ sở Cai nghiện Ma túy Số 7,social_facility,group_home,21.12908,105.43581,,,,way,1185438607
+Cơ sở Cai nghiện ma tuý số 1 Hà Nội,social_facility,,21.0428,105.44945,,,,way,1193334312
+Cơ sở Cai nghiện ma tuý tỉnh Lạng Sơn,social_facility,group_home,21.79173,106.70363,,,,way,721627427
+Cơ sở Chăm sóc người bệnh tâm thần Vĩnh Long,social_facility,,10.22993,105.99769,,,,way,1119345122
+Hội người mù Thành Phố,social_facility,,10.76627,106.68849,Ho Chi Minh City,,Cống Quỳnh,way,465295975
+Làng May Mắn - Village Chance,social_facility,,10.77998,106.60078,Phường Bình Hưng Hòa A,TP. Hồ Chí Minh,Đường 18B,way,1369870088
+Làng Nuôi dạy trẻ mồ côi Hoa Phượng,social_facility,,20.82814,106.71198,,,,way,240477300
+Làng SOS Nhơn Bình,social_facility,,13.79817,109.19023,,,,way,194448017
+Làng Thiếu niên Thủ Đức,social_facility,group_home,10.85016,106.75782,,,,way,499426668
+Làng Trẻ Em Birla Hà Nội,social_facility,,21.04155,105.77857,,,,way,1064289885
+Làng Trẻ em SOS Gò Vấp,social_facility,,10.83909,106.6458,,,,way,299949717
+Làng Trẻ em SOS Hà Nội,social_facility,,21.0424,105.77929,Hà Nội,Hà Nội,,way,37765438
+Làng Trẻ em SOS Hải Phòng,social_facility,,20.84582,106.7105,,,,way,240590374
+Làng Trẻ em SOS Thanh Hóa,social_facility,,19.7885,105.79992,,,,way,1064289893
+Làng Trẻ em SOS Thái Bình,social_facility,,20.46328,106.34931,,,,way,1064289892
+Làng Trẻ em SOS Vinh,social_facility,,18.67983,105.68992,,,,way,1106602367
+Làng Trẻ em SOS Đà Nẵng,social_facility,,16.03324,108.24385,,,,way,1537448766
+Làng trẻ em SOS Việt Trì,social_facility,,21.32828,105.39549,,,,way,1064289886
+Làng trẻ em SOS Điện Biên Phủ,social_facility,,21.38013,103.00713,,,,way,1064289883
+Lưu xá Thanh niên - Làng Trẻ em SOS Vinh,social_facility,,18.68162,105.68941,,,,way,1540715278
+Mái Ấm Khiếm Thị Thiên Hòa,social_facility,,21.17019,106.05013,Bắc Ninh,Bac Ninh,Đường Nguyễn Văn Cừ,node,13954152963
+Mái ấm Pháp Hoa,social_facility,nursing_home,10.76327,106.49379,Hồ Chí Minh,,,node,12188480025
+Nhà Hưu Dưỡng - Tu Viện Chúa Quan Phòng,social_facility,group_home,10.50369,105.50013,,,,node,8123620942
+Nhà Hưu dưỡng Linh mục Giáo phận Xuân Lộc,social_facility,assisted_living,10.9562,106.87205,,,,way,583265524
+Nhà Thiếu nhi Thạnh Hóa,social_facility,,10.65555,106.18038,,,,way,1183970320
+Nhà Trọ Bùi Văn Nang,social_facility,group_home,10.0213,105.74227,,,,node,5257037777
+Nhà hưu dưỡng Linh mục Giáo phận Bà Rịa,social_facility,group_home,10.41226,107.20664,,,,way,793093025
+Nhà hưu dưỡng linh mục Chí Hòa,social_facility,nursing_home,10.78838,106.65484,,,,way,495698490
+Nhà trọ Tính Trần,social_facility,group_home,10.0479,105.76107,,,,node,5245441789
+Phương Đông Asahi,social_facility,nursing_home,21.06983,105.77446,,thành phố Hà Nội,Phố Viên,way,1378849373
+Trung Tâm Dưỡng Lão Thị Nghè,social_facility,,10.79633,106.71021,,,,node,1001114480
+Trung tâm Bảo trợ Cô nhi,social_facility,group_home,10.50888,107.189,,,,way,253641554
+"Trung tâm Bảo trợ Người già, Người khuyết tật và Người tâm thần Thành phố Đồng Nai",social_facility,nursing_home,10.9658,106.91155,,,,way,1020789461
+Trung tâm Bảo trợ Trẻ em Long Hải,social_facility,group_home,10.39426,107.23278,,,,way,268915943
+Trung tâm Bảo trợ Trẻ em Vũng Tàu,social_facility,shelter,10.38969,107.10814,,,,way,672383382
+Trung tâm Bảo trợ Trẻ em tỉnh Lào Cai,social_facility,shelter,22.48801,103.96399,,,,way,411390010
+Trung tâm Bảo trợ Trẻ em đường phố thành phố Đà Nẵng,social_facility,,16.05746,108.21855,,,Đường Phan Châu Trinh,way,1521242056
+Trung tâm Bảo trợ Xã hội Hường Hà Nguyệt,social_facility,nursing_home,21.6278,105.85061,,,,way,888768365
+Trung tâm Bảo trợ xã hội 1 Hà Nội,social_facility,,21.18574,105.41274,,,,way,1066700484
+Trung tâm Bảo trợ xã hội 2 Hà Nội,social_facility,,20.8072,105.71436,,,,way,1066700501
+Trung tâm Bảo trợ xã hội 3 Hà Nội,social_facility,,21.01501,105.74148,,,,way,1066700481
+Trung tâm Bảo trợ xã hội 3 Hà Nội (cơ sở 3),social_facility,,21.03326,105.772,,,Phố Nguyễn Hoàng,way,1066700500
+"Trung tâm Bảo trợ xã hội Chăm sóc và Phục hồi chức năng người tâm thần, người rối nhiễu tâm trí tỉnh Khánh Hòa",social_facility,,12.25778,109.04199,,,,way,1529014293
+Trung tâm Bảo vệ Bà mẹ & Trẻ em,social_facility,,10.51477,107.19521,,,,way,568980570
+Trung tâm Chăm sóc người khuyết tật Hà Nội,social_facility,,21.15643,105.40564,,,,way,1066700477
+Trung tâm Chăm sóc và Phục hồi chức năng người tâm thần số 1 Hà Nội,social_facility,,21.15799,105.40436,,,,way,1066700483
+Trung tâm Chăm sóc và Phục hồi chức năng người tâm thần số 2 Hà Nội,social_facility,,21.19846,105.37588,,,,way,1066700487
+"Trung tâm Chăm sóc, Nuôi dưỡng và Điều trị nạn nhân bị nhiễm chất độc màu da cam/dioxin Hà Nội",social_facility,,21.05243,105.42931,,,,way,1529532379
+"Trung tâm Chăm sóc, nuôi dưỡng người có công Thanh Hóa",social_facility,,19.74823,105.8672,,,,way,1174483441
+Trung tâm Công tác Xã hội Ninh Thuận,social_facility,,11.57456,108.99551,,,,way,1534840878
+Trung tâm Công tác Xã hội Thành phố Đồng Nai,social_facility,group_home,10.96128,106.87256,,,,way,1178524941
+Trung tâm Công tác xã hội - Giáo dục dạy nghề thiếu niên Thành phố Hồ Chí Minh,social_facility,,10.82301,106.68687,,,,way,1044435590
+Trung tâm Công tác xã hội tỉnh Tiền Giang,social_facility,,10.35201,106.39733,,,,way,1039473324
+Trung tâm Công tác xã hội và Quỹ Bảo trợ trẻ em Hà Nội (cơ sở 2),social_facility,,21.09729,105.8958,,,,way,1066700480
+Trung tâm Giáo dục Lao động & Dạy nghề,social_facility,group_home,10.60761,107.08746,,,,way,744898281
+Trung tâm Hỗ trợ phát triển - Giáo dục hướng nghiệp Trẻ khuyết tật Hồng Lĩnh,social_facility,,18.5155,105.70632,,,,way,1546648056
+Trung tâm Nghiên cứu & Ứng dụng khoa học về Giới - Gia đình và Vị thành niên CSAGA,social_facility,,21.03158,105.78543,,,"Số 35, ngõ 66 Dịch Vọng Hậu",way,1507597289
+Trung tâm Nuôi dưỡng người già neo đơn,social_facility,group_home,10.43779,107.22088,,,,way,835039971
+Trung tâm Nuôi dưỡng trẻ khuyết tật Hà Nội,social_facility,,20.92725,105.71918,,,,way,1066700475
+Trung tâm Nuôi dưỡng và Bảo trợ xã hội Hải Phòng,social_facility,,20.78234,106.61128,,,,way,1190767880
+Trung tâm Nuôi dưỡng và Điều dưỡng Người có công số 1 Hà Nội,social_facility,,20.98239,105.77863,,,Đường Thanh Bình,way,1529532394
+Trung tâm Nuôi dưỡng và Điều dưỡng Người có công số 2 Hà Nội,social_facility,,20.8059,105.72523,,,,way,1529532392
+Trung tâm Nuôi dưỡng và Điều dưỡng Người có công số 3 Hà Nội,social_facility,,21.08085,105.45806,,,,way,1529532391
+Trung tâm Nuôi dưỡng và Điều dưỡng Người có công số 4 Hà Nội,social_facility,,20.93315,105.72689,,,,way,1066700491
+Trung tâm Nuôi dạy trẻ mồ côi Hoa Mai,social_facility,,15.98368,108.2367,,,,way,1288824253
+Trung tâm Phục hồi chức năng Việt-Hàn,social_facility,,20.93156,105.56529,,,,way,1066700479
+Trung tâm Phục hồi chức năng người khuyết tật Thuỵ An,social_facility,,21.15937,105.41612,,,,way,1090886426
+Trung tâm Xã hội,social_facility,assisted_living,10.60803,107.08289,,,,way,744898279
+Trung tâm bảo trợ xã hội Chánh Phú Hòa,social_facility,,11.18104,106.66437,,,,node,2321477214
+Trung tâm chăm sóc người cao tuổi Nhân Ái,social_facility,nursing_home,21.05852,105.7505,,,đường Văn Tiến Dũng,node,9593474596
+Trung tâm dạy nghề - phục hồi chức năng cho người tàn tật,social_facility,,21.19318,106.08492,Thành phố Bắc Ninh,Bac Ninh,Đường Hoàng Quốc Việt,way,1410516612
+Trung tâm dịch vụ hậu cần nghề cá đảo Đá Tây A,social_facility,,8.86684,112.25618,,,,way,1190320960
+Trung tâm Điều dưỡng Người có công Hà Nội,social_facility,,21.15262,105.28417,,,,way,1066700488
+Trung tâm Điều dưỡng Người có công tỉnh Đắk Lắk,social_facility,nursing_home,12.72646,108.08866,,,,way,1391305424
+Trung tâm Điều dưỡng Người tâm thần Hải Phòng,social_facility,,20.72888,106.46789,,,,way,1190767868
+Trung tâm Điều dưỡng Thương binh & Người có công Long Đất,social_facility,,10.39162,107.23372,,,,way,691444050
+Trung tâm Điều dưỡng Tâm thần kinh Hưng Yên,social_facility,,20.71944,106.02865,,,,way,1066840334
+Trung tâm Điều dưỡng thương binh Thuận Thành,social_facility,,21.01613,106.09385,Bắc Ninh,Bac Ninh,,way,1539697447
+Trường dạy nghề cho người khuyết tật,social_facility,,20.46895,106.34216,,,,way,920010972
+Trại trẻ mồ côi An Thạnh,social_facility,assisted_living,10.02023,105.77114,,,,node,5177658051
+Trại trẻ mồ côi An Thạnh,social_facility,assisted_living,10.02023,105.77114,Cần Thơ,,,way,166561658
+"Viện Nghiên cứu Xã hội, Kinh tế và Môi trường (iSEE)",social_facility,,21.02761,105.82371,,,C11 Phố Giảng Võ,node,9805222061
+Hội Phụ nữ Từ thiện Thành phố Hồ Chí Minh,charity,,10.78188,106.69275,,,,node,10727278253
+Trung tâm nuôi dạy trẻ khuyết tật Đồng Hới,charity,,17.45184,106.62035,,,,way,941174078
+AgoHub,community_centre,,21.01584,105.85569,Hà Nội,Hà Nội,Phố Hoà Mã,way,940307978
+Atm vcb cty himaru,community_centre,,10.89692,106.74669,,,,node,4840944626
+BCHQS huyện Long Thành,community_centre,,10.78102,106.95151,,,,node,4513209989
+Ban Chỉ Huy Quân Sự Phường Yên Hoà,community_centre,,21.00968,105.80853,,,,way,1171597390
+Ban Điều hành Khu phố 2,community_centre,,10.96341,106.83666,,,,way,1051538610
+Ban điều hành Khu phố Tân An,community_centre,,10.90961,106.79306,,,Đường Tân An,way,1344367097
+Ban điều hành Khu phố Đông An,community_centre,,10.91658,106.78177,,,,way,1361176530
+Bản Khe Nóng,community_centre,,19.00334,104.75381,,,,node,6263149785
+Bản Đoòng,community_centre,,17.44973,106.31924,,,,node,4409014092
+Bảo hiểm MIC,community_centre,,10.0239,105.76658,,,3 Tháng 2,node,5177675586
+CLB Dưỡng sinh Liên Hoa,community_centre,,21.17324,106.05954,Bắc Ninh,Bac Ninh,Phố Nguyên Hồng,node,13898848661
+Christian community events pagoda,community_centre,,11.63286,107.74256,,,,node,13584878604
+Chợ Cam Đức,community_centre,,12.05556,109.16052,,,Trường Chinh (QL1a),node,6415420087
+Cty TNHH Giải pháp Phần mềm Miễn phí,community_centre,,10.85135,106.7491,,,"Linh Đông, Q. Thủ Đức",node,4365333789
+Cty lee vina,community_centre,,10.95961,106.70608,,,,node,4822284623
+Cung Thanh niên Hà Nội (cơ sở 2),community_centre,,21.01808,105.84441,,,,way,865855240
+Cung Thiếu nhi Hà Nội,community_centre,,21.02524,105.78078,,,,way,932758885
+Cung Thiếu nhi Đà Nẵng,community_centre,,16.03887,108.22523,,,Đường Phan Đăng Lưu,way,667422707
+Cung Văn Hóa Lao Động,community_centre,,10.77623,106.69298,,,Nguyễn Thị Minh Khai,way,469844102
+Cung Văn Hóa Thiếu Nhi,community_centre,,21.3878,103.01415,,,,way,962983645
+Cung Văn Hóa Thiếu Nhi TP,community_centre,,20.8458,106.69272,,,,way,240473052
+Cung Văn hóa Lao động Hữu nghị Việt Xô,community_centre,,21.02222,105.84423,Hà Nội,Hà Nội,Phố Trần Hưng Đạo,way,228075195
+Cung thiếu nhi tỉnh Quảng Trị,community_centre,,17.46709,106.624,,,,node,10756203754
+Cung văn hóa thiếu nhi Cẩm Phả,community_centre,,21.00819,107.27378,,,,way,625066636
+Cung văn hóa thiếu nhi Hải Phòng,community_centre,,20.84554,106.69222,,,,way,801476083
+Cung văn hóa thiếu nhi tỉnh Quảng Ninh,community_centre,,20.95424,107.09356,,,,node,6314160916
+Cyber Cafe,community_centre,,11.95656,108.44236,,,,node,4908284722
+Công Ty CP Tập Đoàn Intimex,community_centre,,10.79151,106.69722,,,Nguyễn Văn Giai,node,4443443091
+Công sở xã Thạch Cẩm,community_centre,,20.24246,105.55864,,,,node,11052276899
+Cơ quan hành chính,community_centre,,20.89911,106.67306,,,,way,241425401
+Cổng làng Thượng Kỳ,community_centre,,20.24581,106.16827,,,,node,8789675719
+EcoXuan,community_centre,,10.91036,106.71113,,,,node,4216600590
+Gươl,community_centre,,15.94278,107.56819,,,,way,624164453
+H[,community_centre,,10.73605,106.71253,,,,node,4822367621
+Hai thang 2,community_centre,,10.94156,108.08825,,,Trường Chinh,node,4733470622
+Hanoi Creative City,community_centre,,21.01257,105.86323,,,Phố Lương Yên,node,4280807465
+Hiệp hội chữ thập đỏ Việt nam Thành phố cần thơ,community_centre,,10.04445,105.7788,,,Hùng Vương,node,5257253721
+Hup Thủ Dầu Một,community_centre,,10.98181,106.67145,,,,node,4936324121
+Hội Trường Cao Hy,community_centre,,16.85478,107.17206,,Quảng Trị,,way,833213413
+Hội quán Hải Nam,community_centre,,15.87787,108.332,Hội An,,Trần Phú,node,2092582385
+Hội trường B6,community_centre,,21.00624,105.84614,,,,way,825567108
+Hội trường Trung tâm phường Yên Phong,community_centre,,21.19906,105.94733,Thành phố Bắc Ninh,Bac Ninh,Đường Nguyễn Bỉnh Khiêm,way,1435144875
+Hội trường thôn Bình Chính,community_centre,,20.18501,105.61733,,,,node,11097879517
+Hội trường thôn Bình Sậy,community_centre,,20.18598,105.61007,,,,node,11051475335
+Hội trường thôn Liên Sơn,community_centre,,20.18425,105.60153,,,,node,11051475334
+Hội trường thôn Nam Sơn,community_centre,,18.93246,104.95392,,,,node,5866785885
+Hội trường thôn Tân Hoà - Thái Hoà,community_centre,,18.91878,104.97327,,,,node,5866658885
+Hội trường thôn Xuân Thắng,community_centre,,20.20817,105.57887,,,,node,11058014274
+Hội trường thôn Đồng Hương,community_centre,,20.19156,105.60136,,,,node,11051475336
+Hội trường tổ dân phố 6,community_centre,,12.64912,108.0294,,,Y Wang,node,4314406192
+Hội trường Đa Năng Phường Đình Bảng,community_centre,,21.11109,105.95094,Bắc Ninh,Bac Ninh,Phố Nguyễn Văn Trỗi,way,577155241
+"Hội trưởng Tổ dân phố Sào Nam, Lâm Văn Thạnh",community_centre,,11.94067,108.48486,,,,way,1355610497
+Ibi,community_centre,,10.73605,106.71277,,,,node,4822351021
+Khu Trung tâm Văn hóa TDTT Long Châu,community_centre,,20.94204,105.69961,Hà Nội,Hà Nội,Đường Long Châu,node,7848823560
+Khu Văn hóa - Thể thao Long Châu,community_centre,,21.19128,105.99029,Thành phố Bắc Ninh,Bac Ninh,,way,1549020131
+Khu tái định cư thủy điện Lai Châu,community_centre,,22.00767,103.1564,,,,node,4411033491
+Khu văn hóa thể thao Phong Xá,community_centre,,21.19458,106.01812,Bắc Ninh,Bac Ninh,,way,1475181234
+Không Gian Sách Và Văn Hóa Huế,community_centre,,16.46632,107.58887,,,Lê Lợi,way,118541430
+Không gian Văn hóa Việt,community_centre,,21.02865,105.8511,,,Phố Lê Thái Tổ,way,701882953
+Khởi nghiệp,community_centre,,21.02924,105.92219,,,,way,1231318502
+Licogi 17,community_centre,,21.10636,106.39645,,,,node,7555065696
+Làng Truyền thống Dân tộc Cơ Ho,community_centre,,11.56507,108.08143,,,,node,14100333538
+Làng du lịch cộng đồng Kon BBRing,community_centre,,14.60188,108.30168,,,,node,5515397321
+Làng Đắk Sao (Thôn Đắk Da),community_centre,,14.94022,108.23264,,,,node,5798207954
+Lùng Noong,community_centre,,22.33819,105.62097,,,,node,5716662421
+Lặng Art,community_centre,,11.94426,108.42192,,,Nguyễn Khuyến,node,13788687601
+Mekong Restop,community_centre,,10.41457,106.33921,,,,node,10675402805
+Ms sctv d nguyen trai,community_centre,,10.9055,106.75673,,,,node,4840958621
+Ms tân yuêm,community_centre,,11.10382,106.76284,,,,node,5317470921
+Ms1 lee bk,community_centre,,10.95881,106.71734,,,,node,5608414422
+Mssctv noi thai binh giay,community_centre,,10.87749,106.7589,,,,node,4840944523
+NHÀ VĂN HÓA LÀNG THÀNH TRUNG,community_centre,,16.53837,107.56483,,,Thành Trung,node,12178405401
+Nam Dam,community_centre,,23.04286,105.01694,,,,node,5294733029
+Nghi ngho,community_centre,,10.87771,106.76032,,,,node,4840958623
+Ngoại Ngữ Việt Mĩ,community_centre,,20.83941,106.69427,,,,node,2482094599
+Nha hang tiec cuoi Kim Son 1,community_centre,,10.40223,107.18289,,,Hương lộ 5,node,5160214021
+Nha thiếu nhi tinh,community_centre,,10.92854,108.09987,,,Bà Triệu,node,4740859122
+Nha thong tin Yen Ha,community_centre,,9.99312,105.74783,,,,node,5246574478
+Nhà,community_centre,,13.08662,109.31541,,,Hùng Vương,node,4228450091
+Nhà văn hoá thôn Yên Bệ,community_centre,,21.04733,105.70872,,,,way,498550264
+Nhon Ly Community Center,community_centre,,13.88316,109.28844,,,,node,11348058702
+Nhà Hội họp Khu dân cư 8,community_centre,,20.98726,105.84582,,,,way,1491155167
+Nhà Hội họp Khu dân cư số 7,community_centre,,20.99257,105.84001,,,,way,1481173165
+Nhà Sinh hoạt cộng đồng,community_centre,,21.00666,105.83694,,,,way,1021332445
+Nhà Thiếu Nhi Quận 10,community_centre,,10.78144,106.65968,,,Bắc Hải,node,4208957990
+Nhà Thiếu Nhi Quận 7,community_centre,,10.74618,106.70495,,,,node,2689392219
+Nhà Thiếu Nhi Tỉnh BR-VT,community_centre,,10.34107,107.0754,,,,way,953610335
+Nhà Thiếu nhi Long Khánh,community_centre,,10.92942,107.24191,,,,way,659038338
+Nhà Thiếu nhi quận 9,community_centre,,10.84432,106.77959,,,,node,4290033102
+Nhà Thiếu nhi thị xã Sơn Tây,community_centre,,21.14046,105.50215,,,,way,947089984
+Nhà Thiếu nhi tỉnh Hải Dương,community_centre,,20.9417,106.3291,,,Đường Hoàng Hoa Thám,way,1279808608
+Nhà Thiếu nhi tỉnh Khánh Hòa,community_centre,,12.24839,109.18812,,Tỉnh Khánh Hòa,"Nhà Thiếu Nhi Tỉnh Khánh Hòa Đường Lê Thành Phương,",way,1241549485
+Nhà Thông Tin,community_centre,,10.0013,105.74489,,,,node,5253343581
+Nhà Thông Tin Khu Vực yên Binh - Lê Bình,community_centre,,10.00403,105.74931,,,,node,5253339379
+Nhà Thông tin Khu vực 5,community_centre,,10.05385,105.77585,,,,way,543816851
+Nhà Thờ Tin Lành Định Quán,community_centre,,11.18815,107.34726,,,,node,5404609722
+Nhà Văn Hoá Thôn Đông 1 Xã Diên Điền,community_centre,,12.2803,109.10778,,,,node,14017167755
+Nhà Văn Hóa Như Phượng Hạ,community_centre,,20.93773,105.95918,,,,node,13288458666
+Nhà Văn Hóa Phượng Đồng,community_centre,,20.94134,105.70813,,,,way,842611515
+Nhà Văn Hóa Phố Nam Phát,community_centre,,20.83328,106.69598,,,,node,2483260119
+Nhà Văn Hóa Quận 9,community_centre,,10.84004,106.77935,,,số 4,node,4269783098
+Nhà Văn Hóa Thôn Lại Đà,community_centre,,21.07677,105.86657,,,,way,1478526803
+Nhà Văn Hóa Thôn Như Lân,community_centre,,20.95004,105.95357,,,,node,13310844679
+Nhà Văn Hóa Thôn Thế Trụ,community_centre,,20.97142,105.61874,,,,node,6184420089
+Nhà Văn Hóa Thôn Đồng Hương,community_centre,,20.19157,105.60137,,,,node,11097879518
+Nhà Văn Hóa Xã Tân Thành,community_centre,,11.51125,106.29423,,Tây Ninh,,node,11119572912
+Nhà Văn Hóa Ấp 3,community_centre,,10.26559,106.41025,,,,way,1134824100
+Nhà Văn hóa - Thể Thao huyện M'Đrăk,community_centre,,12.7486,108.74198,,,,node,14091661614
+Nhà Văn hóa Khu dân cư số 1,community_centre,,20.99259,105.85162,,,,way,1461315310
+"Nhà Văn hóa Khu dân cư số 2,3",community_centre,,20.99231,105.85388,,,,way,1461464089
+Nhà Văn hóa Lao động Nghệ An,community_centre,,18.66882,105.68504,,,,way,974191873
+Nhà Văn hóa Lao động thành phố Đà Nẵng,community_centre,,16.0273,108.2209,,,,way,695008800
+Nhà Văn hóa Lao động tỉnh Hưng Yên,community_centre,,20.67025,106.05752,,,,way,977788062
+Nhà Văn hóa Lao động tỉnh Phú Thọ,community_centre,,21.31182,105.39679,,,Đường Hùng Vương,way,1450809993
+Nhà Văn hóa Lao động tỉnh Thanh Hóa,community_centre,,19.80154,105.78138,,,,way,1118243872
+Nhà Văn hóa Lao động tỉnh Đăk Nông,community_centre,,11.98949,107.69627,,,,way,654251638
+Nhà Văn hóa Phường 5,community_centre,,10.35403,106.67058,,,Trương Quyền,way,1341155342
+Nhà Văn hóa Sinh hoạt Công nhân Cẩm Phả,community_centre,,21.00608,107.24647,,,,way,678843443
+Nhà Văn hóa Sinh viên,community_centre,,10.87523,106.80052,Bình Dương,,Lưu Hữu Phước,way,717915808
+Nhà Văn hóa Thiếu nhi Thành phố Bắc Ninh,community_centre,,21.27421,106.19574,Thành phố Bắc Ninh,Bac Ninh,,way,1279811894
+Nhà Văn hóa Thiếu nhi thành phố Cần Thơ,community_centre,,10.03245,105.7823,,,Hòa Bình,way,89626468
+Nhà Văn hóa Thôn Mễ Sơn,community_centre,,20.85572,105.85297,,,,way,1462823686
+Nhà Văn hóa Thôn Đình Tổ,community_centre,,20.85397,105.85693,,,,way,1462823688
+Nhà Văn hóa Thường Tín,community_centre,,20.87003,105.86292,,,,way,1190573692
+Nhà Văn hóa Thượng Kỳ,community_centre,,20.2475,106.16701,,,,node,8789675918
+Nhà Văn hóa Tuyên Sơn 3,community_centre,,16.02977,108.22375,,,,way,695008810
+Nhà Văn hóa Xóm Đường,community_centre,,21.17442,105.84128,,,,node,7087736275
+Nhà Văn hóa phường Quế Võ,community_centre,,21.15113,106.15416,Thành phố Bắc Ninh,Bac Ninh,Phố Nguyễn Lượng,way,1037115098
+Nhà Văn hóa quận Bắc Từ Liêm,community_centre,,21.04792,105.75086,Hà Nội,,Phố Võ Quý Huân,way,957527737
+Nhà Văn hóa thôn Trung Thôn,community_centre,,21.09549,105.86723,,,,way,1462796650
+Nhà Văn hóa thôn Ái Mộ,community_centre,,21.08621,105.90608,,,,way,660703578
+Nhà Văn hóa xã Nhân Nghĩa,community_centre,,10.83975,107.23768,,,,way,727099340
+Nhà Văn hóa ấp Đồng Kèn 2,community_centre,,11.4581,106.30053,,Tây Ninh,,node,11119580684
+Nhà cộng đồng TDP Ea Tút,community_centre,,12.95286,108.23598,,Đăk Lăk,Đường Trần Hưng Đạo,node,13142432295
+Nhà gươl,community_centre,,15.88557,107.49077,,,,way,622734443
+Nhà hội họp Khu dân cư 13 & 14,community_centre,,20.99231,105.83591,,,Ngõ 14 Phố Nguyễn Lân,way,1413039667
+Nhà hội họp tổ dân phố 28,community_centre,,20.97707,105.85055,,,Ngách 143/74 Phố Nguyễn Chính,way,1484793128
+Nhà khách Đình La Tinh,community_centre,,20.96695,105.72971,,,Ngõ 63 đường La tinh 1,way,1462058357
+Nhà khách Đình Phú Thứ,community_centre,,21.00244,105.75083,,Thành phố Hà Nội,Ngách 27/9 Đường Tây Mỗ,way,1412518402
+Nhà rông Kon K'Tu,community_centre,,14.32925,108.0646,,,,way,464761108
+Nhà sinh hoạt Công nhân Than Cọc 6,community_centre,,21.01412,107.33547,,,,way,680646166
+Nhà sinh hoạt Tổ dân phố số 10,community_centre,,21.04856,105.80768,Hà Nội,Hà Nội,Đường Thụy Khuê,way,1164592874
+Nhà sinh hoạt cộng đồng phường Nguyễn Du,community_centre,,21.01471,105.85029,Hà Nội,Hà Nội,Phố Triệu Việt Vương,node,11625397942
+Nhà sinh hoạt cộng đồng phường Nguyễn Du,community_centre,,21.01485,105.85055,Hà Nội,Hà Nội,Phố Triệu Việt Vương,way,1238050543
+Nhà sinh hoạt cộng đồng tổ 15,community_centre,,21.02243,105.79328,,,,way,1461843411
+Nhà sinh hoạt cộng đồng Địa bàn dân cư số 1,community_centre,,21.00451,105.84163,,,,way,1228585404
+Nhà sinh hoạt cộng đồng địa bàn dân cư số 2,community_centre,,21.03934,105.81327,,,Ngách 127/6 Phố Đốc Ngữ,way,1463954728
+Nhà thiếu nhi Huyện Giồng Riềng,community_centre,,9.90952,105.31194,,,,way,686120815
+Nhà thiếu nhi Kim Đồng,community_centre,,22.66475,106.25797,,,,way,1079049760
+Nhà thiếu nhi Quận 11,community_centre,,10.76177,106.64976,,Hồ Chí Minh,Dương Đình Nghệ,way,853382375
+Nhà thiếu nhi Quận 4,community_centre,,10.75882,106.69798,,,,way,682412576
+Nhà thiếu nhi Quận 6,community_centre,,10.7434,106.6351,Ho Chi Minh City,,Nguyễn Văn Luông,way,511205596
+Nhà thiếu nhi Thành phố Hồ Chí Minh,community_centre,,10.78396,106.68891,,,,way,663397402
+Nhà thiếu nhi Thái Nguyên,community_centre,,21.59539,105.84452,,,,way,1084250521
+Nhà thiếu nhi huyện An Dương,community_centre,,20.86461,106.61243,,,,way,1090888677
+Nhà thiếu nhi huyện Cần Giờ,community_centre,,10.40835,106.95671,,,,way,754576777
+Nhà thể thao Khu phố 22,community_centre,,10.38959,107.11187,,,,way,1424707383
+Nhà thờ Hòa Nghĩa,community_centre,,12.05241,109.15734,,,Nguyễn Trãi,node,6415422885
+Nhà thờ Hòa Yên,community_centre,,12.05655,109.15399,,,Nguyễn Du,node,6415407985
+Nhà truyền thống xã Nghĩa Trụ,community_centre,,20.95482,105.98666,,,,node,13363066022
+Nhà tổ 22 phường Dịch Vọng,community_centre,,21.03497,105.79194,,,,way,1251028882
+Nhà tổ dân phố 1 Dịch Vọng Hậu,community_centre,,21.04399,105.78521,Hà Nội,,Đường Đặng Thùy Trâm,way,1007899330
+Nhà tổ dân phố 1 Dịch Vọng Hậu,community_centre,,21.04291,105.78677,,,,way,1243455283
+Nhà tổ dân phố Hoàng 16,community_centre,,21.04937,105.78429,Hà Nội,Hà Nội,,way,1211613046
+Nhà tổ dân phố Hoàng 18,community_centre,,21.04735,105.78333,Hà Nội,Hà Nội,Ngõ 238 Hoàng Quốc Việt,way,1210271468
+Nhà vă hóa và trụ sở ấp Hưng Lợi Tây,community_centre,,10.31882,105.6731,,,,node,13329815901
+Nhà văn chỉ Yên Duyên,community_centre,,20.96874,105.87132,,,,way,1510220376
+Nhà văn hoá phụ nữ - cơ sở Phan Xích Long,community_centre,,10.79704,106.69225,,,Phan Xích Long,node,13847912901
+Nhà văn hòa Tô dân phố Xuân Ổ A,community_centre,,21.15524,106.03844,Bắc Ninh,Bac Ninh,,way,1380858819
+Nhà văn hòa Tổ dân phố Thị Cầu 6,community_centre,,21.19576,106.08564,Bắc Ninh,Bac Ninh,,way,1383520280
+Nhà văn hòa Tổ dân phố Đồng Chuế,community_centre,,21.18508,106.14675,Thành phố Bắc Ninh,Bac Ninh,,way,1346325234
+Nhà văn hóa  làng Cầu,community_centre,,20.93257,106.0069,,,,node,13200056812
+Nhà văn hóa - Hội trường thôn Quan Độ,community_centre,,21.16692,105.92617,Bắc Ninh,Bac Ninh,,way,1482914845
+Nhà văn hóa 3-2,community_centre,,20.43307,106.18144,,,,way,1062489765
+Nhà văn hóa An Nhơn,community_centre,,13.88666,109.11356,,,Trần Phú,node,4679471089
+Nhà văn hóa An Phú Tây,community_centre,,10.68243,106.61553,,,,way,489591413
+Nhà văn hóa An Đào,community_centre,,21.00096,105.94054,,,,way,1322156153
+Nhà văn hóa Bản Trung Chính,community_centre,,19.00645,104.84041,,,,node,5900752986
+Nhà văn hóa Bắc Mai Dịch,community_centre,,21.04292,105.77617,,,,way,954924142
+Nhà văn hóa Bằng A,community_centre,,20.96135,105.82147,Hanoi,Hanoi,Ngõ 15 Bằng Liệt,node,6849163864
+Nhà văn hóa Cái Răng,community_centre,,10.00528,105.75097,,,,way,544270607
+Nhà văn hóa Công nhân Hà Tu,community_centre,,20.95822,107.15502,,,,way,675996006
+Nhà văn hóa Cầu Đào,community_centre,,21.06341,106.23386,Bắc Ninh,Bac Ninh,Phố Ngụ,way,1349895601
+Nhà văn hóa Giáp Nhị,community_centre,,20.9759,105.84603,,,,way,1489635598
+Nhà văn hóa Giấy Bãi Bằng,community_centre,,21.40088,105.3179,,,,way,1211601205
+Nhà văn hóa Hòa Bình Hạ,community_centre,,20.92649,105.96467,,,,way,1480749969
+Nhà văn hóa Hòa Bình Thượng,community_centre,,20.93149,105.96535,,,,way,1480749975
+Nhà văn hóa KP Đa Ngư,community_centre,,12.96141,109.39752,,,,node,13444668094
+Nhà văn hóa KTT Cầu 12,community_centre,,21.03281,105.94927,,,,way,1221316628
+Nhà văn hóa Khu 9A,community_centre,,20.95503,107.02369,,,,way,674647554
+Nhà văn hóa Khu Vạn Phúc,community_centre,,21.20592,106.0378,Bắc Ninh,Bac Ninh,Đường Vạn An - Tam Đa,way,790821817
+Nhà văn hóa Khu dân cư 6,community_centre,,8.68357,106.60831,,,,way,751056566
+Nhà văn hóa Khu dân cư Thăng Long - Hải Bối,community_centre,,21.11097,105.78899,,,,node,12595041061
+Nhà văn hóa Khu phố 1,community_centre,,10.96728,106.86497,,,,node,12641846841
+Nhà văn hóa Khu phố 1,community_centre,,10.96884,106.85602,Thành phố Biên Hòa,Tỉnh Đồng Nai,Đường Đồng Khởi,way,984360669
+Nhà văn hóa Khu phố 1,community_centre,,10.93402,106.85317,,,,way,1040527277
+Nhà văn hóa Khu phố 1,community_centre,,10.96232,106.78042,,,,way,1046846552
+Nhà văn hóa Khu phố 1,community_centre,,10.93578,106.81621,,,,way,1047084809
+Nhà văn hóa Khu phố 1,community_centre,,10.91612,106.82857,,,,way,1047084817
+Nhà văn hóa Khu phố 1,community_centre,,10.969,106.83635,,,,way,1047866492
+Nhà văn hóa Khu phố 1,community_centre,,10.95364,106.83857,,,,way,1055682139
+Nhà văn hóa Khu phố 1,community_centre,,10.95972,106.83758,,,,way,1112898947
+Nhà văn hóa Khu phố 10,community_centre,,10.94988,106.82138,,,,way,1021639852
+Nhà văn hóa Khu phố 10,community_centre,,10.90575,106.84566,,,,way,1034404639
+Nhà văn hóa Khu phố 10,community_centre,,10.97644,106.8859,,,,way,1040799946
+Nhà văn hóa Khu phố 11,community_centre,,10.98092,106.84063,,,,way,1178316079
+Nhà văn hóa Khu phố 11A,community_centre,,10.98544,106.83679,,,,way,1178322762
+Nhà văn hóa Khu phố 13,community_centre,,10.96009,106.85726,,,,way,1080766826
+Nhà văn hóa Khu phố 17,community_centre,,10.95895,106.84449,,,,way,1039072267
+Nhà văn hóa Khu phố 2,community_centre,,10.93008,106.82054,,,,way,1040527273
+Nhà văn hóa Khu phố 2,community_centre,,10.98096,106.85611,,,,way,1044279143
+Nhà văn hóa Khu phố 2,community_centre,,10.94879,106.78559,,,,way,1046846563
+Nhà văn hóa Khu phố 27,community_centre,,10.96402,106.84927,,,,way,1023293032
+Nhà văn hóa Khu phố 3,community_centre,,10.94834,106.81879,,,,way,1033814269
+Nhà văn hóa Khu phố 3,community_centre,,10.95125,106.81222,,,,way,1041414665
+Nhà văn hóa Khu phố 3,community_centre,,10.926,106.81099,,,,way,1044436166
+Nhà văn hóa Khu phố 3,community_centre,,10.95491,106.78363,,,,way,1046846567
+Nhà văn hóa Khu phố 3,community_centre,,10.96689,106.83827,,,,way,1047840515
+Nhà văn hóa Khu phố 3,community_centre,,10.98978,106.85305,,,,way,1082624108
+Nhà văn hóa Khu phố 3A,community_centre,,10.99196,106.86395,,,,way,1274528703
+Nhà văn hóa Khu phố 4,community_centre,,10.9283,106.82278,,,,way,1044436164
+Nhà văn hóa Khu phố 4,community_centre,,10.94982,106.77787,,,,way,1046846543
+Nhà văn hóa Khu phố 4,community_centre,,10.9679,106.83597,,,,way,1049517969
+Nhà văn hóa Khu phố 4,community_centre,,10.95461,106.83489,,,,way,1049570839
+Nhà văn hóa Khu phố 4B,community_centre,,10.99874,106.87889,,,,way,1112903287
+Nhà văn hóa Khu phố 5,community_centre,,10.97651,106.87514,,,,way,1040799942
+Nhà văn hóa Khu phố 5,community_centre,,10.92528,106.82164,,,,way,1047084812
+Nhà văn hóa Khu phố 5,community_centre,,10.98164,106.86655,,,,way,1112903286
+Nhà văn hóa Khu phố 5,community_centre,,10.95088,106.85803,,,,way,1425704160
+Nhà văn hóa Khu phố 6,community_centre,,10.94257,106.82815,,,,way,1026179684
+Nhà văn hóa Khu phố 6,community_centre,,10.95673,106.82264,,,,way,1054161459
+Nhà văn hóa Khu phố 6,community_centre,,10.96814,106.83897,,,,way,1064768890
+Nhà văn hóa Khu phố 6,community_centre,,10.95587,106.86135,,,,way,1085721444
+Nhà văn hóa Khu phố 6,community_centre,,10.94625,106.86781,,,,way,1355193810
+Nhà văn hóa Khu phố 7,community_centre,,10.95376,106.85287,,,,way,1039029831
+Nhà văn hóa Khu phố 7,community_centre,,10.96193,106.85208,,,,way,1050288357
+Nhà văn hóa Khu phố 7,community_centre,,10.97131,106.84501,,,,way,1178329297
+Nhà văn hóa Khu phố 8,community_centre,,10.97829,106.87854,,,,way,1040799945
+Nhà văn hóa Khu phố 8,community_centre,,10.96755,106.85236,,,,way,1049517974
+Nhà văn hóa Khu phố 8,community_centre,,11.09762,107.03332,,,,way,1050961973
+Nhà văn hóa Khu phố 9,community_centre,,10.96239,106.89698,,,,way,1009624050
+Nhà văn hóa Khu phố 9,community_centre,,10.97695,106.84772,,,,way,1081679328
+Nhà văn hóa Khu phố An Hoà,community_centre,,10.93536,106.80136,,,,way,1046823577
+Nhà văn hóa Khu phố Bình Hóa,community_centre,,10.9436,106.79681,,,,way,1046823573
+Nhà văn hóa Khu phố Bính Hạ,community_centre,,21.11609,105.95241,Bắc Ninh,Bac Ninh,Phố Bính Hạ,way,1423063990
+Nhà văn hóa Khu phố Bất Phí,community_centre,,21.18336,106.13734,Bắc Ninh,Bắc Ninh,Đường Quang Trung,way,1417560233
+Nhà văn hóa Khu phố Châm Khê,community_centre,,21.17723,106.03624,Bắc Ninh,Bac Ninh,,way,1415665786
+Nhà văn hóa Khu phố Cung Kiệm,community_centre,,21.18489,106.15976,,,,way,1326069115
+Nhà văn hóa Khu phố Cầu Hang,community_centre,,10.92525,106.8025,,,,way,1046823580
+Nhà văn hóa Khu phố Dương Ổ,community_centre,,21.16371,106.03291,Bắc Ninh,Bac Ninh,Đường Cầu Tiên,way,1448426846
+Nhà văn hóa Khu phố Lựa,community_centre,,21.14153,106.17578,Bắc Ninh,Bac Ninh,,node,12803450979
+Nhà văn hóa Khu phố Miễu,community_centre,,10.88477,106.90307,,,,way,1044255041
+Nhà văn hóa Khu phố Nam Hà,community_centre,,10.95101,106.82546,,,,way,1040527279
+Nhà văn hóa Khu phố Nghè,community_centre,,21.14029,105.94426,Bắc Ninh,Bac Ninh,Phố Đồng Kỵ 2,way,1422856228
+Nhà văn hóa Khu phố Nghĩa Lập,community_centre,,21.13455,105.92997,Bắc Ninh,Bac Ninh,,way,1478877779
+Nhà văn hóa Khu phố Ngư Đại,community_centre,,21.19252,106.12274,Bắc Ninh,Bac Ninh,,way,1337938111
+Nhà văn hóa Khu phố Phù Khê Đông,community_centre,,21.14315,105.93545,Bắc Ninh,Bac Ninh,Phố Vĩnh Lại,way,1478877769
+Nhà văn hóa Khu phố Phúc Sơn,community_centre,,21.19817,106.07245,Bắc Ninh,Bac Ninh,Đường Phúc Sơn,way,1416439651
+Nhà văn hóa Khu phố Quế Tân,community_centre,,21.16112,106.17832,Thành phố Bắc Ninh,Bắc Ninh,Đường Khuất Duy Tiến,way,1324725112
+Nhà văn hóa Khu phố Sau,community_centre,,21.175,106.1673,,,,way,1326069114
+Nhà văn hóa Khu phố Sơn Trung,community_centre,,21.1411,106.09152,Bắc Ninh,Bac Ninh,,way,1387021846
+Nhà văn hóa Khu phố Thanh Nhàn,community_centre,,21.13588,105.94631,Bắc Ninh,Bac Ninh,Phố Đồng Kỵ 2,way,1388268086
+Nhà văn hóa Khu phố Tiêu Thượng,community_centre,,21.13558,105.98262,Bắc Ninh,Bac Ninh,Phố Nguyễn Đức Đôn,way,651503568
+Nhà văn hóa Khu phố Tiến Bào,community_centre,,21.13603,105.93485,Bắc Ninh,Bac Ninh,,way,1433740848
+Nhà văn hóa Khu phố Trại Đường,community_centre,,21.17682,106.14934,,,,way,1353091194
+Nhà văn hóa Khu phố Trầm,community_centre,,21.09795,105.94708,Bắc Ninh,Bac Ninh,Đường Lý Cao Tông,way,902641919
+Nhà văn hóa Khu phố Tân Thịnh,community_centre,,21.12451,106.16438,Bắc Ninh,Bac Ninh,,way,1327203202
+Nhà văn hóa Khu phố Tư,community_centre,,21.13868,105.9482,Bắc Ninh,Bac Ninh,Phố Đồng Kỵ 1,way,650062730
+Nhà văn hóa Khu phố Xa Loan,community_centre,,21.1293,106.17361,,,,way,1327203211
+Nhà văn hóa Khu phố Đanh,community_centre,,21.16916,106.1653,,,,way,1326069111
+Nhà văn hóa Khu phố Đình,community_centre,,21.10833,105.95231,Bắc Ninh,Bac Ninh,Phố Cổ Pháp,way,576742560
+Nhà văn hóa Khu phố Đồng Nai,community_centre,,10.94219,106.80795,,,,way,1046823575
+Nhà văn hóa Khối 1,community_centre,,18.82197,105.70615,,,,way,1070108291
+Nhà văn hóa Khối 2,community_centre,,18.82452,105.70714,,,,way,1070108314
+Nhà văn hóa Khối 3,community_centre,,18.82724,105.70334,,,,way,1070108294
+Nhà văn hóa Khối 5,community_centre,,18.8275,105.70093,,,,way,1069888266
+Nhà văn hóa Khối 6,community_centre,,18.82496,105.70165,,,,way,1070108310
+Nhà văn hóa Khối 7,community_centre,,18.82295,105.69908,,,,way,1070108309
+Nhà văn hóa Kim Giang,community_centre,,20.97851,105.81581,,,,way,1509740863
+Nhà văn hóa Kim Lũ,community_centre,,20.97793,105.81839,,,,way,1509740859
+Nhà văn hóa Kim Quan,community_centre,,21.05854,105.90035,,,,way,1187726806
+Nhà văn hóa Kim Văn,community_centre,,20.97514,105.82314,,,,way,1482787841
+Nhà văn hóa Lao Động,community_centre,,20.89656,106.42578,,,,way,628746785
+Nhà văn hóa Lao động,community_centre,,10.04147,105.79362,,,,way,371839379
+Nhà văn hóa Linh Đàm,community_centre,,20.96389,105.83518,,,,way,1104873479
+Nhà văn hóa Nam Dư Hạ,community_centre,,20.97703,105.88386,,,,way,1524880490
+Nhà văn hóa Nông trường Xà Bang,community_centre,,10.72404,107.24706,,,,way,727261637
+Nhà văn hóa Núi Béo,community_centre,,20.94123,107.11149,,,,way,676780313
+Nhà văn hóa Phường An Bình,community_centre,,10.86805,106.74853,,,,way,291853357
+Nhà văn hóa Phường Phúc Đồng,community_centre,,21.03869,105.89909,,,,node,4388678292
+Nhà văn hóa Phường Thạnh Lộc (Cũ),community_centre,,10.87836,106.67857,,Thành phố Hồ Chí Minh,Hà Huy Giáp,way,1431677113
+Nhà văn hóa Phụng Châu,community_centre,,20.95033,105.70985,,,,way,792416737
+Nhà văn hóa Pin Văn Điển,community_centre,,20.94584,105.84291,,,,way,1157172106
+Nhà văn hóa TDP Gò Cao,community_centre,,21.65756,105.827,,,,way,1249799449
+Nhà văn hóa TDP Hoàng II,community_centre,,21.05821,105.78355,,,,node,3387043431
+Nhà văn hóa TDP Trù I,community_centre,,21.06198,105.78089,,,,way,699079319
+Nhà văn hóa TDP Vải,community_centre,,21.65142,105.83342,,,,way,1249799388
+Nhà văn hóa TDP Đồng Thái,community_centre,,21.64609,105.83988,,,,way,1249437592
+Nhà văn hóa TDP Đồng Thịnh,community_centre,,21.64404,105.84104,,,,way,1249438523
+Nhà văn hóa Thanh Hà,community_centre,,20.92835,105.78951,,,,way,1467996348
+Nhà văn hóa Thanh Xuân,community_centre,,21.00175,105.7973,,,,way,661165874
+Nhà văn hóa Thanh niên tỉnh BR-VT,community_centre,,10.34111,107.07498,,,,way,118946679
+Nhà văn hóa Thanh thiếu nhi tỉnh Đắk Lắk,community_centre,,12.67755,108.04489,,,,way,1018940373
+Nhà văn hóa Thiếu nhi phường Vệ An,community_centre,,21.18522,106.06192,Bắc Ninh,Bac Ninh,Đường Thiên Đức,way,1465123430
+Nhà văn hóa Thôn 3,community_centre,,20.99711,105.91584,,,,way,1197139583
+Nhà văn hóa Thôn 5,community_centre,,21.02555,105.51546,,,,node,9844633826
+Nhà văn hóa Thôn 5 xã Cộng Hoà,community_centre,,20.97258,105.67575,,,,node,12151030988
+Nhà văn hóa Thôn Bèn,community_centre,,20.7727,105.68431,,,,way,762456403
+Nhà văn hóa Thôn Công Đình,community_centre,,21.07455,105.93706,,,,way,659909931
+Nhà văn hóa Thôn Cầu,community_centre,,20.77924,105.68348,,,,way,762456415
+Nhà văn hóa Thôn Du Ngoại,community_centre,,21.08501,105.90439,,,,way,660703573
+Nhà văn hóa Thôn Du Quang,community_centre,,14.839,108.97568,,,,way,1233309030
+Nhà văn hóa Thôn Hoà Phong,community_centre,,20.77169,105.72161,,,,way,765136216
+Nhà văn hóa Thôn Hoành,community_centre,,20.8021,105.67359,,,,way,762125888
+Nhà văn hóa Thôn Hà My Đông A,community_centre,,15.92363,108.31749,,,,node,3079969098
+Nhà văn hóa Thôn Hạ,community_centre,,21.06205,105.93388,,,,way,659909991
+Nhà văn hóa Thôn Hạ,community_centre,,20.71001,105.75939,,,,way,767859398
+Nhà văn hóa Thôn Hội An 1,community_centre,,14.90358,108.94236,,,,way,1233308970
+Nhà văn hóa Thôn Phú Mỹ,community_centre,,13.32946,109.208,,Phú Yên,,way,1262082291
+Nhà văn hóa Thôn Thượng,community_centre,,21.07531,105.93008,,,,way,659860791
+Nhà văn hóa Thôn Viên,community_centre,,21.06564,105.7796,,,Đường Cổ Nhuế,way,699218396
+Nhà văn hóa Thôn Vĩnh Lạc,community_centre,,20.77074,105.70191,,,,way,764169925
+Nhà văn hóa Thôn Xóm Đông,community_centre,,20.9988,105.57618,,,,way,856836414
+Nhà văn hóa Thôn Yến Vỹ,community_centre,,20.61148,105.77698,,,,way,768420576
+Nhà văn hóa Thôn Đông,community_centre,,20.78521,105.83091,,,,node,10796252679
+Nhà văn hóa Thôn Định Trọng,community_centre,,21.12087,105.66337,,,,way,1374389130
+Nhà văn hóa Thôn Đồng Kho,community_centre,,20.994,105.57487,,,,way,856836435
+Nhà văn hóa Thể thao phường Bồ Đề,community_centre,,21.03836,105.87184,,,,way,704250767
+Nhà văn hóa Thịnh Liệt,community_centre,,20.97475,105.8494,,,,way,1492235998
+Nhà văn hóa Thịnh Liệt,community_centre,,20.96649,105.83601,,,,way,1533859382
+Nhà văn hóa Thụy Trình,community_centre,,20.57645,106.56226,,,,way,1469338194
+Nhà văn hóa Trung tâm tỉnh Cao Bằng,community_centre,,22.66643,106.25884,,,,way,1079049761
+Nhà văn hóa Trường Sa,community_centre,,11.42817,114.33175,,,,way,610144901
+Nhà văn hóa Tân Thới Hiệp,community_centre,,10.86497,106.64086,Phường Tân Thới Hiệp,,Đường Nguyễn Thị Đặng,node,10231064106
+Nhà văn hóa Tương Mai,community_centre,,20.99279,105.84592,,,Ngách 91 Ngõ Trại Cá,way,1453703077
+Nhà văn hóa Tổ dân phố 1 Cẩm Giang,community_centre,,21.12885,105.97125,Thành phố Bắc Ninh,Bac Ninh,Đường Hoàng Quốc Việt,way,1441931918
+Nhà văn hóa Tổ dân phố 1 Đình,community_centre,,20.99729,105.75562,,,Ngõ 121 Đường Tây Mỗ,way,1416106099
+Nhà văn hóa Tổ dân phố 2 Y Na,community_centre,,21.19512,106.0679,Bắc Ninh,Bac Ninh,Phố Huỳnh Tấn Phát,way,1469828616
+Nhà văn hóa Tổ dân phố 2 Đình,community_centre,,20.99721,105.75599,,,Đường Quang Tiến,way,1416106100
+Nhà văn hóa Tổ dân phố 3,community_centre,,17.75562,106.39753,,,,way,1387988876
+Nhà văn hóa Tổ dân phố 4,community_centre,,17.75395,106.4014,,,,way,1387988875
+Nhà văn hóa Tổ dân phố 5 Mễ Trì Hạ,community_centre,,21.01078,105.77727,,,,way,1459211215
+Nhà văn hóa Tổ dân phố 9,community_centre,,20.97817,105.7785,,,,way,1451374616
+Nhà văn hóa Tổ dân phố An Lạc,community_centre,,21.01495,105.92602,,,,way,1194656081
+Nhà văn hóa Tổ dân phố An Thái,community_centre,,21.00018,105.75752,,,Đường Quang Tiến,way,1460925876
+Nhà văn hóa Tổ dân phố Bà La,community_centre,,21.10849,105.95579,Bắc Ninh,Bac Ninh,Phố Bà La,way,1452915867
+Nhà văn hóa Tổ dân phố Bình Minh,community_centre,,21.02,105.94099,,,,way,1216789414
+Nhà văn hóa Tổ dân phố Bùi Xá,community_centre,,21.01223,106.03495,Bắc Ninh,Bac Ninh,,way,1539776111
+Nhà văn hóa Tổ dân phố Bút Tháp,community_centre,,21.05967,106.02699,Bắc Ninh,Bac Ninh,,way,1540727652
+Nhà văn hóa Tổ dân phố Bồ Sơn,community_centre,,21.16909,106.06276,Bắc Ninh,Bac Ninh,Phố Bồ Sơn,way,1374635364
+Nhà văn hóa Tổ dân phố Chu Mẫu,community_centre,,21.16651,106.09739,Thành phố Bắc Ninh,Bac Ninh,Đường Chu Mẫu,way,1408484896
+Nhà văn hóa Tổ dân phố Chính Trung,community_centre,,21.01635,105.93832,,,,way,1179985316
+Nhà văn hóa Tổ dân phố Chùa Dận,community_centre,,21.10874,105.94235,Bắc Ninh,Bac Ninh,,way,1455198326
+Nhà văn hóa Tổ dân phố Chương Xá,community_centre,,21.06601,106.09392,Thành phố Bắc Ninh,Bac Ninh,,way,1549400553
+Nhà văn hóa Tổ dân phố Công Binh,community_centre,,21.19655,106.0795,Bắc Ninh,Bac Ninh,Ngõ 145 Đường Cô Mễ,way,1489536921
+Nhà văn hóa Tổ dân phố Cơ Khí,community_centre,,21.02839,105.93956,,,,way,1120284602
+Nhà văn hóa Tổ dân phố Cẩm Xá,community_centre,,21.0689,106.24138,Thành phố Bắc Ninh,Bac Ninh,,way,1548113946
+Nhà văn hóa Tổ dân phố Cửu Việt,community_centre,,21.00848,105.93916,,,,way,1217825601
+Nhà văn hóa Tổ dân phố Do Nha,community_centre,,21.17357,106.10893,Bắc Ninh,Bac Ninh,,way,1490614913
+Nhà văn hóa Tổ dân phố Ga,community_centre,,20.94108,105.84587,,,,way,1157172110
+Nhà văn hóa Tổ dân phố Giang Liễu,community_centre,,21.16112,106.127,Bắc Ninh,Bac Ninh,Phố Phan Kế Bính,way,1324009744
+Nhà văn hóa Tổ dân phố Giữa,community_centre,,21.04843,106.109,Bắc Ninh,Bac Ninh,,way,1540391235
+Nhà văn hóa Tổ dân phố Hoàng Quốc Việt,community_centre,,21.11696,105.964,Bắc Ninh,Bac Ninh,Phố Yên Lã,way,1447156805
+Nhà văn hóa Tổ dân phố Hà Liễu,community_centre,,21.16679,106.14061,Thành phố Bắc Ninh,Bắc Ninh,Phố Lương Định Của,way,1324009702
+Nhà văn hóa Tổ dân phố Hà Liễu (Trại Hà),community_centre,,21.16442,106.14594,Bắc Ninh,Bắc Ninh,Phố Lương Định Của,way,1326069109
+Nhà văn hóa Tổ dân phố Hạnh,community_centre,,20.99997,105.74547,,,Ngõ 193 Phố Cầu Cốc,way,1481770887
+Nhà văn hóa Tổ dân phố Hồ Ngọc Lân,community_centre,,21.18519,106.06567,Bắc Ninh,Bac Ninh,Phố Tản Đà,way,1348666929
+Nhà văn hóa Tổ dân phố Hữu Chấp,community_centre,,21.21985,106.06431,Bắc Ninh,Bac Ninh,Đường Nguyễn Văn Huyên,way,1416433805
+Nhà văn hóa Tổ dân phố Khúc Toại,community_centre,,21.18333,106.04939,Bắc Ninh,Bac Ninh,,way,1423917009
+Nhà văn hóa Tổ dân phố Khả Lễ,community_centre,,21.16146,106.05191,Bắc Ninh,Bac Ninh,Đường Khả Lễ,way,1475055093
+Nhà văn hóa Tổ dân phố Kiên Thành,community_centre,,21.00831,105.95123,,,,way,1220475763
+Nhà văn hóa Tổ dân phố Liên Cơ,community_centre,,20.9719,105.95371,,,Ngõ 342 Đường Kiêu Kỵ,way,1528523838
+Nhà văn hóa Tổ dân phố Liễu Khê,community_centre,,21.00331,106.01661,Bắc Ninh,Bac Ninh,,way,1539776128
+Nhà văn hóa Tổ dân phố Liễu Ngạn,community_centre,,21.00629,106.02968,Bắc Ninh,Bac Ninh,,way,1539776120
+Nhà văn hóa Tổ dân phố Lãm Làng,community_centre,,21.15139,106.10326,Bắc Ninh,Bac Ninh,Đường Núi Bàn Cờ,way,1534798450
+Nhà văn hóa Tổ dân phố Lãm Trại,community_centre,,21.15351,106.0958,Bắc Ninh,Bac Ninh,Đường Nguyễn Văn Bảng,way,1534798458
+Nhà văn hóa Tổ dân phố Lò,community_centre,,21.00211,105.74518,,,Hẻm 193/17/25 Phố Cầu Cốc,way,1415874152
+Nhà văn hóa Tổ dân phố Lạc Hoài,community_centre,,21.04999,106.08299,Bắc Ninh,Bac Ninh,,way,1547242456
+Nhà văn hóa Tổ dân phố Lạc Thổ Nam,community_centre,,21.06291,106.09147,Thành phố Bắc Ninh,Bac Ninh,,way,1549400554
+Nhà văn hóa Tổ dân phố Mao Dộc,community_centre,,21.15426,106.13714,Thành phố Bắc Ninh,Bac Ninh,Phố Nguyễn Đình Trạch,way,1427623590
+Nhà văn hóa Tổ dân phố Mao Trung,community_centre,,21.15212,106.14407,Thành phố Bắc Ninh,Bac Ninh,Phố Phạm Đình Phan,way,1427623594
+Nhà văn hóa Tổ dân phố Me,community_centre,,21.15538,105.92894,Bắc Ninh,Bac Ninh,Phố Nguyễn Sỹ Nguyên,way,661161580
+Nhà văn hóa Tổ dân phố Minh Khai,community_centre,,21.12127,105.96735,Bắc Ninh,Bac Ninh,Phố Diệu Tiên,way,1455198324
+Nhà văn hóa Tổ dân phố Nghĩa Xá,community_centre,,21.01023,106.11961,Bắc Ninh,Bac Ninh,,way,1540893741
+Nhà văn hóa Tổ dân phố Nguyễn Trãi,community_centre,,21.17459,106.06111,Bắc Ninh,Bac Ninh,Đường Nguyễn Trãi,way,1532611955
+Nhà văn hóa Tổ dân phố Ninh Xá 3,community_centre,,21.17663,106.05525,Bắc Ninh,Bac Ninh,Phố Xuân Diệu,way,697005484
+Nhà văn hóa Tổ dân phố Ninh Xá 4,community_centre,,21.17909,106.06564,Bắc Ninh,Bac Ninh,Đường Nguyễn Cao,way,1446338072
+Nhà văn hóa Tổ dân phố Ninh Xá 5,community_centre,,21.17424,106.06146,Bắc Ninh,Bac Ninh,Phố Nguyễn Văn Trỗi,way,1446338071
+Nhà văn hóa Tổ dân phố Niềm Xá,community_centre,,21.18143,106.05482,Bắc Ninh,Bac Ninh,Phố Niềm Xá,way,1447743645
+Nhà văn hóa Tổ dân phố Niềm Xá,community_centre,,21.1818,106.05317,Bắc Ninh,Bac Ninh,,way,1478725395
+Nhà văn hóa Tổ dân phố Nông Lâm,community_centre,,21.00607,105.935,,,,way,1528523828
+Nhà văn hóa Tổ dân phố Phú Hà,community_centre,,21.00091,105.75285,,,Ngách 27/54 Đường Tây Mỗ,way,1454584034
+Nhà văn hóa Tổ dân phố Phú Thứ,community_centre,,21.00514,105.75169,,,Ngách 27/9 Đường Tây Mỗ,way,1454584033
+Nhà văn hóa Tổ dân phố Phượng,community_centre,,21.00326,105.74952,,,Ngõ 116 Đường Tây Mỗ,way,1458418411
+Nhà văn hóa Tổ dân phố Phố Hồ,community_centre,,21.06187,106.0851,Thành phố Bắc Ninh,Bac Ninh,Ngõ 124 Đường Âu Cơ,way,1549400556
+Nhà văn hóa Tổ dân phố Phố Mới,community_centre,,21.18009,106.06176,Bắc Ninh,Bac Ninh,Đường Ngô Gia Tự,way,1486914137
+Nhà văn hóa Tổ dân phố Phố Mới,community_centre,,21.05826,106.08634,Bắc Ninh,Bac Ninh,,way,1540939211
+Nhà văn hóa Tổ dân phố Quang Hưng,community_centre,,21.01234,106.11668,Bắc Ninh,Bac Ninh,,way,1540893744
+Nhà văn hóa Tổ dân phố Quyết Tâm,community_centre,,20.97769,105.7442,,,,node,12944133240
+Nhà văn hóa Tổ dân phố Rích Gạo,community_centre,,21.0859,105.97012,Bắc Ninh,Bac Ninh,,way,1540935890
+Nhà văn hóa Tổ dân phố Song Tháp,community_centre,,21.11684,105.92848,Bắc Ninh,Bac Ninh,Phố Song Tháp,way,661161687
+Nhà văn hóa Tổ dân phố Suối Hoa 1,community_centre,,21.18693,106.07524,Bắc Ninh,Bac Ninh,Phố Vương Văn Trà,node,13675028959
+Nhà văn hóa Tổ dân phố Suối Hoa 1,community_centre,,21.18693,106.07519,Bắc Ninh,Bac Ninh,Phố Vương Văn Trà,way,1470273265
+Nhà văn hóa Tổ dân phố Suối Hoa 2,community_centre,,21.18679,106.06934,Bắc Ninh,Bac Ninh,Phố Mai Bang,way,1470273263
+Nhà văn hóa Tổ dân phố Suối Hoa 3,community_centre,,21.18488,106.06993,Bắc Ninh,Bac Ninh,Phố Lê Quý Đôn,way,1465120933
+Nhà văn hóa Tổ dân phố Sơn,community_centre,,21.14259,106.05274,Bắc Ninh,Bac Ninh,,way,1545646080
+Nhà văn hóa Tổ dân phố Sơn Nam,community_centre,,21.13674,106.11116,Bắc Ninh,Bac Ninh,Đường Sơn Nam,way,1424816016
+Nhà văn hóa Tổ dân phố Sơn Đông,community_centre,,21.14409,106.11339,Bắc Ninh,Bắc Ninh,Đường Sơn Đông,way,1417234381
+Nhà văn hóa Tổ dân phố Tam Á,community_centre,,21.03324,106.06822,Bắc Ninh,Bac Ninh,,way,1539924565
+Nhà văn hóa Tổ dân phố Thanh An,community_centre,,21.18545,106.0835,Bắc Ninh,Bac Ninh,Phố Bà Huyện Thanh Quan,way,1334483930
+Nhà văn hóa Tổ dân phố Thanh Bình,community_centre,,21.13522,105.9446,Thành phố Bắc Ninh,Bac Ninh,Đường Nguyễn Văn Cừ,way,650062700
+Nhà văn hóa Tổ dân phố Thanh Sơn,community_centre,,21.18648,106.08408,Bắc Ninh,Bac Ninh,Phố Lê Văn Hưu,way,1326841414
+Nhà văn hóa Tổ dân phố Thành Trung,community_centre,,21.01369,105.9358,,,,way,1486254277
+Nhà văn hóa Tổ dân phố Thái Bảo,community_centre,,21.14465,106.11005,Bắc Ninh,Bac Ninh,Đường Thái Bảo,way,1534798452
+Nhà văn hóa Tổ dân phố Tháp,community_centre,,20.99296,105.75498,Hà Nội,,,way,755090162
+Nhà văn hóa Tổ dân phố Thượng,community_centre,,21.10871,105.95836,Bắc Ninh,Bac Ninh,Ngõ 38 Phố Cổ Pháp,way,1433740835
+Nhà văn hóa Tổ dân phố Thượng Đồng,community_centre,,21.19631,106.0534,Bắc Ninh,Bac Ninh,Ngõ 764 Đường Thiên Đức,way,1343784080
+Nhà văn hóa Tổ dân phố Thị Chung,community_centre,,21.18787,106.06286,Bắc Ninh,Bac Ninh,Đường Hồ Ngọc Lân,way,1344686052
+Nhà văn hóa Tổ dân phố Thị Cầu 1,community_centre,,21.19419,106.08568,Thành phố Bắc Ninh,Bac Ninh,,node,12350337080
+Nhà văn hóa Tổ dân phố Thị Cầu 1,community_centre,,21.19415,106.08577,Bắc Ninh,Bac Ninh,Ngõ 143 Đường Hoàng Quốc Việt,way,1487717045
+Nhà văn hóa Tổ dân phố Thị Cầu 2,community_centre,,21.19055,106.08579,Bắc Ninh,Bac Ninh,Đường Vũ Đạt,way,1465120930
+Nhà văn hóa Tổ dân phố Thị Cầu 3,community_centre,,21.19267,106.09344,Bắc Ninh,Bac Ninh,Ngõ 20 Phố Nguyễn Nhân Bỉ,way,1476915636
+Nhà văn hóa Tổ dân phố Thị Cầu 4,community_centre,,21.19431,106.09292,Bắc Ninh,Bac Ninh,Phố Nguyễn Nhân Bỉ,way,1465514803
+Nhà văn hóa Tổ dân phố Thị Cầu 5,community_centre,,21.19638,106.09321,Bắc Ninh,Bac Ninh,Đường Trần Lựu,way,964414864
+Nhà văn hóa Tổ dân phố Thị Cầu 7,community_centre,,21.19491,106.08296,Bắc Ninh,Bac Ninh,Ngõ 160 Đường Lý Thường Kiệt,way,1492268012
+Nhà văn hóa Tổ dân phố Thị Cầu 8,community_centre,,21.19505,106.08955,Bắc Ninh,Bac Ninh,Đường Nguyễn Lễ,node,12350337079
+Nhà văn hóa Tổ dân phố Thụ Ninh,community_centre,,21.19211,106.05688,Bắc Ninh,Bac Ninh,Phố Thụ Ninh,way,1477341465
+Nhà văn hóa Tổ dân phố Tiền An 1,community_centre,,21.18107,106.06266,Bắc Ninh,Bac Ninh,Đường Ngô Gia Tự,way,1463729010
+Nhà văn hóa Tổ dân phố Tiền An 2,community_centre,,21.18015,106.06824,Bắc Ninh,Bac Ninh,Phố Vũ Kiệt,way,1446712354
+Nhà văn hóa Tổ dân phố Tiền An 3,community_centre,,21.1817,106.06593,Bắc Ninh,Bac Ninh,Phố Vũ Kiệt,way,1463736776
+Nhà văn hóa Tổ dân phố Tiền An 4,community_centre,,21.18092,106.06629,Bắc Ninh,Bac Ninh,Phố Lửa Hồng,way,1465120942
+Nhà văn hóa Tổ dân phố Tiền Ngoài,community_centre,,21.1394,106.05194,Bắc Ninh,Bac Ninh,Ngõ 132 Đường Nguyễn Thủ Tiệp,way,1545646075
+Nhà văn hóa Tổ dân phố Trung Hòa Tân Hồng,community_centre,,21.10252,105.98049,Bắc Ninh,Bac Ninh,,way,1537065092
+Nhà văn hóa Tổ dân phố Trung Kiên,community_centre,,20.97452,105.74432,,,,way,1463445471
+Nhà văn hóa Tổ dân phố Trà Xuyên,community_centre,,21.18171,106.04765,Bắc Ninh,Bac Ninh,,way,1424142544
+Nhà văn hóa Tổ dân phố Trần Phú,community_centre,,21.11935,105.96305,Bắc Ninh,Bac Ninh,Đường Trần Phú,way,1463941899
+Nhà văn hóa Tổ dân phố Trịnh Nguyễn,community_centre,,21.11707,105.93177,Bắc Ninh,Bac Ninh,Phố Nguyễn Xá,way,1494626329
+Nhà văn hóa Tổ dân phố Trịnh Xá,community_centre,,21.11292,105.93146,Bắc Ninh,Bắc Ninh,Phố Trịnh Xá,way,1431216248
+Nhà văn hóa Tổ dân phố Táo,community_centre,,21.06003,106.13173,Bắc Ninh,Bac Ninh,,way,1540737183
+Nhà văn hóa Tổ dân phố Tó,community_centre,,20.99589,105.74385,,,Phố Cầu Cốc,way,1481770885
+Nhà văn hóa Tổ dân phố Tạ Xá,community_centre,,21.13615,105.99569,Bắc Ninh,Bac Ninh,Đường Tiêu Tương,way,1395755660
+Nhà văn hóa Tổ dân phố Viêm Xá,community_centre,,21.21323,106.04974,Bắc Ninh,Bac Ninh,Đường Vua Bà,way,1446002734
+Nhà văn hóa Tổ dân phố Vĩnh Kiều 1,community_centre,,21.12634,105.98287,Bắc Ninh,Bac Ninh,Phố Viềng A,way,1450696923
+Nhà văn hóa Tổ dân phố Vĩnh Thế,community_centre,,21.19526,106.12937,Thành phố Bắc Ninh,Bac Ninh,,way,1548031940
+Nhà văn hóa Tổ dân phố Vũ,community_centre,,21.17595,106.07732,Bắc Ninh,Bac Ninh,Đường Trần Hưng Đạo,way,1465120940
+Nhà văn hóa Tổ dân phố Vườn Dâu,community_centre,,21.00792,105.93539,,,,way,1235868915
+Nhà văn hóa Tổ dân phố Vệ An 1,community_centre,,21.1831,106.06429,Bắc Ninh,Bac Ninh,,way,1465123431
+Nhà văn hóa Tổ dân phố Vệ An 2,community_centre,,21.186,106.06177,Bắc Ninh,Bac Ninh,Đường Thiên Đức,way,1366620311
+Nhà văn hóa Tổ dân phố Xuân Thụ,community_centre,,21.12046,105.97002,Bắc Ninh,Bac Ninh,Ngõ Quảng Khánh,way,687926302
+Nhà văn hóa Tổ dân phố Xuân Ái,community_centre,,21.20648,106.05896,Bắc Ninh,Bac Ninh,,way,1470056386
+Nhà văn hóa Tổ dân phố Xuân Đài,community_centre,,21.10818,105.94715,Bắc Ninh,Bac Ninh,Phố Lý Khánh Văn,way,577155262
+Nhà văn hóa Tổ dân phố Xuân Ổ B,community_centre,,21.15876,106.04168,Thành phố Bắc Ninh,Bac Ninh,,way,1366987163
+Nhà văn hóa Tổ dân phố Y Na,community_centre,,21.18837,106.06815,Bắc Ninh,Bac Ninh,Phố Y Na,way,1497387916
+Nhà văn hóa Tổ dân phố Yên Lâm,community_centre,,21.16515,106.1527,,,,way,1326069110
+Nhà văn hóa Tổ dân phố Yên Lã 1,community_centre,,21.11235,105.97013,Bắc Ninh,Bac Ninh,,way,1455495081
+Nhà văn hóa Tổ dân phố Yên Mẫn,community_centre,,21.18807,106.05961,Bắc Ninh,Bac Ninh,Phố Yên Mẫn,way,1478725393
+Nhà văn hóa Tổ dân phố số 1,community_centre,,21.17636,106.07758,Bắc Ninh,Bac Ninh,Ngõ 5 Đường Trần Hưng Đạo,node,12350371832
+Nhà văn hóa Tổ dân phố số 1,community_centre,,21.01491,105.89548,,,,way,1137567851
+Nhà văn hóa Tổ dân phố số 1,community_centre,,21.0438,105.89892,,,Ngõ 62 phố Tân Thụy,way,1250198525
+Nhà văn hóa Tổ dân phố số 1,community_centre,,21.15281,106.14892,Bắc Ninh,Bac Ninh,,way,1326069107
+Nhà văn hóa Tổ dân phố số 1,community_centre,,21.17904,106.07848,Bắc Ninh,Bac Ninh,Đường Lê Văn Thịnh,way,1434059033
+Nhà văn hóa Tổ dân phố số 10,community_centre,,21.17368,106.07069,Bắc Ninh,Bac Ninh,,way,1472951317
+Nhà văn hóa Tổ dân phố số 11 + 12 + 21,community_centre,,21.033,105.91198,,,,way,1227564856
+Nhà văn hóa Tổ dân phố số 12,community_centre,,21.03405,105.91758,,,,way,1124152119
+Nhà văn hóa Tổ dân phố số 13,community_centre,,21.03372,105.91615,,,Ngõ 195 phố Vũ Xuân Thiều,way,1315054629
+Nhà văn hóa Tổ dân phố số 14,community_centre,,21.03623,105.9157,,,,way,1226550884
+Nhà văn hóa Tổ dân phố số 17,community_centre,,21.02437,105.93097,,,,way,1227308465
+Nhà văn hóa Tổ dân phố số 18,community_centre,,21.06425,105.91649,,,,way,1251537898
+Nhà văn hóa Tổ dân phố số 19,community_centre,,21.07321,105.88636,,,,way,1249531151
+Nhà văn hóa Tổ dân phố số 2,community_centre,,21.02939,105.92206,,,,way,1231318501
+Nhà văn hóa Tổ dân phố số 2,community_centre,,21.04263,105.89921,,,,way,1250198542
+Nhà văn hóa Tổ dân phố số 2,community_centre,,21.15502,106.14937,Bắc Ninh,Bac Ninh,,way,1326069108
+Nhà văn hóa Tổ dân phố số 2,community_centre,,21.17436,106.07595,Thành phố Bắc Ninh,Bac Ninh,,way,1433975454
+Nhà văn hóa Tổ dân phố số 2,community_centre,,21.06315,106.12228,Bắc Ninh,Bac Ninh,,way,1540737200
+Nhà văn hóa Tổ dân phố số 27 + 28 + 29,community_centre,,21.02805,105.92294,,Hà Nội,Phố Cầu Bây,way,861103430
+Nhà văn hóa Tổ dân phố số 3,community_centre,,21.17316,106.07815,Thành phố Bắc Ninh,Bac Ninh,Đường Trần Xuân Soạn,way,1433975456
+Nhà văn hóa Tổ dân phố số 3,community_centre,,21.15555,106.15241,Bắc Ninh,Bac Ninh,Ngõ 86 Phố Mai Công,way,1490612362
+Nhà văn hóa Tổ dân phố số 3,community_centre,,21.06072,106.1238,Bắc Ninh,Bac Ninh,,way,1540737186
+Nhà văn hóa Tổ dân phố số 4,community_centre,,21.00214,105.90261,,,Đường Xuân Khôi,way,1201133035
+Nhà văn hóa Tổ dân phố số 4,community_centre,,21.15769,106.15155,Bắc Ninh,Bắc Ninh,Đường Quang Trung,way,1326069103
+Nhà văn hóa Tổ dân phố số 4,community_centre,,21.17138,106.07992,Bắc Ninh,Bac Ninh,,way,1465120943
+Nhà văn hóa Tổ dân phố số 5,community_centre,,21.06233,105.91753,,,,way,1251537951
+Nhà văn hóa Tổ dân phố số 5,community_centre,,21.16178,106.1512,Bắc Ninh,Bac Ninh,Phố Nguyễn Đức Uông,way,1326069105
+Nhà văn hóa Tổ dân phố số 6,community_centre,,21.06086,105.8959,,,,way,1229267964
+Nhà văn hóa Tổ dân phố số 6,community_centre,,21.05881,105.91752,,,,way,1251887340
+Nhà văn hóa Tổ dân phố số 6,community_centre,,21.17017,106.08069,Bắc Ninh,Bac Ninh,Ngõ 218 Đường Đại Phúc 35,way,1490612358
+Nhà văn hóa Tổ dân phố số 7,community_centre,,21.03224,105.91928,Hà Nội,Hà Nội,Phố Cầu Bây,way,914126564
+Nhà văn hóa Tổ dân phố số 7,community_centre,,21.06034,105.91505,,,,way,1251887344
+Nhà văn hóa Tổ dân phố số 7,community_centre,,21.17118,106.08213,Bắc Ninh,Bac Ninh,Đường Nguyễn Quyền,way,1451368111
+Nhà văn hóa Tổ dân phố số 7 + 8,community_centre,,21.04126,105.93002,,,Phố Vo Trung,way,1517651030
+Nhà văn hóa Tổ dân phố số 8,community_centre,,21.06296,105.80148,,,,way,1230360616
+Nhà văn hóa Tổ dân phố số 8,community_centre,,21.03655,105.90319,,,,way,1244647218
+Nhà văn hóa Tổ dân phố số 8,community_centre,,21.17165,106.0832,Bắc Ninh,Bac Ninh,Ngõ 20 Phố Nguyễn Phúc Xuyên,way,1490612357
+Nhà văn hóa Tổ dân phố số 9,community_centre,,21.17239,106.08445,Bắc Ninh,Bac Ninh,Đường Nguyễn Quyền,way,1451368110
+Nhà văn hóa Tổ dân phố số 9 - 10 - 11,community_centre,,21.03712,105.93367,,,Ngõ 321 đường Phúc Lợi,way,1366539303
+Nhà văn hóa Tổ dân phố Đa Cấu,community_centre,,21.14699,106.11986,Bắc Ninh,Bac Ninh,Đường Đa Cấu,way,1441916446
+Nhà văn hóa Tổ dân phố Đa Hội,community_centre,,21.12683,105.92193,Bắc Ninh,Bắc Ninh,,way,1431216239
+Nhà văn hóa Tổ dân phố Đoài,community_centre,,21.13897,106.05885,Bắc Ninh,Bac Ninh,Đường Nguyễn Thủ Tiệp,way,1545646070
+Nhà văn hóa Tổ dân phố Đào Nguyên,community_centre,,21.00526,105.9386,,,Ngõ 215 đường Trâu Quỳ,way,1221715766
+Nhà văn hóa Tổ dân phố Đáp Cầu 1,community_centre,,21.20266,106.09278,Bắc Ninh,Bac Ninh,Ngõ Như Nguyệt,node,12347878696
+Nhà văn hóa Tổ dân phố Đáp Cầu 1,community_centre,,21.20267,106.09276,Bắc Ninh,Bac Ninh,Ngõ Như Nguyệt,way,1492268022
+Nhà văn hóa Tổ dân phố Đáp Cầu 10,community_centre,,21.19911,106.09284,Bắc Ninh,Bac Ninh,Ngõ 425 Đường Hoàng Quốc Việt,node,8904998039
+Nhà văn hóa Tổ dân phố Đáp Cầu 10,community_centre,,21.19909,106.09286,Bắc Ninh,Bac Ninh,Ngách 425/23 Đường Hoàng Quốc Việt,way,1492268019
+Nhà văn hóa Tổ dân phố Đáp Cầu 3,community_centre,,21.19987,106.09737,Bắc Ninh,Bac Ninh,Ngách 13/24 Đường Bất Chi Ly,node,12345959863
+Nhà văn hóa Tổ dân phố Đáp Cầu 3,community_centre,,21.19989,106.09733,Bắc Ninh,Bac Ninh,Ngách 13/24 Đường Bất Chi Ly,way,1492268026
+Nhà văn hóa Tổ dân phố Đáp Cầu 5,community_centre,,21.20122,106.10155,Bắc Ninh,Bac Ninh,Đường Như Nguyệt,way,1416542171
+Nhà văn hóa Tổ dân phố Đình Tổ,community_centre,,21.0619,106.01598,Bắc Ninh,Bac Ninh,,way,1536412232
+Nhà văn hóa Tổ dân phố Đông,community_centre,,21.13714,106.06556,Bắc Ninh,Bac Ninh,Đường Nguyễn Thủ Tiệp,way,1545646063
+Nhà văn hóa Tổ dân phố Đông Khê,community_centre,,21.06527,106.07548,Bắc Ninh,Bac Ninh,,way,1542802665
+Nhà văn hóa Tổ dân phố Đông Miếu,community_centre,,21.0814,106.12054,Bắc Ninh,Bac Ninh,,way,1541009758
+Nhà văn hóa Tổ dân phố Đông Tiến,community_centre,,21.13655,105.94984,Thành phố Bắc Ninh,Bac Ninh,Phố Đồng Kỵ 4,way,1455198294
+Nhà văn hóa Tổ dân phố Đương Xá 1,community_centre,,21.19831,106.0459,Thành phố Bắc Ninh,Bac Ninh,,way,1481069059
+Nhà văn hóa Tổ dân phố Đương Xá 2,community_centre,,21.19393,106.04588,Bắc Ninh,Bac Ninh,Ngõ 811 Đường Thiên Đức,way,1494633999
+Nhà văn hóa Tổ dân phố Đương Xá 3,community_centre,,21.19523,106.04991,Bắc Ninh,Bac Ninh,Ngõ 896 Đường Thiên Đức,way,1467294910
+Nhà văn hóa Tổ dân phố Đường 181,community_centre,,21.02732,105.99336,,,,way,1527583724
+Nhà văn hóa Tổ dân phố Đường 5,community_centre,,21.00252,105.96525,,,,way,1486542428
+Nhà văn hóa Tổ dân phố Đại Mão,community_centre,,21.08131,106.11463,Bắc Ninh,Bac Ninh,,way,1541009755
+Nhà văn hóa Tổ dân phố Đại Trạch,community_centre,,21.05595,106.04496,Bắc Ninh,Bac Ninh,,way,1540727690
+Nhà văn hóa Tổ dân phố Đại Tự,community_centre,,21.03343,106.04201,Bắc Ninh,Bac Ninh,,way,1539776143
+Nhà văn hóa Tổ dân phố Đạo Tú,community_centre,,21.06453,106.07917,Bắc Ninh,Bac Ninh,,way,1542802671
+Nhà văn hóa Tổ dân phố Đẩu Hàn,community_centre,,21.21826,106.08083,Bắc Ninh,Bac Ninh,,way,1467294915
+Nhà văn hóa Tổ dân phố Đọ Xá,community_centre,,21.17844,106.06207,Thành phố Bắc Ninh,Bac Ninh,Đường Huyền Quang,way,1466037194
+Nhà văn hóa Tổ dân phố Đồng Ngư,community_centre,,21.01163,106.02905,Thành phố Bắc Ninh,Bac Ninh,,way,1539776104
+Nhà văn hóa Tổ dân phố Đồng Trầm,community_centre,,21.20413,106.08885,Bắc Ninh,Bac Ninh,Ngõ 12 Đường Như Nguyệt,way,1414402046
+Nhà văn hóa Tổ dân phố Đồng Đông,community_centre,,21.07009,106.07009,Bắc Ninh,Bac Ninh,,way,1542802655
+Nhà văn hóa Tổ dấn phố số 5,community_centre,,21.00735,105.90838,,,,way,1205258217
+Nhà văn hóa Xã Bình Trung,community_centre,,10.64592,107.28988,,,,way,730209831
+Nhà văn hóa Xã Hòa Tú 1,community_centre,,9.44114,105.89635,,,,way,907032277
+Nhà văn hóa Xã Phổ An,community_centre,,14.89326,108.94731,,,,way,1233308980
+Nhà văn hóa Xã Tam Phước,community_centre,,10.46786,107.22853,,,,way,569352703
+Nhà văn hóa Xã Tân Hải,community_centre,,10.50567,107.10506,,,,way,833880751
+Nhà văn hóa Xóm 6,community_centre,,20.53141,105.80674,,,,node,5704117321
+Nhà văn hóa Xóm Chùa,community_centre,,20.98195,105.79981,,,Ngách 136/6 Phố Triều Khúc,way,1551323608
+Nhà văn hóa Xóm Giai,community_centre,,21.08963,105.98403,,,,way,1537065082
+Nhà văn hóa Xóm Giữa,community_centre,,21.09611,105.98884,Bắc Ninh,Bac Ninh,,way,1537065089
+Nhà văn hóa Xóm Láng,community_centre,,21.19425,106.04416,Bắc Ninh,Bac Ninh,Đường Ngũ Huyện Khê,way,1423914849
+Nhà văn hóa Xóm Nổi,community_centre,,21.08828,105.99482,,,,way,1537065079
+Nhà văn hóa Xóm Phan,community_centre,,21.09469,105.9859,Bắc Ninh,Bac Ninh,,way,1537065084
+Nhà văn hóa Xóm Tiểu,community_centre,,21.0848,105.98925,Bắc Ninh,Bac Ninh,,way,1537065081
+Nhà văn hóa Xóm Tờ,community_centre,,21.09709,105.98063,Bắc Ninh,Bac Ninh,,way,1537065094
+Nhà văn hóa Xóm Văn Sơn,community_centre,,19.01923,105.45336,,,,way,1389986432
+Nhà văn hóa Xóm Án,community_centre,,20.97863,105.80295,,,Ngõ 83,way,430134015
+Nhà văn hóa Xóm Đa,community_centre,,21.09459,105.99102,Bắc Ninh,Bac Ninh,,way,1537065087
+Nhà văn hóa huyện Hải Hậu,community_centre,,20.19931,106.29526,,,,way,1062489759
+Nhà văn hóa huyện Kim Động,community_centre,,20.73594,106.06278,,,,way,985095320
+Nhà văn hóa huyện Kon Plông,community_centre,,14.58262,108.27555,,,,node,5490606697
+Nhà văn hóa huyện Nghĩa Hưng,community_centre,,20.21908,106.18082,,,,way,1250240978
+Nhà văn hóa huyện Phúc Thọ,community_centre,,21.10218,105.54759,,,,way,1062567248
+Nhà văn hóa huyện Thanh Trì,community_centre,,20.94457,105.84665,,,,way,914894811
+Nhà văn hóa huyện Xuân Trường,community_centre,,20.29119,106.33263,,,,way,886905148
+Nhà văn hóa huyện Đông Anh,community_centre,,21.14192,105.85087,,,,way,1185727096
+Nhà văn hóa khu C cụm 591,community_centre,,20.90734,105.84782,,Thành phố Hà Nội,,node,11775084796
+Nhà văn hóa khu Khả Lễ,community_centre,,21.15966,106.05144,,,,way,1327554619
+Nhà văn hóa khu Trần,community_centre,,21.12988,106.06458,Bắc Ninh,Bac Ninh,Đường Nguyễn Đoan Trung,way,1430318950
+Nhà văn hóa khu dân cư đô thị Bắc Từ Sơn,community_centre,,21.11894,105.97602,Bắc Ninh,Bac Ninh,,way,1455495078
+Nhà văn hóa khu phố Ao Sen,community_centre,,21.09391,105.95796,Bắc Ninh,Bac Ninh,Phố Bà La,way,1454932170
+Nhà văn hóa khu phố Bồng Lai,community_centre,,21.11929,106.1712,Bắc Ninh,Bac Ninh,,way,1421284602
+Nhà văn hóa khu phố Cổng Hữu,community_centre,,21.1822,106.05618,Bắc Ninh,Bac Ninh,,way,1503506372
+Nhà văn hóa khu phố Liễn Thượng,community_centre,,21.19334,106.12668,Bắc Ninh,Bac Ninh,Ngõ 107 Đường Quang Trung,way,1441615043
+Nhà văn hóa khu phố Lê Hồng Phong,community_centre,,21.11584,105.95824,Bắc Ninh,Bac Ninh,Phố Chợ Tre,way,1454953470
+Nhà văn hóa khu phố Mai Động,community_centre,,21.15435,105.94415,Bắc Ninh,Bac Ninh,Phố Mai Động 3,way,647253453
+Nhà văn hóa khu phố Mới - phường Trang Hạ,community_centre,,21.1248,105.94874,Bắc Ninh,Bac Ninh,,way,1479765290
+Nhà văn hóa khu phố Ngọc Nội,community_centre,,21.02656,106.10281,Bắc Ninh,Bac Ninh,,way,1445439815
+Nhà văn hóa khu phố Phù Khê,community_centre,,21.1465,105.93235,Bắc Ninh,Bac Ninh,,way,661161556
+Nhà văn hóa khu phố Phù Khê Thượng,community_centre,,21.14833,105.93256,Bắc Ninh,Bac Ninh,Phố Quách Toàn,way,1478877767
+Nhà văn hóa khu phố Phúc Tinh,community_centre,,21.14729,105.98363,Bắc Ninh,Bac Ninh,Đường Nghìn Việc Tốt,way,1455610530
+Nhà văn hóa khu phố Suối Hoa,community_centre,,21.19026,106.07676,Bắc Ninh,Bac Ninh,Phố Lê Văn Duyệt,way,1478725389
+Nhà văn hóa khu phố Thọ Môn,community_centre,,21.11068,105.95095,Bắc Ninh,Bac Ninh,Phố Nguyễn Văn Trỗi,way,1455495084
+Nhà văn hóa khu phố Tiền Trong,community_centre,,21.13628,106.05671,Bắc Ninh,Bắc Ninh,,way,1474196380
+Nhà văn hóa khu phố Tân Thành,community_centre,,21.13468,105.94092,Bắc Ninh,Bac Ninh,,way,1454951615
+Nhà văn hóa khu phố Tây,community_centre,,21.14873,105.97592,Bắc Ninh,Bac Ninh,Phố Ngô Dịch,way,1455610527
+Nhà văn hóa khu phố Tự,community_centre,,21.14638,105.96136,Bắc Ninh,Bac Ninh,Đường Nghìn Việc Tốt,way,1456705487
+Nhà văn hóa khu phố Xuân Lê,community_centre,,21.0284,106.0222,Bắc Ninh,Bac Ninh,,way,1429026425
+Nhà văn hóa khu phố Xuân Đồng,community_centre,,21.20838,106.05491,Bắc Ninh,Bac Ninh,,way,1470056396
+Nhà văn hóa khu phố Đa Vạn,community_centre,,21.12017,105.92744,Bắc Ninh,Bac Ninh,Ngõ 294 Đường Lý Thường Kiệt,way,1455198303
+Nhà văn hóa khu phố Đại Đình,community_centre,,21.13904,105.94184,Bắc Ninh,Bac Ninh,Phố Tây Am,way,1467088155
+Nhà văn hóa khu phố Đồng Phúc,community_centre,,21.12213,105.93869,Bắc Ninh,Bac Ninh,Phố Đồng Phúc,way,1479800366
+Nhà văn hóa khu tập thể thú y,community_centre,,21.07925,105.69404,,,,way,1465122022
+Nhà văn hóa lao động Huyện Cần Giờ,community_centre,,10.40924,106.95471,,,,way,754576768
+Nhà văn hóa làng  14,community_centre,,20.94156,105.97968,,,,node,13200430976
+Nhà văn hóa làng Chiều Đông,community_centre,,20.94534,106.00039,,,,node,13051340157
+Nhà văn hóa làng Du Tràng,community_centre,,20.94409,106.00657,,,,node,13188700558
+Nhà văn hóa làng Hạ Tân,community_centre,,20.93926,106.00623,,,,node,13051450054
+Nhà văn hóa làng Nhân Vực,community_centre,,20.9464,105.99523,,,,node,13347246723
+Nhà văn hóa làng Pháp Vân,community_centre,,20.96786,105.84367,,,,way,1488891317
+Nhà văn hóa làng Thịnh,community_centre,,20.9324,106.00431,,,,node,13202102169
+Nhà văn hóa làng Tiên Tân,community_centre,,21.12701,105.68091,,,,way,1189163510
+Nhà văn hóa phường An Hội,community_centre,,10.03977,105.78604,,,,way,371839535
+Nhà văn hóa phường An Nghiệp,community_centre,,10.03655,105.77569,,,,way,543246734
+Nhà văn hóa phường Dịch Vọng,community_centre,,21.03942,105.79502,,,,way,1213059860
+Nhà văn hóa phường Hạ Đình,community_centre,,20.99013,105.81261,,,,way,974596758
+Nhà văn hóa phường Hải Châu,community_centre,,16.06608,108.21602,,,Đường Triệu Nữ Vương,way,1521242058
+Nhà văn hóa phường Long Hương,community_centre,,10.49984,107.16426,,,,way,742824308
+Nhà văn hóa phường Mai Dịch,community_centre,,21.03542,105.77934,,,,way,942415516
+Nhà văn hóa phường Mỹ Đình 1,community_centre,,21.01981,105.77122,,,,way,1030860270
+Nhà văn hóa phường Nghĩa Tân,community_centre,,21.04284,105.79385,,,,way,1213225185
+Nhà văn hóa phường Nghĩa Đô,community_centre,,21.05113,105.80729,,,Ngõ 89 Lạc Long Quân,way,1171597400
+Nhà văn hóa phường Ngọc Hà,community_centre,,21.03771,105.82913,,,,way,697791110
+Nhà văn hóa phường Ngọc Lâm,community_centre,,21.04776,105.8769,,,,way,704159175
+Nhà văn hóa phường Quan Hoa,community_centre,,21.03481,105.79842,,,,way,1213245431
+Nhà văn hóa phường Tân An,community_centre,,10.03215,105.78502,,,,way,544270608
+Nhà văn hóa phường Yên Phụ,community_centre,,21.05521,105.83864,,,,way,593653791
+Nhà văn hóa phường Đáp Cầu,community_centre,,21.2,106.09559,Thành phố Bắc Ninh,Bac Ninh,Phố Bắc Sơn,way,1503406518
+Nhà văn hóa quận Cầu Giấy,community_centre,,21.03708,105.79072,Hà Nội,Hà Nội,Nguyễn Phong Sắc,way,570595075
+Nhà văn hóa số 36,community_centre,,21.03483,105.80146,,,,way,1040794885
+Nhà văn hóa thành phố Tam Điệp,community_centre,,20.15648,105.9181,,,,way,674428104
+Nhà văn hóa thôn 1,community_centre,,20.96993,105.90785,,,,way,1197414130
+Nhà văn hóa thôn 1,community_centre,,20.99993,105.91191,,,,way,1197414134
+Nhà văn hóa thôn 2,community_centre,,21.50478,107.98352,,,,node,5795982320
+Nhà văn hóa thôn 4,community_centre,,20.92863,105.84573,,,,way,1157172153
+Nhà văn hóa thôn 4,community_centre,,20.96,105.90272,,,,way,1197414133
+Nhà văn hóa thôn 4,community_centre,,21.31723,105.85478,,,,way,1263969683
+Nhà văn hóa thôn 5,community_centre,,20.95836,105.90102,,,,way,1197414132
+Nhà văn hóa thôn An Trạch,community_centre,,21.16695,106.24769,,,,node,13077437406
+Nhà văn hóa thôn An Đà,community_centre,,21.02596,105.95991,,,,way,1222783979
+Nhà văn hóa thôn An Đà,community_centre,,21.02581,105.95833,,,,way,1222783989
+Nhà văn hóa thôn Bái Uyên,community_centre,,21.14076,106.03833,Bắc Ninh,Bac Ninh,,way,1460775651
+Nhà văn hóa thôn Báo Đáp,community_centre,,20.96846,105.94926,,,,way,1223159274
+Nhà văn hóa thôn Bãi Cát,community_centre,,21.66806,105.42277,,,,way,1268769458
+Nhà văn hóa thôn Bút Sơn,community_centre,,20.54128,105.87573,,,,node,5698471622
+Nhà văn hóa thôn Bản Búng,community_centre,,18.87183,104.84002,,,,node,5904480385
+Nhà văn hóa thôn Bẫu,community_centre,,21.6047,105.40356,,,,node,13308761619
+Nhà văn hóa thôn Cam,community_centre,,21.02726,105.94123,,Hà Nội,Ngõ 142 Đường Cổ Bi,way,914040089
+Nhà văn hóa thôn Chi Hồ,community_centre,,21.07953,106.08738,Bắc Ninh,Bac Ninh,,way,1489093286
+Nhà văn hóa thôn Chi Đống,community_centre,,21.08052,106.08222,Bắc Ninh,Bac Ninh,,way,1420972048
+Nhà văn hóa thôn Chu Xá,community_centre,,20.9694,105.95476,,,,way,1223159259
+Nhà văn hóa thôn Chân Lạc,community_centre,,21.24601,105.9981,Bắc Ninh,Bac Ninh,,way,1489086999
+Nhà văn hóa thôn Châu Cầu,community_centre,,21.12682,106.24499,,,,node,13075327942
+Nhà văn hóa thôn Chính Trung,community_centre,,21.22114,105.98789,Bắc Ninh,Bac Ninh,,way,1545933449
+Nhà văn hóa thôn Chử Xá,community_centre,,20.94015,105.90306,,,,way,1182143679
+Nhà văn hóa thôn Cò Phạt,community_centre,,18.88543,104.87677,,,,node,5904472688
+Nhà văn hóa thôn Cương Ngô,community_centre,,20.94455,105.84963,,,,way,1157172129
+Nhà văn hóa thôn Cống Đặng,community_centre,,20.72601,105.71085,,,,way,766661913
+Nhà văn hóa thôn Cổ Thiết,community_centre,,21.09349,106.15041,Thành phố Bắc Ninh,Bac Ninh,,way,1548055908
+Nhà văn hóa thôn Cổ Điển A,community_centre,,20.94138,105.85192,,,,way,1157172134
+Nhà văn hóa thôn Cổ Điển B,community_centre,,20.94633,105.85345,,,,way,1157172127
+Nhà văn hóa thôn Cự Đà,community_centre,,21.02737,105.95728,,,,way,1222284710
+Nhà văn hóa thôn Duệ Khánh,community_centre,,21.13956,106.00665,Bắc Ninh,Bac Ninh,,way,1547599174
+Nhà văn hóa thôn Duệ Đông,community_centre,,21.13709,106.01537,Bắc Ninh,Bac Ninh,,way,1502920403
+Nhà văn hóa thôn Dương Húc,community_centre,,21.09691,105.98514,Bắc Ninh,Bac Ninh,,way,1537065085
+Nhà văn hóa thôn Dương Kệ,community_centre,,20.82648,105.67245,,,,way,763352584
+Nhà văn hóa thôn Dương Đình,community_centre,,21.00388,105.96659,,,Ngõ 8 Đường Ỷ Lan,way,1486542408
+Nhà văn hóa thôn Dậu 1,community_centre,,21.05179,105.71538,,,Đường Di Trạch,way,1453263736
+Nhà văn hóa thôn Dậu 2,community_centre,,21.05127,105.71854,,,,way,1453263737
+Nhà văn hóa thôn Giáo Phòng,community_centre,,20.92522,106.01169,,,,node,13103173049
+Nhà văn hóa thôn Giáp Ba,community_centre,,20.69071,105.94086,,,,way,1360095281
+Nhà văn hóa thôn Giáp Tư,community_centre,,20.69621,105.94154,,,,way,1360095280
+Nhà văn hóa thôn Giới Tế,community_centre,,21.17188,105.99438,Bắc Ninh,Bac Ninh,,way,1547595460
+Nhà văn hóa thôn Gốc Mít,community_centre,,21.67537,105.43783,,,,way,1270641589
+Nhà văn hóa thôn Hoài Thượng,community_centre,,21.12643,106.02696,Thành phố Bắc Ninh,Bac Ninh,,way,1489095549
+Nhà văn hóa thôn Hoài Thị,community_centre,,21.12886,106.0323,Bắc Ninh,Bac Ninh,,way,1540042039
+Nhà văn hóa thôn Hoài Trung,community_centre,,21.13232,106.03027,Bắc Ninh,Bac Ninh,,way,1540042040
+Nhà văn hóa thôn Hoàng Long,community_centre,,21.03236,105.96067,,,,way,1214031949
+Nhà văn hóa thôn Hoàng Xá,community_centre,,20.96609,105.9611,,,,way,1223159245
+Nhà văn hóa thôn Hàn Lạc,community_centre,,21.02997,105.97053,,,,way,1224796548
+Nhà văn hóa thôn Hương Vinh,community_centre,,21.05804,106.17676,Bắc Ninh,Bac Ninh,,way,1489171292
+Nhà văn hóa thôn Hồng Sơn,community_centre,,20.5182,105.87236,,,,node,5697945321
+Nhà văn hóa thôn Hộ Vệ,community_centre,,21.12176,106.07932,Bắc Ninh,Bac Ninh,,way,1540042029
+Nhà văn hóa thôn Hội,community_centre,,21.03199,105.94566,,Hà Nội,Ngõ 272 đường Cổ Bi,way,1124152131
+Nhà văn hóa thôn Hội Triều,community_centre,,20.82353,105.6769,,,,way,763352541
+Nhà văn hóa thôn Hữu Lê,community_centre,,20.9556,105.8029,,,,way,1155357394
+Nhà văn hóa thôn Hữu Từ,community_centre,,20.95232,105.80481,,,,way,1155357391
+Nhà văn hóa thôn Kim Ngưu,community_centre,,20.92379,105.95917,,,,way,1479833531
+Nhà văn hóa thôn Kim Thao,community_centre,,20.98797,106.18805,Bắc Ninh,Bac Ninh,,way,1545295119
+Nhà văn hóa thôn Kim Âu,community_centre,,21.02346,105.95884,,,,way,1224542087
+Nhà văn hóa thôn Kim Đào,community_centre,,21.01069,106.19686,Bắc Ninh,Bac Ninh,Phố Vũ Cảnh,way,1489476924
+Nhà văn hóa thôn Kiều,community_centre,,21.12011,106.03928,Bắc Ninh,Bac Ninh,,way,1539935205
+Nhà văn hóa thôn Kiều Na,community_centre,,21.11904,106.04685,Bắc Ninh,Bac Ninh,,way,1539940403
+Nhà văn hóa thôn La Miệt,community_centre,,21.11579,106.12961,Bắc Ninh,Bac Ninh,,way,1430301766
+Nhà văn hóa thôn Lai Ốc,community_centre,,20.94403,105.95284,,,,node,13310357659
+Nhà văn hóa thôn Liên Ấp,community_centre,,21.09683,106.05665,Bắc Ninh,Bac Ninh,,way,1435568819
+Nhà văn hóa thôn Long Khám,community_centre,,21.11402,106.02824,Bắc Ninh,Bac Ninh,,way,1539958035
+Nhà văn hóa thôn Long Văn,community_centre,,21.1077,106.02997,Bắc Ninh,Bac Ninh,,way,1514663614
+Nhà văn hóa thôn Làng Yên,community_centre,,18.90431,104.99211,,,,node,5863085287
+Nhà văn hóa thôn Lâm Thượng,community_centre,,14.95022,108.9092,,,,way,1102749971
+Nhà văn hóa thôn Lê Xá,community_centre,,20.98783,105.93602,,,Ngõ 339 đường Đa Tốn,way,1241284768
+Nhà văn hóa thôn Lĩnh Mai,community_centre,,21.01417,106.16758,Bắc Ninh,Bac Ninh,,way,1545290811
+Nhà văn hóa thôn Lương,community_centre,,20.92959,106.00724,,,,node,13200056910
+Nhà văn hóa thôn Lạc Trung,community_centre,,21.23992,105.99524,Bắc Ninh,Bac Ninh,,way,1489086987
+Nhà văn hóa thôn Lẹm,community_centre,,21.66269,105.45374,,,,way,1270635219
+Nhà văn hóa thôn Lở,community_centre,,21.03414,105.95344,,,,way,1147083167
+Nhà văn hóa thôn Ngang Nguyễn,community_centre,,21.12386,106.04201,Bắc Ninh,Bac Ninh,,way,1539940397
+Nhà văn hóa thôn Nguyệt Cầu,community_centre,,21.22654,105.94587,Bắc Ninh,Bac Ninh,,way,1489087030
+Nhà văn hóa thôn Ngọc Bộ,community_centre,,20.93054,105.95915,,,,node,13282510263
+Nhà văn hóa thôn Ngọc Tỉnh,community_centre,,21.07608,106.13759,Bắc Ninh,Bac Ninh,,way,1540737226
+Nhà văn hóa thôn Ngọc Động,community_centre,,20.98104,105.94303,,,,way,1246953688
+Nhà văn hóa thôn Nhân Vực,community_centre,,20.93694,105.95334,,,,node,13266291242
+Nhà văn hóa thôn Như Nguyệt,community_centre,,21.23135,105.94398,Như Nguyệt,Bac Ninh,,way,1540390071
+Nhà văn hóa thôn Như Phượng Thượng,community_centre,,20.94247,105.95911,,Hưng Yên,LOng Hưng,node,2701030465
+Nhà văn hóa thôn Nội,community_centre,,21.07525,105.68561,,,,node,12769671938
+Nhà văn hóa thôn Nội Phú,community_centre,,21.05454,106.17447,Bắc Ninh,Bac Ninh,Đường Ngô Gia Tự,way,1489160301
+Nhà văn hóa thôn Nội Viên,community_centre,,21.11674,106.06154,Bắc Ninh,Bac Ninh,,way,1480675466
+Nhà văn hóa thôn Phù Xá,community_centre,,21.17565,105.93022,Bắc Ninh,Bac Ninh,,way,1482914849
+Nhà văn hóa thôn Phú Cầm,community_centre,,21.25516,106.01161,Bắc Ninh,Bac Ninh,,way,1551903911
+Nhà văn hóa thôn Phú Thọ,community_centre,,21.02287,106.16968,Bắc Ninh,Bac Ninh,,way,1545290813
+Nhà văn hóa thôn Phú Đức,community_centre,,21.17461,105.95783,Bắc Ninh,Bac Ninh,,way,1477812255
+Nhà văn hóa thôn Phúc Lai,community_centre,,21.07325,106.18774,Bắc Ninh,Bac Ninh,,way,1540737171
+Nhà văn hóa thôn Phương Triện,community_centre,,21.08264,106.22297,Thành phố Bắc Ninh,Bac Ninh,,way,1548065919
+Nhà văn hóa thôn Phước Lộc,community_centre,,11.77696,106.92433,,,,way,1503898238
+Nhà văn hóa thôn Phước Thịnh,community_centre,,11.75266,106.9332,,,,way,1503898272
+Nhà văn hóa thôn Phấn Động,community_centre,,21.22914,106.03158,Bắc Ninh,Bac Ninh,,way,1475272689
+Nhà văn hóa thôn Rền,community_centre,,21.07728,106.03153,Bắc Ninh,Bac Ninh,,way,1454176506
+Nhà văn hóa thôn Sở Đông,community_centre,,20.93223,105.95048,,,,node,13286931344
+Nhà văn hóa thôn Thanh Lâm,community_centre,,21.05314,106.27976,Bắc Ninh,Bac Ninh,,way,1524577991
+Nhà văn hóa thôn Thiểm Xuyên,community_centre,,21.21918,106.01719,Bắc Ninh,Bac Ninh,,way,1475182473
+Nhà văn hóa thôn Thuận Tiến,community_centre,,21.00063,105.97019,,,,way,1189163522
+Nhà văn hóa thôn Thuận Tốn,community_centre,,20.98879,105.9279,,,,way,1311970757
+Nhà văn hóa thôn Thuỷ Trú,community_centre,,20.6969,105.949,,,,way,1360095271
+Nhà văn hóa thôn Thượng,community_centre,,21.08538,106.03108,Bắc Ninh,Bac Ninh,,way,1420972051
+Nhà văn hóa thôn Thị Thôn,community_centre,,21.09827,106.11217,Bắc Ninh,Bac Ninh,,way,1541005340
+Nhà văn hóa thôn Thịnh Lai,community_centre,,21.12573,106.27903,,,,node,13527815812
+Nhà văn hóa thôn Thọ Khê,community_centre,,21.16597,105.95386,Bắc Ninh,Bac Ninh,,way,1477812278
+Nhà văn hóa thôn Thọ Vuông,community_centre,,21.16879,105.9522,Bắc Ninh,Bac Ninh,,way,1477812281
+Nhà văn hóa thôn Thủ Pháp,community_centre,,20.94078,105.99386,,,,node,13095941718
+Nhà văn hóa thôn Tri Chỉ,community_centre,,20.78442,105.82885,,,,node,10796252678
+Nhà văn hóa thôn Triều Dương,community_centre,,10.50719,108.95034,,,,way,1015158477
+Nhà văn hóa thôn Trung Lạc,community_centre,,21.22078,106.0061,,,,way,1475182471
+Nhà văn hóa thôn Trung Lập,community_centre,,20.77197,105.83018,,,,node,10996605299
+Nhà văn hóa thôn Trình Khê,community_centre,,21.01222,106.20973,Bắc Ninh,Bac Ninh,,way,1544840260
+Nhà văn hóa thôn Trạc Nhiệt,community_centre,,21.11694,106.14663,Bắc Ninh,Bac Ninh,,way,1430301751
+Nhà văn hóa thôn Tân Hương,community_centre,,21.09842,106.23173,Bắc Ninh,Bac Ninh,,way,1532199972
+Nhà văn hóa thôn Tân Lập,community_centre,,21.7765,105.47669,,,,node,11089284874
+"Nhà văn hóa thôn Tân Quang, xã Tân Thanh",community_centre,,21.62099,105.42018,,,,way,1448367514
+Nhà văn hóa thôn Tân Tiến,community_centre,,21.61561,105.40943,,,,node,13308762149
+Nhà văn hóa thôn Tân Định,community_centre,,17.37417,106.72151,,,,node,10222989986
+Nhà văn hóa thôn Tô Khê,community_centre,,21.03021,105.96729,,,,way,1223814218
+Nhà văn hóa thôn Tư Chi,community_centre,,21.09563,106.08299,Bắc Ninh,Bac Ninh,,way,1446292757
+Nhà văn hóa thôn Vàng,community_centre,,21.03264,105.93816,,Hà Nội,Ngõ 113 đường Cổ Bi,way,861103427
+Nhà văn hóa thôn Văn Phú,community_centre,,20.8486,105.63005,,,,node,7187541619
+Nhà văn hóa thôn Văn Điển,community_centre,,20.94849,105.84802,,,,way,1157172132
+Nhà văn hóa thôn Vĩnh Lộc,community_centre,,20.92216,105.96656,,,,way,1444628969
+Nhà văn hóa thôn Vực,community_centre,,21.04357,105.72084,,,Đường Đan Khê,way,1457390581
+Nhà văn hóa thôn Xuân Canh,community_centre,,21.08064,105.84829,,,,way,1478526806
+Nhà văn hóa thôn Xuân Cầu,community_centre,,20.95672,105.99028,,,,node,13436982185
+Nhà văn hóa thôn Xuân Hải,community_centre,,17.363,106.73396,,,,way,1114773657
+Nhà văn hóa thôn Xuân Hội,community_centre,,21.11814,106.09084,Bắc Ninh,Bac Ninh,,way,1540042027
+Nhà văn hóa thôn Xuân Lai,community_centre,,21.07366,106.19725,Bắc Ninh,Bac Ninh,,way,1540737175
+Nhà văn hóa thôn Xuân Thụy,community_centre,,20.97662,105.94659,,,,way,1425907445
+Nhà văn hóa thôn Yên Lãng,community_centre,,21.20894,105.99562,Bắc Ninh,Bac Ninh,,way,1453112338
+Nhà văn hóa thôn Yên lũng,community_centre,,21.00751,105.71214,,,"Đường Nam Yên Lũng, xã An Khánh, huyện Hoài Đức, thành phố Hà Nội",node,12564194858
+Nhà văn hóa thôn trung tâm,community_centre,,21.67138,105.42888,,,,way,1268769457
+Nhà văn hóa thôn Ân Phú,community_centre,,21.16823,105.97873,Bắc Ninh,Bac Ninh,,way,1476211976
+Nhà văn hóa thôn Ích Phú,community_centre,,21.08266,106.18003,Thành phố Bắc Ninh,Bac Ninh,,way,1548055910
+Nhà văn hóa thôn Ô Cách,community_centre,,21.2061,105.9749,Bắc Ninh,Bac Ninh,,way,1449590607
+Nhà văn hóa thôn Đa Ngưu,community_centre,,20.91805,105.95884,,,,way,1480991325
+Nhà văn hóa thôn Đoài,community_centre,,21.10418,106.00221,Thành phố Bắc Ninh,Bac Ninh,,way,1462201894
+Nhà văn hóa thôn Đoài,community_centre,,21.23274,105.93308,Bắc Ninh,Bac Ninh,,way,1540390066
+Nhà văn hóa thôn Đoàn Kết,community_centre,,21.15701,106.25331,,,,node,12882572473
+Nhà văn hóa thôn Đông,community_centre,,21.22607,105.93796,Bắc Ninh,Bac Ninh,,way,1435843146
+Nhà văn hóa thôn Đông,community_centre,,21.1022,106.0067,Bắc Ninh,Bac Ninh,,way,1462854561
+Nhà văn hóa thôn Đông Bình,community_centre,,21.05455,106.1864,Bắc Ninh,Bac Ninh,,way,1489171294
+Nhà văn hóa thôn Đông Mai,community_centre,,21.17519,105.9694,Bắc Ninh,Bac Ninh,,way,1477812253
+Nhà văn hóa thôn Đông Phù,community_centre,,21.1703,106.001,Bắc Ninh,Bac Ninh,,way,1481077749
+Nhà văn hóa thôn Đông Sơn,community_centre,,21.10768,106.04569,Bắc Ninh,Bac Ninh,,way,1454689963
+Nhà văn hóa thôn Đông Thái,community_centre,,21.22024,105.97357,Bắc Ninh,Bac Ninh,,way,1540390049
+Nhà văn hóa thôn Đông Thôn,community_centre,,21.21577,105.97461,Bắc Ninh,Bac Ninh,,way,1540390053
+Nhà văn hóa thôn Đông Xuyên,community_centre,,21.22146,105.96773,Bắc Ninh,Bac Ninh,,way,1540390051
+Nhà văn hóa thôn Đông Xuất,community_centre,,21.16921,105.94582,Bắc Ninh,Bac Ninh,,way,1477812294
+Nhà văn hóa thôn Đường,community_centre,,20.78322,105.91859,,,,way,1222872998
+Nhà văn hóa thôn Đại Bái,community_centre,,21.0381,106.14831,Bắc Ninh,Bac Ninh,,way,1545290829
+Nhà văn hóa thôn Đại Lâm,community_centre,,21.21172,106.03302,Bắc Ninh,Bac Ninh,,way,1475272713
+Nhà văn hóa thôn Đại Sơn,community_centre,,21.10722,105.99753,Bắc Ninh,,,way,1462201897
+Nhà văn hóa thôn Đại Thượng,community_centre,,21.08663,105.98759,Bắc Ninh,Bac Ninh,,way,1537065074
+Nhà văn hóa thôn Đại Tảo,community_centre,,21.11181,106.02109,Bắc Ninh,Bac Ninh,,way,1431670348
+Nhà văn hóa thôn Đại Vi,community_centre,,21.08659,105.99927,Bắc Ninh,Bac Ninh,,way,1537065077
+Nhà văn hóa thôn Đạm Trai,community_centre,,21.00149,106.26529,Bắc Ninh,Bac Ninh,,way,1535151065
+Nhà văn hóa thôn Đản Dị,community_centre,,21.14191,105.85433,,,,way,1185901861
+Nhà văn hóa thôn Đặng,community_centre,,21.03116,105.95293,,,Ngõ 405 đường Ỷ Lan,way,1142005105
+Nhà văn hóa thôn Đồng Sài,community_centre,,21.14889,106.22972,,,,node,12842182810
+Nhà văn hóa thôn Đồng Trì,community_centre,,20.94063,105.86287,,,,way,1157172144
+Nhà văn hóa thôn Đỗ Xá,community_centre,,21.1065,105.92227,,,,way,661138432
+Nhà văn hóa thôn Đức Lân,community_centre,,21.19229,105.92729,Bắc Ninh,Bac Ninh,,way,1477395653
+Nhà văn hóa thể thao Tổ dân phố Dương Lôi,community_centre,,21.11401,105.97386,Bắc Ninh,Bac Ninh,Phố Dương Lôi,way,1455495080
+Nhà văn hóa thể thao và sinh hoạt cộng đồng phường Vĩnh Hưng,community_centre,,20.99491,105.87488,,,,way,1512139599
+Nhà văn hóa thị trấn Lương Bằng,community_centre,,20.73772,106.06091,,,,way,985095313
+Nhà văn hóa thị xã Phú Thọ,community_centre,,21.40194,105.21469,,,,way,1054316663
+Nhà văn hóa tiểu khu Giấy,community_centre,,20.7833,105.91686,,,,way,1034772150
+Nhà văn hóa tiểu khu Phú Gia,community_centre,,20.77821,105.91438,,,,way,1034792373
+Nhà văn hóa trung tâm xã Vân Canh,community_centre,,21.03615,105.72947,,,,way,1097438439
+Nhà văn hóa trung tâm xã Đại Yên,community_centre,,20.90156,105.69849,,,,way,1079204737
+Nhà văn hóa tỉnh Bắc Kạn,community_centre,,22.15102,105.83069,,,,way,1088700418
+Nhà văn hóa tỉnh Hà Nam,community_centre,,20.5463,105.91228,,,,way,1019379148
+Nhà văn hóa tổ 11 phường Đồng Mai,community_centre,,20.92449,105.73888,Hà Nội,,,way,966204369
+Nhà văn hóa tổ 7,community_centre,,21.62546,105.83893,,,,way,888768431
+Nhà văn hóa tổ 9 phường Long Biên,community_centre,,21.03115,105.88614,,,,node,9237323779
+Nhà văn hóa tổ dân phố Bắc,community_centre,,20.22562,106.18614,,,,way,1250662280
+Nhà văn hóa tổ dân phố Nam Sơn,community_centre,,20.21315,106.19255,,,,way,1250662294
+Nhà văn hóa tổ dân phố Nam Thọ,community_centre,,20.22095,106.19265,,,,way,1250662296
+Nhà văn hóa tổ dân phố Phúc Tiến,community_centre,,20.9301,105.71359,,,,node,12686435122
+Nhà văn hóa tổ dân phố Tân Thành,community_centre,,20.22926,106.18991,,,,way,1250662284
+Nhà văn hóa tổ dân phố Viên 1,community_centre,,21.06684,105.78205,,,,node,12508512455
+Nhà văn hóa tổ dân phố Văn Trì 4,community_centre,,21.05563,105.74104,,,Ngõ 136 Đường Cầu Diễn,node,12508554078
+Nhà văn hóa tổ dân phố số 1,community_centre,,20.2225,106.18236,,,,way,1250241018
+Nhà văn hóa tổ dân phố số 2-3-4,community_centre,,21.1377,105.84784,,,,way,1185901823
+Nhà văn hóa tổ dân phố số 3,community_centre,,20.20952,106.18145,,,,way,1250662246
+Nhà văn hóa tổ dân phố số 5,community_centre,,21.14126,105.84371,,,,way,1185911647
+Nhà văn hóa tổ dân phố số 6,community_centre,,21.14842,105.85015,,,,way,1185911650
+Nhà văn hóa tổ dân phố Đoài,community_centre,,20.21974,106.18612,,,,way,1250662264
+Nhà văn hóa tổ dân phố Đông,community_centre,,20.22037,106.19093,,,,way,1250662295
+Nhà văn hóa tổ dân phố Đại Cát 3,community_centre,,21.0852,105.74536,,Thành phố Hà Nội,Ngõ 145 Đường Liên Mạc,node,12492022116
+Nhà văn hóa và trụ sở áp Hưng Thành Đông,community_centre,,10.32753,105.65488,,,,node,13329816101
+Nhà văn hóa và trụ sở âp Hưng Thạnh Đông,community_centre,,10.32244,105.66333,,,,node,13329815501
+Nhà văn hóa và trụ sở ấp Hưng Lợi Đông,community_centre,,10.31883,105.67527,,,,node,13329815701
+Nhà văn hóa và trụ sở ấp Hưng Thành Tây B,community_centre,,10.33597,105.66711,,,,node,13329820401
+Nhà văn hóa xã Dliê Ya,community_centre,,13.0339,108.32478,,,,way,1546546714
+Nhà văn hóa xã Gia Lâm,community_centre,,21.01445,105.946,,,Phố Đoàn Quang Dung,way,1119231788
+Nhà văn hóa xã Hoà Bình,community_centre,,10.6268,107.37129,,,,way,748909555
+Nhà văn hóa xã Hoà Hội,community_centre,,10.59891,107.4374,,,,way,749118723
+Nhà văn hóa xã Linh Sơn 2,community_centre,,21.48631,105.78918,,,,node,9028029207
+Nhà văn hóa xã Thanh Hải,community_centre,,20.88819,106.40222,,,,way,628801965
+Nhà văn hóa xã Đan Phượng,community_centre,,11.70954,108.18222,,,,node,14093625208
+Nhà văn hóa xã Đạ Oai,community_centre,,11.44948,107.48776,Đạ Huoai,Lâm Đồng,,node,11540531696
+Nhà văn hóa xóm 23,community_centre,,20.30346,106.39116,,,,node,8246968248
+Nhà văn hóa xóm Làng Lậm,community_centre,,21.65196,105.84435,,,,way,1249449903
+Nhà văn hóa xóm Phúc Thành,community_centre,,21.65535,105.84801,,,,way,1249449712
+Nhà văn hóa Đê Ca,community_centre,,21.07925,105.9243,,,,way,659860830
+Nhà văn hóa Đại Kim,community_centre,,20.9769,105.82215,,,,way,1482908223
+Nhà văn hóa Đại Tài,community_centre,,20.96618,105.98096,,,,node,13161516088
+Nhà văn hóa Đại Từ,community_centre,,20.97108,105.83492,,,,way,1482440118
+Nhà văn hóa Đồng Tỉnh,community_centre,,20.94936,105.9951,,,,node,13162029176
+Nhà văn hóa đội 10,community_centre,,20.93955,106.00036,,,,node,13084284747
+Nhà văn hóa đội 6 thôn Vĩnh An,community_centre,,20.94225,105.9965,,,,node,13710452830
+Nhà văn hóa Ấp 1,community_centre,,11.0295,106.91285,,,,way,1064808738
+Nhà văn hóa Ấp 2,community_centre,,11.03329,106.91359,,,,way,1065081398
+Nhà văn hóa Ấp 2,community_centre,,11.01314,106.82957,,,,way,1065564926
+Nhà văn hóa Ấp 3,community_centre,,11.0066,106.8409,,,,way,1065564925
+Nhà văn hóa Ấp 3,community_centre,,11.00888,106.82338,,,,way,1065564929
+Nhà văn hóa Ấp 4,community_centre,,11.00416,106.82163,,,,way,1065564931
+Nhà văn hóa Ấp 5,community_centre,,11.01797,106.8299,,,,way,1065564934
+Nhà văn hóa Ấp 6,community_centre,,11.02781,106.83131,,,,way,1065564939
+Nhà văn hóa Ấp 6,community_centre,,10.79458,107.00983,,,,way,1348456650
+Nhà văn hóa Ấp 7,community_centre,,11.02606,106.83772,,,,way,1065564942
+Nhà văn hóa Ấp An Phong,community_centre,,10.32234,105.53726,,,,way,1493816349
+Nhà văn hóa Ấp An Phong,community_centre,,10.32223,105.53731,,,,way,1497022980
+Nhà văn hóa Ấp Bình Lục,community_centre,,11.01344,106.79185,,,,way,1065564916
+Nhà văn hóa Ấp Bình Ý,community_centre,,10.99629,106.8148,,Tỉnh Đồng Nai,,way,1108831625
+Nhà văn hóa Ấp Bến Nôm 1,community_centre,,11.09078,107.18537,,,,way,1075330233
+Nhà văn hóa Ấp Cây Xoài,community_centre,,11.02476,106.96226,,,,way,1413279518
+Nhà văn hóa Ấp Phú Tân,community_centre,,11.08593,107.18114,,,,way,1075301653
+Nhà văn hóa Ấp Thống Nhất,community_centre,,11.08693,107.18726,,,,way,1075301656
+Nhà văn hóa Ấp Thới Sơn,community_centre,,10.99891,106.78411,,,,way,1065102825
+Nhà văn hóa Ấp Tân Hiệp,community_centre,,11.91466,106.70522,,,,way,1498751832
+Nhà văn hóa Ấp Vàm,community_centre,,11.02298,106.90138,,,,way,1065564945
+Nhà văn hóa ấp Hoà Hữu,community_centre,,9.9626,106.30989,,,,way,1149333999
+Nhà văn hóa ấp Trường Thọ A,community_centre,,9.9789,105.63981,,,,way,1466009364
+Núi Tô,community_centre,,10.40309,105.00405,,,,node,4416246800
+Nước mắm Bà Hai,community_centre,,10.94044,108.13712,,,Nguyễn Thông,node,4765967125
+Panhou,community_centre,,22.59832,104.73509,,,,node,5294733027
+Pass,community_centre,,22.73322,106.3373,,,,node,5294733038
+Phu Long,community_centre,,20.80469,106.92828,,,,node,5294753325
+Phu Nham CPC,community_centre,,21.59824,104.53399,,,,node,4747829521
+Phòng họp Tổ dân phố số 27,community_centre,,21.03047,105.91988,,,,node,8025708496
+Phú Xá,community_centre,,21.55529,105.85449,,,,node,7884264070
+Quan thánh đế,community_centre,,10.36102,106.67456,,,,node,4681971491
+Quang Ba community center,community_centre,,21.06847,105.82377,,,Đường Tô Ngọc Vân,way,524889036
+Quận Tây Hồ UBND Phường Nhật Tân - Nhà Văn Hóa Phường Nhật Tân,community_centre,,21.07802,105.81785,,,Phố Trịnh Công Sơn,node,6610502444
+Sunwah,community_centre,,21.03736,105.78229,,,,way,826421975
+Sân Văn hóa Cầu Gỗ,community_centre,,21.18236,106.06229,Thành phố Bắc Ninh,Bac Ninh,Đường Thiên Đức,way,1063218195
+Sân khấu Làng Chài,community_centre,,10.93944,108.16348,,,Nguyễn Thông,node,4763296721
+Sân thể thao Ấp Bình Lục,community_centre,,11.01469,106.79306,,,,way,1065564919
+Sở Văn hóa và Thể thao Thừa Thiên Huế,community_centre,,16.46212,107.59084,,,Lý Thường Kiệt,node,4435788893
+TT BDCT Vĩnh Thạnh,community_centre,,10.22284,105.39802,,,,node,4952173121
+TT Giáo dục thường xuyên Định Quán,community_centre,,11.20303,107.35384,,,,node,4643939190
+TT VHTT & HTCĐ xã Long Sơn,community_centre,,10.45504,107.09726,,,,way,743798593
+TTVH - HTCĐ phường Phước Hưng,community_centre,,10.50677,107.17613,,,,way,742120534
+TTVH HTCĐ,community_centre,,10.73072,106.9911,,,,node,7099261005
+TTVH HTCĐ phường 8,community_centre,,10.3543,107.08446,,,,node,5604518624
+TTVH tỉnh Bình Phước,community_centre,,11.53367,106.88588,,,,way,308426765
+TTVH-HTCĐ phường 5,community_centre,,10.38192,107.06641,,,,way,901408250
+TTVH-HTCĐ phường 7,community_centre,,10.36994,107.07832,,,,way,786450860
+TTVH-HTCĐ phường Phước Hiệp,community_centre,,10.49766,107.16819,,,,way,786548150
+TTVH-HTCĐ phường Phước Trung,community_centre,,10.49024,107.1756,,,,way,604579699
+TTVH-HTCĐ thị trấn Long Hải,community_centre,,10.39628,107.22882,,,,way,691444093
+TTVH-HTCĐ xã Tóc Tiên,community_centre,,10.59781,107.1251,,,Đường Hắc Dịch-Tóc Tiên-Châu Pha,way,271395190
+Thach Ban Residential Group 7 Community Center,community_centre,,21.02092,105.9092,,,,way,1181726343
+Thach Ban Residential Group 8 Community Center,community_centre,,21.01481,105.90719,,,,way,1181726342
+Thach Ban Residential Group 9 Community Center,community_centre,,21.01779,105.90938,,,,way,1181726344
+Thôn Kíp Ling (9),community_centre,,14.88976,108.32988,,,,node,5798189653
+Thôn Măng Bút,community_centre,,14.83924,108.1927,,,,node,5772768154
+Thôn Măng Cành,community_centre,,14.69139,108.29885,,,,node,5774851153
+Thôn Tu Rét,community_centre,,15.02049,108.2418,,,,node,5792310682
+Thôn Tu Thôn (10),community_centre,,15.01465,108.23318,,,,node,5792322455
+Thôn Vi Rô Ngheo,community_centre,,14.78152,108.17314,,,,node,5786899455
+Thôn Viring,community_centre,,14.70328,108.24456,,,,node,5769302353
+Thôn Điek Tà Âu,community_centre,,14.86159,108.33164,,,,node,5798204654
+Thôn Điek Tà Âu,community_centre,,14.87335,108.32915,,,,node,5798207653
+Thôn Đắk Bép,community_centre,,14.8845,108.32832,,,,node,5798162355
+Thôn Đắk Chun,community_centre,,14.9149,108.15487,,,,node,5773615556
+Thôn Đắk Chun,community_centre,,14.90864,108.15605,,,,node,5773636453
+Thôn Đắk Chờ,community_centre,,14.85883,108.24873,,,,node,5777963854
+Thôn Đắk Giắc,community_centre,,14.91837,108.15792,,,,node,5773615554
+Thôn Đắk Lanh,community_centre,,14.92727,108.14476,,,,node,5773615555
+Thôn Đắk Lúp,community_centre,,14.98732,108.26262,,,,node,5792311073
+Titops,community_centre,,21.06759,105.85765,Hanoi,,"Ngoc Thuy, Long Bien",node,7771875985
+Tr\ụ sở Ấp Hoàng Quân,community_centre,,10.78449,107.22223,,,,way,727012690
+Trung Tâm Bảo Trợ Người Tâm Thần Bến Tre,community_centre,,10.26353,106.38789,Bến Tre,Bến Tre,,node,10784769320
+Trung Tâm Hoạt Động Thanh Thiếu Nhi Lai Châu,community_centre,,22.38866,103.46745,,,,way,705986954
+Trung Tâm Hoạt Động Thanh Thiếu Niên,community_centre,,10.24873,105.96145,,,,way,1231384327
+Trung Tâm Hôi Nghi,community_centre,,10.74813,106.62583,,,Đường Kinh Dương Vương,way,715813315
+Trung Tâm Nhân Đạo Quê Hương - Huyện Dĩ An,community_centre,,10.91805,106.74827,,,,node,4305778289
+Trung Tâm Sinh hoat Thanh niên,community_centre,,9.93585,106.33758,,,,way,288582900
+Trung Tâm Từ Thiện và Hướng nghiệp Phật Tích,community_centre,,21.09415,106.03659,Bắc Ninh,Bac Ninh,,way,1433752984
+Trung Tâm Văn Hóa - Thể Dục Thể Thao Huyện Thạch Thành,community_centre,,20.12826,105.66608,,,,node,11052249149
+Trung Tâm Văn Hóa Quận 1,community_centre,,10.78414,106.70091,,,,node,9585983485
+Trung Tâm Văn Hóa Quận 7,community_centre,,10.71157,106.73767,,,,way,149904638
+Trung Tâm Văn Hóa Thể Thao Huyện Cần Đước,community_centre,,10.50071,106.60342,,Long An,Trần Hưng Đạo,node,11112363726
+Trung Tâm Văn Hóa Thể Thao Vạn Ninh,community_centre,,12.69206,109.22363,,,,node,14038476052
+Trung Tâm Văn hóa - HTCĐ xã Châu Pha,community_centre,,10.5729,107.1587,,,,way,744585766
+Trung Tâm Văn hóa Luy Lâu,community_centre,,21.04848,106.09153,Thành phố Bắc Ninh,Bac Ninh,Đường Hai Bà Trưng,way,1436206127
+Trung Văn hóa - HTCĐ phường Phước Hoà,community_centre,,10.54218,107.07163,,,,way,746366732
+Trung tâm Chính trị Huyện Phú Xuyên,community_centre,,20.7249,105.9209,,,,node,11429031461
+Trung tâm Cung ứng Dịch vụ Văn hóa - Thể thao phường An Đông,community_centre,,10.7517,106.66834,,,,way,1543155943
+Trung tâm Cung ứng dịch vụ công phường Hòa Cường,community_centre,,16.03714,108.21288,,,Đường Tân An 3,way,1521977088
+Trung tâm Công tác xã hội Vĩnh Long,community_centre,,10.24712,106.00099,,,,way,1380174212
+Trung tâm Cộng đồng Xã Lai Vung,community_centre,,10.2503,105.60291,,,,way,1429682260
+Trung tâm Cộng đồng Định Yên,community_centre,,10.30659,105.53884,,,,way,1429664846
+Trung tâm Dịch vụ tổng hợp phường Thanh Liệt,community_centre,,20.95746,105.81304,,,Ngõ 250 Đường Phan Trọng Tuệ,way,1427503847
+Trung tâm Giao lưu văn hóa phố cổ Hà Nội,community_centre,,21.03618,105.85284,Hà Nội,Thành phố Hà Nội,Đào Duy Từ,node,4548834591
+Trung tâm Hoạt động Thanh thiếu nhi Thành phố Bắc Ninh (cơ sở 2),community_centre,,21.18445,106.07901,Bắc Ninh,Bac Ninh,Đường Lý Thái Tông,way,1030833865
+Trung tâm Hoạt động Thanh thiếu nhi tỉnh Bắc Kạn,community_centre,,22.15087,105.83249,,,,way,1088700419
+Trung tâm Hoạt động Thanh thiếu nhi tỉnh Sơn La (cơ sở 2),community_centre,,21.28446,103.97024,,,Đường Lê Duẩn,way,1028840354
+Trung tâm Hoạt động Thanh thiếu nhi tỉnh Thừa Thiên-Huế,community_centre,,16.47978,107.59976,,,Lâm Hoàng,way,1211159963
+Trung tâm Hoạt động thanh thiếu nhi tỉnh Sơn La,community_centre,,21.32645,103.91939,,,Đường Nguyễn Lương Bằng,way,1028840328
+Trung tâm Hoạt động thanh thiếu niên tỉnh Nghệ An,community_centre,,18.80154,105.719,,,,way,1174486568
+"Trung tâm Hoạt động thanh, thiếu nhi tỉnh Hà Nam",community_centre,,20.53722,105.91631,,,Đường Trường Chinh,way,1224964435
+Trung tâm Hành chính Xã Lai Vung,community_centre,,10.25059,105.60315,,,,way,1496345904
+Trung tâm Hành chính công phường Xuân Hương - Đà Lạt,community_centre,,11.95229,108.44168,,,,node,13114216638
+Trung tâm Học tập Cộng đồng xã Má Lé,community_centre,,23.30838,105.30202,,,,way,854497462
+Trung tâm Học tập Sinh hoạt Thanh thiếu niên,community_centre,,11.31557,106.09931,,,,way,664624824
+Trung tâm Học tập cộng đồng xã Phú Vinh,community_centre,,11.21229,107.36528,,,,node,4713192000
+Trung tâm Sinh hoạt Thanh thiếu nhi Trà Vinh,community_centre,,9.92819,106.33375,,,,way,1160399095
+Trung tâm Sinh hoạt dã ngoại TTN-Thành phố Hồ Chí Minh,community_centre,,10.40146,106.90494,,,,way,1163580971
+Trung tâm TDTT quận 9,community_centre,,10.84553,106.78797,,,,way,507538765
+Trung tâm Thanh Thiếu Niên Miền Nam,community_centre,,10.33715,107.08839,,,,way,580493814
+Trung tâm Thanh thiếu niên Trung ương,community_centre,,20.99064,105.8002,,,Phố Nguyễn Quý Đức,way,1451988286
+Trung tâm Thông tin Văn hóa Nhật,community_centre,,21.03304,105.81603,Hà Nội,Hà Nội,Phố Liễu Giai,way,487922133
+Trung tâm Thể thao Văn hóa thôn Bình An,community_centre,,21.17564,105.94016,Bắc Ninh,Bac Ninh,,way,1501132441
+Trung tâm VH - HTCĐ phường Phước Nguyên,community_centre,,10.49949,107.18287,,,,way,741547848
+Trung tâm VH-HTCD xã Kim Long,community_centre,,10.70268,107.2438,,,,way,728076226
+Trung tâm VH-HTCĐ thị trấn Phước Hải,community_centre,,10.42847,107.29326,,,,way,737008868
+Trung tâm VH-HTCĐ xã An Nhứt,community_centre,,10.48303,107.24884,,,,way,740715595
+Trung tâm VH-HTCĐ xã Long Mỹ,community_centre,,10.43954,107.27523,,,,way,737854338
+Trung tâm VH-HTCĐ xã Long Tân,community_centre,,10.54167,107.25894,,,,way,737860465
+Trung tâm VH-HTCĐ xã Láng Dài,community_centre,,10.50299,107.33246,,,,way,737864977
+Trung tâm VH-HTCĐ xã Lộc An,community_centre,,10.45479,107.33082,,,,way,738707425
+Trung tâm VH-HTCĐ xã Phước Long Thọ,community_centre,,10.49948,107.31002,,,,way,737860467
+Trung tâm VH-TT & HTCĐ xã Đất Mũi,community_centre,,8.60231,104.76116,,,,way,856188295
+Trung tâm VH-TT&HTCĐ Xã An Thạnh,community_centre,,10.65285,106.47031,,,,way,1197326590
+Trung tâm VH-TT&HTCĐ Xã Thanh Phú,community_centre,,10.66477,106.51059,,,,way,1197326524
+Trung tâm VH-TT&HTCĐ Xã Tân Hội Đông,community_centre,,10.5043,106.34402,,,,way,1197326531
+Trung tâm VHTT phường Xuân Sơn,community_centre,,21.07651,106.54506,,,,way,1001921193
+Trung tâm Văn hoa Thể thao cộng đồng,community_centre,,10.37022,107.07436,,,Trần Xuân Độ,way,744059369
+Trung tâm Văn hóa Trà Vinh,community_centre,,9.91853,106.3094,,,,way,288582881
+Trung tâm Văn hóa,community_centre,,15.9219,107.64893,,,,way,624211520
+Trung tâm Văn hóa - HTCĐ phường 11,community_centre,,10.41059,107.13413,,,,way,791281138
+Trung tâm Văn hóa - HTCĐ phường Mỹ Xuân,community_centre,,10.62343,107.05697,,,,way,746959062
+Trung tâm Văn hóa - HTCĐ xã Sông Xoài,community_centre,,10.66627,107.14728,,,,way,747273597
+Trung tâm Văn hóa - HTCĐ xã Tân Lâm,community_centre,,10.71947,107.40169,,,,way,748644364
+Trung tâm Văn hóa - Thông tin & Thể thao Nghĩa Đô,community_centre,,21.04222,105.7882,Hà Nội,Hà Nội,Phố Trần Quốc Hoàn,way,1243476210
+Trung tâm Văn hóa - Thông tin & Thể thao Đống Đa,community_centre,,21.01439,105.82235,Hà Nội,Hà Nội,Phố Đặng Tiến Đông,way,943911447
+Trung tâm Văn hóa - Thông tin - Thể thao Đặc khu Phú Quý,community_centre,,10.51641,108.9356,,Lâm Đồng,Võ Văn Kiệt,way,1014974130
+Trung tâm Văn hóa - Thông tin Thể thao Thành phố Thủ Dầu Một,community_centre,,11.01587,106.67478,,,,way,1202034573
+Trung tâm Văn hóa - Thông tin và Thể thao huyện Thạch Thất,community_centre,,21.05654,105.58068,,,,way,1062770982
+Trung tâm Văn hóa - Thông tin và Thể thao phường Ba Đình,community_centre,,21.04317,105.83927,Hà Nội,Thành phố Hà Nội,Phố Quán Thánh,way,1231599957
+Trung tâm Văn hóa - Thông tin và Thể thao phường Bạch Mai,community_centre,,21.0034,105.85135,Hà Nội,Hà Nội,Phố Bạch Mai,way,892230829
+Trung tâm Văn hóa - Thông tin và Thể thao phường Kim Liên,community_centre,,21.00881,105.8313,Hà Nội,Hà Nội,Phố Đặng Văn Ngữ,way,958652608
+Trung tâm Văn hóa - Thông tin và Thể thao phường Phú Thượng,community_centre,,21.08871,105.80907,,,Phố Phú Gia,way,964908480
+Trung tâm Văn hóa - Thông tin và Thể thao phường Thượng Cát,community_centre,,21.08972,105.7321,,,Đường Tân Dân,way,975967862
+Trung tâm Văn hóa - Thông tin và Thể thao phường Tây Hồ,community_centre,,21.07858,105.81528,,,,way,974596731
+Trung tâm Văn hóa - Thông tin và Thể thao phường Vĩnh Tuy,community_centre,,21.00632,105.86433,,,Ngách 95/121 Kim Ngưu,way,1441817478
+Trung tâm Văn hóa - Thông tin và Thể thao phường Đông Ngạc,community_centre,,21.05879,105.7804,,,,way,699055686
+Trung tâm Văn hóa - Thông tin và Thể thao xã Thuận An,community_centre,,21.02223,105.9704,,,Đường Dương Đức Hiền,way,1444629299
+Trung tâm Văn hóa - Thể thao Ninh Xá,community_centre,,21.17728,106.06287,Bắc Ninh,Bac Ninh,Đường Nguyễn Cao,way,1446338070
+Trung tâm Văn hóa - Thể thao P. Phước Thắng,community_centre,,10.41814,107.16107,,,,node,13361163389
+Trung tâm Văn hóa - Thể thao Phường 2,community_centre,,10.75445,106.6769,,,Đường Trần Hưng Ðạo,way,1525476302
+Trung tâm Văn hóa - Thể thao phường Mỹ Đình 2,community_centre,,21.03266,105.77385,,,,way,1318588884
+Trung tâm Văn hóa - Thể thao xã Tứ Hiệp,community_centre,,20.9473,105.8525,,,,way,1153416084
+Trung tâm Văn hóa Cộng đồng Phú Mỹ,community_centre,,10.60249,107.05144,,,,way,267229669
+Trung tâm Văn hóa Huyện Cần Giờ,community_centre,,10.40735,106.95827,,,,way,754576805
+Trung tâm Văn hóa Học tập Cộng đồng Xuân Tân,community_centre,,10.90551,107.23028,,,,way,659087201
+Trung tâm Văn hóa Học tập Cộng đồng xã Bưng Riềng,community_centre,,10.55289,107.48507,,,,way,598541920
+Trung tâm Văn hóa Học tập Cộng đồng xã Long Thành Bắc,community_centre,,11.27429,106.13819,,,,way,666291389
+Trung tâm Văn hóa Học tập cộng đồng xã Láng Lớn,community_centre,,10.66473,107.16961,,,,way,570394702
+Trung tâm Văn hóa Khu phố Tam Lư,community_centre,,21.12264,105.97849,Bắc Ninh,Bac Ninh,Phố Tam Lư 1,way,1424958541
+Trung tâm Văn hóa Khu phố Trang Liệt,community_centre,,21.12097,105.95059,Bắc Ninh,Bac Ninh,Phố Trang Liệt 1,way,1422856212
+Trung tâm Văn hóa Kinh Bắc,community_centre,,21.18837,106.07958,Bắc Ninh,Bac Ninh,Đường Kinh Dương Vương,node,9501931398
+Trung tâm Văn hóa Kinh Bắc,community_centre,,21.18762,106.07891,Thành phố Bắc Ninh,Bac Ninh,Đường Kinh Dương Vương,way,1421285767
+Trung tâm Văn hóa Nghệ Thuật Ninh Thuận,community_centre,,11.5794,108.99474,,,Trần Ca,way,1417733428
+Trung tâm Văn hóa Phường Hắc Dịch,community_centre,,10.63742,107.11392,,,,way,745694317
+Trung tâm Văn hóa Phường Tân Phong,community_centre,,10.96811,106.83428,Thành phố Biên Hòa,Tỉnh Đồng Nai,,way,1018173157
+Trung tâm Văn hóa Phường Vĩnh Phước,community_centre,,9.31234,105.93421,,,,way,682095537
+Trung tâm Văn hóa Quận 4,community_centre,,10.75985,106.69627,,,,way,682689476
+Trung tâm Văn hóa TX Đông Triều,community_centre,,21.07674,106.51954,,,,way,1001066318
+Trung tâm Văn hóa Thành phố Bắc Ninh,community_centre,,21.17959,106.0595,Thành phố Bắc Ninh,Bac Ninh,Đường Nguyễn Du,way,1433034846
+Trung tâm Văn hóa Thành phố Hà Tĩnh,community_centre,,18.33973,105.89849,tp Hà Tĩnh,,Phan Đình Phùng,way,367547104
+Trung tâm Văn hóa Thông tin & Thể thao Huyện Long Đất,community_centre,,10.47054,107.27497,,Tỉnh Bà Rịa - Vũng Tàu,Võ Thị Sáu,way,410573787
+Trung tâm Văn hóa Thông tin - Thể thao huyện Phụng Hiệp,community_centre,,9.78056,105.73133,,,,way,1050246459
+Trung tâm Văn hóa Thông tin Thành phố Vũng Tàu,community_centre,,10.36275,107.07512,,,,way,790529489
+Trung tâm Văn hóa Thông tin Thể thao Thành phố Bà Rịa,community_centre,,10.4983,107.17145,,,,way,741632575
+Trung tâm Văn hóa Thông tin Thể thao huyện Côn Đảo,community_centre,,8.67883,106.60009,,,,way,751205936
+Trung tâm Văn hóa Thế thao phường Tây Mỗ,community_centre,,21.00633,105.74354,,,,way,976255170
+Trung tâm Văn hóa Thể thao & Truyền thanh,community_centre,,10.86925,105.46771,,,,way,663150730
+Trung tâm Văn hóa Thể thao phường Mỹ An,community_centre,,16.04464,108.23869,,,,way,1484266489
+Trung tâm Văn hóa Thể thao phường Tương Mai,community_centre,,20.98915,105.85266,,,Ngõ 151 Đường Nguyễn Đức Cảnh,way,1446571351
+Trung tâm Văn hóa Thể thao và Học tập Cộng đồng xã Thanh Lương,community_centre,,11.71774,106.58793,,,,way,1395726301
+Trung tâm Văn hóa Thể thao Đông Thiên,community_centre,,20.98715,105.87986,,,,way,1528441406
+Trung tâm Văn hóa Thể thao – Học tập Cộng đồng Phường Trảng Dài,community_centre,,10.99189,106.86384,,,,way,1274528706
+Trung tâm Văn hóa Tỉnh Bà Rịa-Vũng Tàu,community_centre,,10.50065,107.16794,,,,way,253056192
+Trung tâm Văn hóa Tỉnh Hà Giang,community_centre,,22.83425,104.98861,,,,node,7959468439
+Trung tâm Văn hóa Xã Thiện Tân,community_centre,,11.01759,106.87366,,,,way,1065564958
+Trung tâm Văn hóa huyện Bắc Tân Uyên,community_centre,,11.12523,106.84663,,,,way,1104214682
+Trung tâm Văn hóa huyện Long Điền,community_centre,,10.48715,107.22744,,,,way,741239645
+Trung tâm Văn hóa huyện Vĩnh Cửu,community_centre,,11.09376,107.03967,,,,way,986097672
+Trung tâm Văn hóa khu Ất,community_centre,,21.1268,106.0801,Bắc Ninh,Bac Ninh,Đường Tiên Ất,way,1474196390
+Trung tâm Văn hóa phường An Hoà,community_centre,,10.89333,106.86323,,,,way,1023273344
+Trung tâm Văn hóa phường Bửu Hoà,community_centre,,10.93024,106.82044,,,,way,1040527275
+Trung tâm Văn hóa phường Hiệp Hoà,community_centre,,10.93311,106.82693,,,,way,1039072275
+Trung tâm Văn hóa phường Hoà Bình,community_centre,,10.95225,106.80927,,,,way,1041414661
+Trung tâm Văn hóa phường Hố Nai,community_centre,,10.97219,106.87907,,,,way,1023293042
+Trung tâm Văn hóa phường Kinh Bắc,community_centre,,21.1888,106.06144,Thành phố Bắc Ninh,Bac Ninh,Phố Yên Mẫn,way,1494634014
+Trung tâm Văn hóa phường Long Bình Tân,community_centre,,10.89128,106.85185,,,,way,583928353
+Trung tâm Văn hóa phường Quyết Thắng,community_centre,,10.93859,106.82512,,,,way,1043436777
+Trung tâm Văn hóa phường Tam Phước,community_centre,,10.86936,106.96594,,,,way,997424906
+Trung tâm Văn hóa phường Trung Dũng,community_centre,,10.9553,106.82595,Thành phố Biên Hòa,Tỉnh Đồng Nai,Đường 30 Tháng 4,way,984702421
+Trung tâm Văn hóa phường Tân Biên,community_centre,,10.97924,106.89407,,,,way,1039222548
+Trung tâm Văn hóa phường Tân Bình,community_centre,,10.93341,106.76653,,,,way,606405883
+Trung tâm Văn hóa phường Tân Hạnh,community_centre,,10.95761,106.78201,,,,way,1046846561
+Trung tâm Văn hóa phường Tân Tiến,community_centre,,10.96445,106.84762,,,,way,1066347140
+Trung tâm Văn hóa thành phố Hà Nội,community_centre,,20.97285,105.78331,,,,way,956996490
+Trung tâm Văn hóa thành phố Thủ Đức (cơ sở 1),community_centre,,10.84106,106.79707,,,,way,1190725797
+Trung tâm Văn hóa thành phố Thủ Đức (cơ sở 2),community_centre,,10.85126,106.76082,,,,way,1023704927
+Trung tâm Văn hóa thể thao - Khu nhà ở công nhân Kim Chung,community_centre,,21.1274,105.77434,,,,way,1265527325
+Trung tâm Văn hóa thể thao huyện Đông Hưng,community_centre,,20.55718,106.35281,,,,way,1296221851
+Trung tâm Văn hóa thể thao khu Quế Sơn,community_centre,,21.13014,106.05682,Bắc Ninh,Bac Ninh,Đường Nguyễn Thủ Tiệp,way,1430318947
+Trung tâm Văn hóa thị trấn Phước Bửu,community_centre,,10.53247,107.3996,,,,way,748937161
+Trung tâm Văn hóa tỉnh Hưng Yên,community_centre,,20.64539,106.05247,,,Đường Bạch Đằng,way,975333430
+Trung tâm Văn hóa tỉnh Hưng Yên (cơ sở 3),community_centre,,20.44841,106.34372,,,Phố Hai Bà Trưng,way,1518596491
+Trung tâm Văn hóa tỉnh Hưng Yên (cơ sở 5),community_centre,,20.44758,106.34255,,,Phố Hai Bà Trưng,way,1518596492
+Trung tâm Văn hóa tỉnh Quảng Nam,community_centre,,15.57683,108.47396,,,,way,597531875
+Trung tâm Văn hóa tỉnh Thái Nguyên,community_centre,,21.59745,105.84277,,,,way,888793534
+Trung tâm Văn hóa tỉnh Vĩnh Long,community_centre,,10.2563,105.97184,,,,way,1000681714
+Trung tâm Văn hóa tỉnh Đắk Lắk,community_centre,,12.67918,108.04543,,,,way,1018940381
+Trung tâm Văn hóa xã Bình Ba,community_centre,,10.61463,107.2359,,,,way,728723441
+Trung tâm Văn hóa xã Bình Châu,community_centre,,10.56196,107.5436,,,,way,666636748
+Trung tâm Văn hóa xã Bình Hoà,community_centre,,10.98122,106.80012,,,,way,1055962216
+Trung tâm Văn hóa xã Hiếu Liêm,community_centre,,11.11332,106.96595,,,,way,1103979578
+Trung tâm Văn hóa xã Phước Hội,community_centre,,10.44822,107.29251,,,,way,1348266148
+Trung tâm Văn hóa xã Tam Phước,community_centre,,10.46801,107.2286,,,,way,260405952
+Trung tâm Văn hóa xã Thạnh Phú,community_centre,,11.01178,106.8336,,,,way,979951534
+Trung tâm Văn hóa xã Tâm Mỹ,community_centre,,11.05624,106.83667,,,,way,1104964907
+"Trung tâm Văn hóa, Nghệ thuật thành phố Cần Thơ",community_centre,,10.04468,105.79195,,,,way,1453322305
+"Trung tâm Văn hóa, Thể thao và Truyền thông phường Gia Bình",community_centre,,21.05745,106.17102,Thành phố Bắc Ninh,Bac Ninh,Đường Huyền Quang,way,1489171262
+"Trung tâm Văn hóa, Thể thao và Truyền thông phường Kinh Bắc",community_centre,,21.19164,106.0656,Thành phố Bắc Ninh,Bac Ninh,Đường Ngô Sĩ Liên,node,12306243935
+"Trung tâm Văn hóa, Thể thao và Truyền thông phường Kinh Bắc",community_centre,,21.1916,106.06573,Thành phố Bắc Ninh,Bac Ninh,Đường Ngô Sĩ Liên,way,697056214
+"Trung tâm Văn hóa, Thể thao và Truyền thông phường Lương Tài",community_centre,,21.01582,106.20158,Thành phố Bắc Ninh,Bac Ninh,Đường Lý Thái Tổ,way,1489351300
+Trung tâm bảo trợ xã hội Đà Nẵng,community_centre,,16.04813,108.15632,,,Đường Đà Sơn,node,8616536617
+Trung tâm dịch vụ khoa học và công nghệ Cần Thơ,community_centre,,10.04374,105.77879,,,,node,5211495254
+Trung tâm dịch vụ khu kinh tế tỉnh Lào Cai,community_centre,,22.50176,103.9567,,,Thủ Dầu Một,node,5606360321
+Trung tâm học tập cộng đồng,community_centre,,22.37625,102.82369,,,,way,1558649137
+Trung tâm nuôi dưỡng người tâm thần Đà Nẵng,community_centre,,16.04812,108.15629,,,Đường Đà Sơn,node,8616526720
+Trung tâm sinh hoạt thanh thiếu niên Nhà Bè,community_centre,,10.69746,106.74032,,,,way,1093334006
+Trung tâm thanh thiếu niên,community_centre,,20.42838,106.18041,,,,way,917700647
+Trung tâm thể thao văn hóa phường Đăng Giang,community_centre,,20.84535,106.69656,,,,node,7496299277
+Trung tâm văn hóa - Học tập Cộng đồng xã Thái Bình,community_centre,,11.3139,106.06232,,,,way,664826920
+Trung tâm văn hóa - thể thao Xã Tân Quan,community_centre,,11.5675,106.6805,,Tỉnh Đồng Nai,Đường tỉnh 756B,way,1472872555
+Trung tâm văn hóa Huyện Xuyên Mộc,community_centre,,10.53747,107.40465,,,,way,748981310
+Trung tâm văn hóa Thôn Mạch Lũng,community_centre,,21.12287,105.74456,,,"xã Đại Mạch, huyện Đông Anh, thành phố Hà Nội",node,12535622203
+Trung tâm văn hóa Xã Xuyên Mộc,community_centre,,10.56376,107.42205,,,,way,748981255
+Trung tâm văn hóa công cộng khu phố Vĩnh Kiều 3,community_centre,,21.13171,105.97933,Bắc Ninh,Bac Ninh,Phố Viềng B,way,1450696929
+Trung tâm văn hóa khu phố Thượng,community_centre,,21.1475,106.06671,Bắc Ninh,Bac Ninh,,way,1474081496
+Trung tâm văn hóa phường Sài Đồng,community_centre,,21.03572,105.9153,Hà Nội,Hà Nội,Ngõ 134 phố Sài Đồng,way,1067819613
+Trung tâm văn hóa thiếu nhi phía Nam Thành phố Bắc Ninh,community_centre,,21.05083,106.17147,Thành phố Bắc Ninh,Bac Ninh,Đường Trần Hưng Đạo,way,1420763762
+Trung tâm văn hóa thôn Tam Tảo,community_centre,,21.16117,106.00368,Bắc Ninh,Bac Ninh,,way,1451653571
+Trung tâm văn hóa thôn Vĩnh Xương Trung,community_centre,,20.78777,105.70368,,,,way,763107746
+Trung tâm văn hóa thể thao Công Hà,community_centre,,21.03234,106.03649,Bắc Ninh,Bac Ninh,,way,1539776136
+Trung tâm văn hóa thể thao phường Phúc Lợi,community_centre,,21.04179,105.92685,,,Ngõ 201 Đường Phúc Lợi,way,1187339550
+Trung tâm văn hóa xã Hiệp Hưng,community_centre,,9.75684,105.75098,,,,way,852019590
+Trunng tâm Văn hóa - Thông tin & Thể thao Ninh Hòa,community_centre,,12.49312,109.12472,,,,way,1541216077
+Trụ sở - Nhà văn hóa Ấp Vàm Răng,community_centre,,10.13686,105.00442,,,,way,1208653360
+Trụ sở KP1 P. Phước Thắng,community_centre,,10.40973,107.14756,,,,way,1464387312
+Trụ sở KP1 P. Tam Thắng,community_centre,,10.37488,107.08856,,,,node,13361894150
+Trụ sở KP10 P. Phước Thắng,community_centre,,10.4019,107.12287,,,,node,13363722469
+Trụ sở KP10 P. Tam Thắng,community_centre,,10.37799,107.11007,,,,node,13361894159
+Trụ sở KP11 P. Tam Thắng,community_centre,,10.35845,107.08722,,,,node,13520688554
+Trụ sở KP12 P. Tam Thắng,community_centre,,10.35873,107.09522,,,,node,13520688552
+Trụ sở KP14 P. Tam Thắng,community_centre,,10.3573,107.08968,,,,node,13361894161
+Trụ sở KP15 P. Tam Thắng,community_centre,,10.35892,107.08912,,,,node,13361894162
+Trụ sở KP15 P. Vũng Tàu,community_centre,,10.35233,107.08099,,,,node,13361899816
+Trụ sở KP15 P. Vũng Tàu,community_centre,,10.35233,107.08099,,,,node,13363117115
+Trụ sở KP16 P. Tam Thắng,community_centre,,10.35454,107.09408,,,,node,13361894160
+Trụ sở KP17 P. Tam Thắng,community_centre,,10.3648,107.07729,,,,node,13361894154
+Trụ sở KP17 P. Vũng Tàu,community_centre,,10.35133,107.07289,,,,node,13360748938
+Trụ sở KP18 P. Tam Thắng,community_centre,,10.36925,107.07901,,,,node,13360748940
+Trụ sở KP18 P. Vũng Tàu,community_centre,,10.35133,107.07751,,,,node,13361899815
+Trụ sở KP18 P. Vũng Tàu,community_centre,,10.35133,107.07751,,,,node,13363117114
+Trụ sở KP19 P. Tam Thắng,community_centre,,10.36589,107.07656,,,,node,13360748939
+Trụ sở KP2 P. Phước Thắng,community_centre,,10.41413,107.14045,,,,node,13361163388
+Trụ sở KP2 P. Tam Thắng,community_centre,,10.37536,107.08417,,,,node,13361894151
+Trụ sở KP20 P. Tam Thắng,community_centre,,10.35971,107.0787,,,,node,13360748941
+Trụ sở KP21 P. Tam Thắng,community_centre,,10.35909,107.08455,,,,node,13360748945
+Trụ sở KP23 P. Tam Thắng,community_centre,,10.36476,107.08634,,,,node,13360748944
+Trụ sở KP24 P. Tam Thắng,community_centre,,10.36298,107.08636,,,,node,13360748943
+Trụ sở KP25 P. Rạch Dừa,community_centre,,10.39078,107.11596,,,,node,13588781482
+Trụ sở KP25 P. Tam Thắng,community_centre,,10.36089,107.08127,,,,way,786450827
+Trụ sở KP3 P. Phước Thắng,community_centre,,10.42041,107.1522,,,,node,13361163387
+Trụ sở KP3 P. Vũng Tàu,community_centre,,10.34121,107.07772,,,,node,13360771628
+Trụ sở KP32 P. Vũng Tàu,community_centre,,10.37233,107.07415,,,,node,13504375678
+Trụ sở KP33 P. Vũng Tàu,community_centre,,10.37122,107.07655,,,,node,13504375677
+Trụ sở KP34 P. Vũng Tàu,community_centre,,10.37124,107.07693,,,,node,13365981482
+Trụ sở KP37 P. Vũng Tàu,community_centre,,10.37259,107.08244,,,,node,13361894153
+Trụ sở KP4 P. Tam Thắng,community_centre,,10.36751,107.08826,,,,node,13361894155
+"Trụ sở KP4, KP5 P. Phước Thắng",community_centre,,10.41804,107.16117,,,,node,13361163390
+Trụ sở KP5 P. Tam Thắng,community_centre,,10.36916,107.09143,,,,node,13361894156
+Trụ sở KP5 P. Vũng Tàu,community_centre,,10.33964,107.08243,,,,node,13360771627
+Trụ sở KP6 P. Phước Thắng,community_centre,,10.45661,107.1725,,,,node,13363119942
+Trụ sở KP6 P. Tam Thắng,community_centre,,10.35954,107.0961,,,,node,13361894149
+Trụ sở KP7 P. Phước Thắng,community_centre,,10.41323,107.13866,,,,node,13363119943
+Trụ sở KP7 P. Tam Thắng,community_centre,,10.36053,107.09875,,,,node,13361894158
+Trụ sở KP7 P. Vũng Tàu,community_centre,,10.33636,107.09058,,,,node,13360771626
+Trụ sở KP8 P. Phước Thắng,community_centre,,10.40968,107.1351,,,,node,13363119944
+Trụ sở KP8 P. Tam Thắng,community_centre,,10.36606,107.09182,,,,node,13361894157
+Trụ sở KP9 P. Phước Thắng,community_centre,,10.40696,107.12807,,,,node,13363119945
+Trụ sở KP9 P. Tam Thắng,community_centre,,10.36752,107.10142,,,,node,13520688553
+"Trụ sở Khu phố Bến Súc, phường Bà Rịa",community_centre,,10.47234,107.16673,,,,way,1545139286
+"Trụ sở Khu phố Long Kiên, phường Bà Rịa",community_centre,,10.50165,107.18616,,,,way,1545139284
+"Trụ sở Khu phố Long Toàn, phường Bà Rịa",community_centre,,10.49122,107.19209,,,,way,1545139283
+"Trụ sở Khu phố Lập Thành, phường Bà Rịa",community_centre,,10.49454,107.17749,,,,way,1545139288
+"Trụ sở Khu phố Phước Hiệp, phường Bà Rịa",community_centre,,10.49761,107.17006,,,,way,786548127
+"Trụ sở Khu phố Phước Hạnh, phường Bà Rịa",community_centre,,10.4991,107.19671,,,,way,1545139285
+"Trụ sở Khu phố Phước Liên, phường Bà Rịa",community_centre,,10.4943,107.16683,,,,way,577760725
+"Trụ sở Khu phố Phước Lễ, phường Bà Rịa",community_centre,,10.49462,107.1709,,,,way,1545139287
+"Trụ sở Khu phố Phước Nguyên, phường Bà Rịa",community_centre,,10.50197,107.18274,,,,way,1545139279
+"Trụ sở Khu phố Phước Thành, phường Bà Rịa",community_centre,,10.49944,107.18031,,,,way,1545139280
+"Trụ sở Khu phố Phước Trung, phường Bà Rịa",community_centre,,10.49153,107.18379,,,,way,1545139281
+"Trụ sở Khu phố Phước Đức, phường Bà Rịa",community_centre,,10.49288,107.1865,,,,way,1545139282
+Trụ sở Kp3 P. Tam Thắng,community_centre,,10.37163,107.08457,,,,node,13361894152
+Trụ sở TDP số 5+30,community_centre,,21.0397,105.87202,Hà Nội,Hà Nội,Phố Ái Mộ,way,704250750
+"Trụ sở Thôn 1, xã Long Sơn",community_centre,,10.46395,107.07668,,,,way,1537640875
+"Trụ sở Thôn 2, xã Long Sơn",community_centre,,10.4749,107.0627,,,,way,1537640876
+"Trụ sở Thôn 3, xã Long Sơn",community_centre,,10.44626,107.07492,,,,way,1537640877
+"Trụ sở Thôn 4, xã Long Sơn",community_centre,,10.44548,107.08691,,,,way,1537640878
+"Trụ sở Thôn 5, xã Long Sơn",community_centre,,10.4547,107.09763,,,,way,743798596
+"Trụ sở Thôn 6, xã Long Sơn",community_centre,,10.45903,107.09756,,,,node,14005964416
+Trụ sở bảo vệ khu phố 3 Vĩnh Kiều,community_centre,,21.13128,105.97917,Bắc Ninh,Bac Ninh,Phố Viềng B,way,1450696927
+Trụ sở hành chính Ấp 4B,community_centre,,10.66135,107.3968,,,,node,12094600126
+Trụ sở khu phố 3,community_centre,,10.34851,107.07533,,,,node,7406092138
+Trụ sở khu phố 4,community_centre,,10.38141,107.06661,,,,way,901408249
+Trụ sở thôn Tân Trung,community_centre,,10.56135,107.16362,,,,way,1472899702
+Trụ sở Ấp 5 xã Châu Pha,community_centre,,10.62431,107.08793,,,,node,13374321804
+"Trụ sở ấp An Lạc, xã Long Điền",community_centre,,10.48663,107.24554,,,,node,13806406628
+"Trụ sở ấp An Phú, xã Long Điền",community_centre,,10.48353,107.24912,,,,node,13806406627
+"Trụ sở ấp Bà Rịa, xã Hồ Tràm",community_centre,,10.5484,107.38993,,,,node,13669016025
+"Trụ sở ấp Bà Tô, xã Hồ Tràm",community_centre,,10.54469,107.39395,,,,node,13669016024
+"Trụ sở ấp Cây Điệp, xã Hồ Tràm",community_centre,,10.56349,107.3842,,,,node,13669016027
+"Trụ sở ấp Gò Cà, xã Hồ Tràm",community_centre,,10.49752,107.40984,,,,node,13669016016
+"Trụ sở ấp Gò Cát, xã Hồ Tràm",community_centre,,10.52197,107.37371,,,,node,13669016018
+"Trụ sở ấp Hoàng Giao, xã Ngãi Giao",community_centre,,10.65616,107.23474,,,,node,13674044325
+"Trụ sở ấp Hồ Tràm, xã Hồ Tràm",community_centre,,10.47323,107.43678,,,,node,13669016015
+"Trụ sở ấp Hồng Lan, xã Ngãi Giao",community_centre,,10.64589,107.23965,,,,node,13674044324
+"Trụ sở ấp Kim Giao, xã Ngãi Giao",community_centre,,10.64073,107.23291,,,,node,13674044326
+"Trụ sở ấp La Vân, xã Ngãi Giao",community_centre,,10.64536,107.2499,,,,node,13674044323
+"Trụ sở ấp Long Bình, xã Long Điền",community_centre,,10.48037,107.21077,,,,node,13805538470
+"Trụ sở ấp Long Liên, xã Long Điền",community_centre,,10.49227,107.20736,,,,node,13806406622
+"Trụ sở ấp Long Nguyên, xã Long Điền",community_centre,,10.48569,107.20371,,,,node,13805538469
+"Trụ sở ấp Long Sơn, xã Long Điền",community_centre,,10.4808,107.21731,,,,node,13806406623
+"Trụ sở ấp Láng Sim, xã Hồ Tràm",community_centre,,10.5373,107.41402,,,,node,13669260494
+"Trụ sở ấp Ngãi Giao, xã Ngãi Giao",community_centre,,10.65243,107.24423,,,,node,13674044321
+"Trụ sở ấp Phước An, xã Hồ Tràm",community_centre,,10.5289,107.40102,,,,node,13669260498
+"Trụ sở ấp Phước Bình, xã Long Điền",community_centre,,10.46646,107.23388,,,,node,13805538472
+"Trụ sở ấp Phước Bửu, xã Hồ Tràm",community_centre,,10.51874,107.40528,,,,node,13669260495
+"Trụ sở ấp Phước Hòa, xã Hồ Tràm",community_centre,,10.53279,107.39686,,,,node,13669016022
+"Trụ sở ấp Phước Hưng, xã Long Điền",community_centre,,10.47421,107.2374,,,,node,13806406625
+"Trụ sở ấp Phước Lăng, xã Long Điền",community_centre,,10.47471,107.23032,,,,node,13806406624
+"Trụ sở ấp Phước Lộc, xã Hồ Tràm",community_centre,,10.54046,107.41136,,,,node,13669260493
+"Trụ sở ấp Phước Nghĩa, xã Long Điền",community_centre,,10.46205,107.23482,,,,node,13805538473
+"Trụ sở ấp Phước Thuận, xã Hồ Tràm",community_centre,,10.52286,107.38438,,,,node,13669016019
+"Trụ sở ấp Phước Tiến, xã Hồ Tràm",community_centre,,10.5292,107.40467,,,,node,13669260497
+"Trụ sở ấp Phước Trinh, xã Long Điền",community_centre,,10.46269,107.24935,,,,node,13806406626
+"Trụ sở ấp Phước Trung, xã Long Điền",community_centre,,10.46803,107.22763,,,,node,13805538471
+"Trụ sở ấp Phước Tân, xã Hồ Tràm",community_centre,,10.5543,107.38734,,,,node,13669016026
+"Trụ sở ấp Thạnh Sơn, xã Hồ Tràm",community_centre,,10.53585,107.40629,,,,node,13669260492
+"Trụ sở ấp Tân An, xã Hồ Tràm",community_centre,,10.57325,107.38913,,,,node,13669016029
+"Trụ sở ấp Tân Phước, xã Hồ Tràm",community_centre,,10.57171,107.38331,,,,node,13669016028
+"Trụ sở ấp Tân Rú, xã Hồ Tràm",community_centre,,10.57236,107.36146,,,,node,13669016030
+"Trụ sở ấp Tân Trung, xã Hồ Tràm",community_centre,,10.53569,107.38816,,,,node,13669016021
+"Trụ sở ấp Vinh Thanh, xã Ngãi Giao",community_centre,,10.64694,107.24799,,,,node,13674044322
+"Trụ sở ấp Việt Kiều, xã Hồ Tràm",community_centre,,10.54282,107.39524,,,,node,13669016023
+"Trụ sở ấp Xuyên Phước Cơ, xã Hồ Tràm",community_centre,,10.52927,107.39034,,,,node,13669016020
+"Trụ sở ấp Xóm Rẫy, xã Hồ Tràm",community_centre,,10.51249,107.40317,,,,node,13669260496
+"Trụ sở ấp Ông Tô, xã Hồ Tràm",community_centre,,10.50351,107.3815,,,,node,13669016017
+"Trụ sở ấp Đồng Trung, xã Long Điền",community_centre,,10.48497,107.24237,,,,node,13806406629
+Tung Vai,community_centre,,23.06661,104.91932,,,,node,5294733031
+Typical tribal house of the Co Tu,community_centre,,15.9295,107.66477,,,,node,12372781902
+Tình báo vè chốt kinh ro,community_centre,,14.83216,108.19873,,,,node,5771427453
+Tỉnh Đoàn Đắk Lắk,community_centre,,12.68551,108.05412,,,Đường Nguyễn Tất Thành,way,1415084798
+Tổ 20 phường Dịch Vọng,community_centre,,21.03425,105.78477,,,,way,1507575311
+Tổ 21 phường Dịch Vọng,community_centre,,21.03542,105.78969,,,,way,1229058060
+Tổ 21 phường Dịch Vọng,community_centre,,21.03489,105.78549,,,,way,1507593278
+Tổ 23 phường Dịch Vọng,community_centre,,21.03447,105.78839,,,,node,11397893948
+Tổ 26 phường Dịch Vọng,community_centre,,21.03373,105.78556,,,,way,1507532536
+Tổ 27 phường Dịch Vọng,community_centre,,21.03261,105.78673,,,,way,1507593455
+Tổ dân phố 7 phường Điện Biên,community_centre,,21.03355,105.83347,Hà Nội,Thành phố Hà Nội,Phố Ông Ích Khiêm,node,12069918127
+Tổ dân phố Hoàng 5 & 19,community_centre,,21.04495,105.7843,Hà Nội,Hà Nội,,node,11655061817
+UB huyện Cần Giuộc,community_centre,,10.60314,106.666,,,Nguyễn Thị Bảy,node,5521468260
+UBND Xã Ea Tam,community_centre,,13.01824,108.4227,,,,node,7424806087
+UBND Xã Tân Khánh Trung,community_centre,,10.34426,105.68072,,Đồng Tháp,,node,5375597226
+UBND huyện An Biên,community_centre,,9.81592,105.06367,,,,node,1274268771
+UBND huyện Thạch Thành,community_centre,,20.12706,105.6608,,,,node,11052249151
+UBND huyện Định Quán,community_centre,,11.20312,107.35762,,,,node,4713193694
+UBND phường Minh An,community_centre,,15.87719,108.32746,,,,node,5645889523
+UBND xã Lạc Thịnh,community_centre,,20.40548,105.56889,,,,node,11058022618
+UBND xã Thành Trực,community_centre,,20.1817,105.64324,,,,node,11078202153
+UBND xã Thạch Bình,community_centre,,20.16375,105.62003,,,,node,11055483948
+UBND xã Thạch Lâm,community_centre,,20.32421,105.52252,,,,node,11051609375
+UBND xã Thạch Sơn,community_centre,,20.1875,105.60757,,,,node,11052226236
+UBND xã Thạch Tân,community_centre,,20.16229,105.6402,,,,node,11059916778
+UBND xã Trà Vong,community_centre,,11.41128,106.03873,Tân Biên,Tây Ninh,Quốc Lộ 22B,way,595073034
+UBND xã Tây Giang,community_centre,,13.9588,108.82946,,,,node,6426256741
+Ubnd Phường Iakring,community_centre,,13.96733,107.99193,,,,node,6478318919
+Ubnd Xã Đức Phong,community_centre,,14.92786,108.91812,,,,way,688621011
+Uỷ Ban Nhân Dân phường Quán Bàu,community_centre,,18.69154,105.6712,,,,node,5134110622
+Uỷ ban nhân dân xã Hóa Trung,community_centre,,21.66723,105.84193,,,,way,889965950
+Vietnamese wedding,community_centre,,10.58146,107.55879,,,,node,4613109891
+Viettel huyện Đồng Hỷ,community_centre,,21.62476,105.84465,,,,node,8244560923
+Viện KSND Xuyên Mộc,community_centre,,10.53811,107.4069,,,,node,6434916086
+Viện Kiểm sát Tp PLeiku,community_centre,,13.97771,107.99295,,,,way,689978163
+Viện Nghiên cứu ĐT&BDCB Đà Nẵng,community_centre,,16.05828,108.2115,,,Đường Lê Đình Lý,node,4704803189
+"Văn phòng Khu phố 1, 2, 3",community_centre,,10.84866,106.61563,,,,node,12963916762
+"Văn phòng Khu phố 15, 16",community_centre,,10.85865,106.60997,,,,node,12964057691
+Văn phòng Khu phố 2,community_centre,,10.94965,106.81786,,,,way,1041414655
+Văn phòng Khu phố 2,community_centre,,10.95515,106.81777,,,,way,1041414657
+Văn phòng Khu phố 3,community_centre,,10.92918,106.86422,,,,way,1046512803
+Văn phòng Khu phố 3,community_centre,,10.90666,106.82978,,,,way,1047084822
+Văn phòng Khu phố 4,community_centre,,10.9519,106.81978,,,Đường Hưng Đạo Vương,way,1033814267
+Văn phòng Khu phố 4,community_centre,,10.94182,106.8715,,,,way,1040527271
+Văn phòng Khu phố 5,community_centre,,10.95225,106.8093,,,,way,1041414662
+Văn phòng Khu phố 5,community_centre,,10.9665,106.83998,,,,way,1047840524
+"Văn phòng Khu phố 5, 6, 7",community_centre,,10.85948,106.67936,,,,node,12644495312
+Văn phòng Khu phố 7,community_centre,,11.07339,106.78845,,,,way,1416882531
+Văn phòng Liên Ấp Tân An - Tân Bình,community_centre,,10.26185,105.58632,Xã Lai Vung,Đồng Tháp,Đường số 11,way,1429676050
+Văn phòng Ấp An Lợi B,community_centre,,10.31023,105.5404,,,Quốc lộ 54,node,13673365223
+Văn phòng Ấp An Ninh,community_centre,,10.31853,105.52309,,,,way,1497017702
+Văn phòng Ấp Tân Khánh,community_centre,,10.27069,105.60276,,,,way,1498677520
+Văn phòng Ấp Tân Lợi,community_centre,,10.25392,105.59593,,,,way,922811911
+Văn phòng Ấp Tân Mỹ,community_centre,,10.28585,105.60394,,,,way,1498677522
+Văn phòng Ấp Tân Phú,community_centre,,10.28028,105.60209,,,,way,1498677521
+chợ long hữu,community_centre,,10.80351,105.31017,,,,node,4536077592
+hồ bơi quốc hùng,community_centre,,10.94465,108.08818,,,,node,5107587152
+khu phố văn hóa phường 8,community_centre,,10.35353,106.37648,,,,node,4681992091
+"khu vui chơi , sân bóng đá Xuân An",community_centre,,11.9342,108.43703,,,Nhà Chung,node,4564533290
+kiến Đức,community_centre,,11.99637,107.51215,,,,node,5119888023
+ngân hà,community_centre,,10.97863,108.1459,,,,node,5096866121
+nhà thờ,community_centre,,10.35663,106.37333,,,Học Lạc,node,4532459294
+nhà vă hóa thôn Bờ Hồ,community_centre,,21.67777,105.44252,,,,way,1270643445
+nhà văn hóa thôn Ba Khe,community_centre,,21.66729,105.40375,,,,way,1270650369
+nhà văn hóa thôn Hội Trường,community_centre,,21.6703,105.42326,,,,way,1266721708
+nhà văn hóa thôn Khuôn Phầy,community_centre,,21.66746,105.44118,,,,node,11051516154
+nhà văn hóa thôn Miền Tây,community_centre,,21.66397,105.42107,,,,way,1270647301
+nhà văn hóa thôn Tân Quang,community_centre,,21.62103,105.42012,,,,node,13288730134
+nhà văn hóa thôn hội trường,community_centre,,21.67035,105.42332,,,,node,11799764374
+nhà văn hóa thôn Đoàn Kết,community_centre,,21.67353,105.4297,,,,way,1270639753
+nhà văn hóa thôn đèo mon,community_centre,,21.66098,105.38844,,,,way,1270664305
+nhà văn hóa tổ 16,community_centre,,21.05609,105.8694,Hà Nội,,ngõ 268/56/7,way,701544807
+nhà văn hóa xã Kháng Nhật,community_centre,,21.66874,105.42709,,,,way,1268882608
+sân vận động DươngNội,community_centre,,20.98028,105.74887,,,,node,6516239587
+thế giới tuổi trẻ,community_centre,,10.938,108.28655,,,Huỳnh Tấn Phát,node,5076639621
+trung tâm giáo dục nghề nghiệp giáo dục thường xuyên ninh kiều,community_centre,,10.02644,105.77095,,,,node,5202277188
+trung tâm thương mại vung tàu,community_centre,,10.3607,107.0754,,,,node,4478278789
+trung tâm văn hóa - điện ảnh tĩnh hà tĩnh,community_centre,,18.33974,105.89844,tp Hà Tĩnh,,đường phan đình phùng,node,5372135862
+Áo cưới nguyễn,community_centre,,10.83779,107.23666,,,Quốc lộ 56,node,5936374587
+Điểm Văn hóa - Thể thao Cụm dân cư số 3,community_centre,,21.14206,106.07539,Bắc Ninh,Bac Ninh,,way,1474081500
+Điểm sinh hoạt Khu phố 12A,community_centre,,10.76822,106.66267,,,,node,13908745657
+Điểm sinh hoạt cộng đồng Tổ dân phố số 19,community_centre,,21.07419,105.88719,,,,way,1249531165
+Đoàn Nguyễn Tuấn,community_centre,,10.63169,106.65887,,,,node,4648683994
+Đình Giang Liễu,community_centre,,21.16174,106.12766,,,,way,1354185336
+Đình Làng Tú Luông,community_centre,,10.91858,108.08831,,,,way,1436504198
+Đình làng Khu 10,community_centre,,21.17419,106.07023,Bắc Ninh,Bac Ninh,,node,12694082720
+Đình làng Khu 10,community_centre,,21.17429,106.07016,Bắc Ninh,Bac Ninh,,way,1472951322
+Đình làng Sơn Thắng,community_centre,,19.43459,105.76276,,,,way,1495319913
+Đình Đương,community_centre,,21.28723,105.3944,,,,way,1200042988
+Đình Đại Phúc,community_centre,,21.17608,106.07755,Bắc Ninh,Bac Ninh,Đường Trần Hưng Đạo,node,12350371831
+Đình Đại Phúc,community_centre,,21.17602,106.07758,Bắc Ninh,Bac Ninh,Đường Trần Hưng Đạo,way,1465120939
+Đồ Gỗ Cao Cường,community_centre,,20.29897,106.21956,,,đường Đen,node,4716668195
+"בית חב""ד הוי אן",community_centre,,15.87527,108.32788,,,,node,5544625021
+Ấp Văn Hoá-Ấp Tây,community_centre,,10.51848,107.20409,,,Đường số 40,node,4210832689
+Ủy ban nhân dân phường Đồng Bẩm,community_centre,,21.61117,105.84017,,,,node,9028664971
+Ủy ban nhân dân xã Phúc Xuân,community_centre,,21.57806,105.75925,,,,node,9028277945
+ủy ban nhân dân phường 3,community_centre,,10.35892,106.37322,,,Phan Bội Châu,node,4532521389
+ủy ban xã an thanh Thuỷ,community_centre,,10.33822,106.52058,,,,node,5942124987

@@ -1,0 +1,52 @@
+# 3goods implementation plan
+
+## 1. Routes and screens
+- `/` — role-aware starting screen: donor “Discover Needs” or organisation “Discover Items”.
+- `/items/$itemId` — donation item details with image gallery, collection details, donor summary, matching needs, and role-aware request action.
+- `/donate` — donor-only multi-section donation form with photos first and validation states.
+- `/organisations/$organisationId` — public organisation profile, needs, priorities, received donations, and chat action.
+- `/needs` — organisation needs management with add/remove tags, priority controls, save feedback, and empty state.
+- `/filters` — mobile filter sheet presented as a full screen, with a desktop panel treatment.
+- `/chats` and `/chats/$chatId` — conversation list and donation coordination conversation.
+- `/updates` — role-aware notifications and status updates.
+- `/map` — Vietnam-specific interactive SVG map with province selection, restrained layer toggles, summary cards, and live public data.
+- `/requests` — role-aware request management with active requests, accepted collections, completed donations, and unavailable items.
+- `/profile` — donor “Me” or organisation “My Organisation”, switched by the selected role.
+
+## 2. Shared components
+- Navigation and structure: `AppShell`, `MobileBottomNav`, `DesktopTopNav`, `RoleSwitcher`, `LanguageSwitcher`.
+- Donations and needs: `ItemCard`, `ItemGrid`, `ItemDetail`, `NeedChip`, `OrganisationCard`, `DonationForm`, `FilterSheet`.
+- Coordination UI: `ChatListItem`, `StatusBadge`, `EmptyState`, request list, image gallery, notification row, map marker/card.
+- A dedicated `VietnamMapView` owns all map fetching, adapters, geometry, layers, selection, loading, error, and empty states without spreading map logic elsewhere.
+- Reuse accessible labelled controls for buttons, fields, segmented choices, toggles, chips, and validation messages.
+
+## 3. Placeholder data
+- Typed in-memory records for items, organisations, organisation needs, users, conversations, messages, updates, collection windows, and donation/request statuses.
+- Donation categories are limited to rice, clothes, books, household items, non-perishable food, hygiene products, children items, and miscellaneous.
+- Vietnam sample areas: Hanoi, Ho Chi Minh City, Da Nang, Hue, Can Tho, Hai Phong, Nha Trang, and the Mekong Delta.
+- Sample organisations: Vietnam Food Share, Hanoi Community Pantry, Books for Children Vietnam, Warm Homes Collective, and Care Bridge Da Nang.
+- Sample donations: rice packs, story books, school bags, clean clothes, household goods, and baby items.
+- Every visible string will come from a small English/Vietnamese translation dictionary; placeholder records will include translated display text where needed.
+
+## 4. Responsive layout
+- Design from a 375px base with large tap targets, stacked content, compact two-column item grids, and fixed mobile bottom navigation.
+- At desktop breakpoints, use a centered max-width application layout, top navigation, wider spacing, and 3–4 column grids rather than enlarging the phone layout.
+- Item details become a two-column image/content layout; filters become a contained desktop panel; forms use readable constrained widths.
+- The Vietnam map opens with a calm summary and uses province GeoJSON from `https://002-data-4-life.vercel.app/api/provinces`, plus `/api/meta`, `/api/metro-hubs`, and `/api/facilities` for suggested categories and restrained pin layers.
+- `VietnamMapView` will use a lightweight SVG geographic projection, preserve Vietnam’s shape responsively, clean province labels where practical, limit default mobile pins, and place detailed information in cards below the map.
+- Province data will be inspected for `disaster_score` or another genuine score/risk/need field. A real field becomes “Community need level” with soft green, warm amber, and muted coral styling; otherwise provinces stay neutral and the UI states “Need score unavailable from API.” No values will be invented.
+- Keep warm cream surfaces, a distinct warm accent, rounded cards, clear contrast, and restrained interaction feedback without borrowing the reference brand styling.
+
+## 5. Role and language handling
+- A persistent prototype role switcher changes navigation, home content, profile content, actions, and organisation-only controls without authentication.
+- Donors cannot request their own items; organisation users see “Request item” and needs-management controls.
+- An English/Vietnamese switcher updates navigation, headings, labels, actions, empty states, validation, and key sample content.
+- Prototype state stays in the browser only; there is no account system or remote storage.
+
+## 6. Assumptions
+- The screenshots are composition references only; their brand assets, colours, copy, and commerce patterns will not be reused.
+- Neutral item imagery and simple illustrations will be used; fake beneficiary or charity-event photography and uploaded screenshots will not appear in the app.
+- Forms, filters, role switching, language switching, galleries, navigation, request states, needs editing, and empty states will be interactive prototype behavior using local state.
+- Map responses will be parsed through `normalizeProvince()`, `normalizeFacility()`, `normalizeMetroHub()`, and `normalizeNeedCategories()` adapters, with safe loading, error, and empty handling.
+- No app backend, real chat delivery, uploads, geolocation, authentication, or persistence is included; only the specified public Vietnam data APIs are fetched.
+- All product wording will stay donation-focused and exclude the prohibited marketplace and payment terminology.

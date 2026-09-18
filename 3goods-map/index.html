@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Vietnam Disaster Relief Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0a0e1a;
+    --panel-top: #151d33;
+    --panel-bottom: #0f1524;
+    --surface-2: #182238;
+    --surface-3: #202b47;
+    --border: rgba(148,163,184,.16);
+    --border-strong: rgba(148,163,184,.3);
+    --text: #f1f5f9;
+    --text-muted: #98a5ba;
+    --text-dim: #667289;
+    --accent-donor-1: #9c8cc9;
+    --accent-donor-2: #6b5b95;
+    --accent-org-1: #6f93bd;
+    --accent-org-2: #48699b;
+    --c-green: #6bbf8a; --c-green-bg: rgba(107,191,138,.14); --c-green-border: rgba(107,191,138,.32);
+    --c-gold: #cba545; --c-gold-bg: rgba(203,165,69,.14); --c-gold-border: rgba(203,165,69,.32);
+    --c-orange: #cf8f5c; --c-orange-bg: rgba(207,143,92,.16); --c-orange-border: rgba(207,143,92,.36);
+    --c-red: #c1655c; --c-red-bg: rgba(193,101,92,.18); --c-red-border: rgba(193,101,92,.4);
+    --c-teal: #7fbf9e; --c-teal-bg: rgba(59,150,110,.12); --c-teal-border: rgba(59,150,110,.3);
+    --c-metro: #7fa8c9;
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 22px;
+    --shadow-soft: 0 2px 10px rgba(0,0,0,.28);
+    --shadow-elevated: 0 -10px 36px rgba(0,0,0,.5);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; font-family: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg-deep); color: var(--text); overscroll-behavior: none; -webkit-font-smoothing: antialiased; }
+
+  /* ---------- Layout shell: mobile-first ----------
+     Base rules = phones (map fills the screen, panel is a bottom sheet).
+     The min-width media query near the bottom layers on the desktop
+     side-by-side layout -- nothing here needs to change for that to work. */
+  #app { display: flex; flex-direction: column; height: 100vh; height: 100dvh; background: var(--bg-deep); }
+  #mapCol { position: relative; flex: 1 1 auto; min-height: 0; overflow: hidden; touch-action: none; background: var(--bg-deep); }
+  #svgRoot { position: absolute; inset: 0; }
+  #svgRoot svg { width: 100%; height: 100%; display: block; cursor: grab; }
+  #svgRoot svg.panning { cursor: grabbing; }
+
+  #panel {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(180deg, var(--panel-top) 0%, var(--panel-bottom) 100%);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    border-top: 1px solid rgba(255,255,255,.06);
+    box-shadow: var(--shadow-elevated);
+    max-height: 42vh;
+    display: flex; flex-direction: column;
+    transition: max-height .25s ease;
+    z-index: 20;
+    overflow-x: hidden;
+  }
+  #panel.expanded { max-height: 90vh; }
+  #panelHandle { width: 36px; height: 5px; background: var(--border-strong); border-radius: 3px; margin: 12px auto 8px; cursor: pointer; flex-shrink: 0; }
+  #panelHeader { padding: 2px 20px 12px; flex-shrink: 0; }
+  #panelBody { padding: 0 20px 28px; overflow-y: auto; }
+
+  .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .brand-mark {
+    width: 32px; height: 32px; border-radius: 10px; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--accent-donor-1), var(--accent-org-2));
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 3px 10px rgba(75,65,110,.3);
+  }
+  .brand-mark svg { width: 18px; height: 18px; }
+  h1 { font-size: 16px; font-weight: 800; letter-spacing: -.01em; margin: 0; color: var(--text); }
+  .sub { font-size: 12.5px; color: var(--text-muted); margin: 0 0 14px; line-height: 1.5; }
+
+  #personaToggle { display: flex; gap: 6px; margin-bottom: 4px; background: rgba(0,0,0,.18); padding: 4px; border-radius: 999px; border: 1px solid var(--border); }
+  .persona-btn { flex: 1; min-width: 0; background: transparent; border: none; color: var(--text-muted); font-size: 12px; font-weight: 700; padding: 9px 6px; border-radius: 999px; cursor: pointer; transition: background .2s ease, box-shadow .2s ease, color .2s ease; }
+  .persona-btn.active { background: linear-gradient(135deg, var(--accent-donor-1), var(--accent-donor-2)); color: #fff; box-shadow: 0 3px 10px rgba(75,65,110,.35); }
+  .persona-btn:not(.active):hover { color: #cbd5e1; }
+
+  /* ---------- Map overlays ---------- */
+  .province { stroke: rgba(255,255,255,.22); stroke-width: 0.6; cursor: pointer; transition: filter .15s ease, stroke .15s ease, stroke-width .15s ease; }
+  .province:hover { filter: brightness(1.14); stroke: #f8fafc; stroke-width: 1.3; }
+  .province.selected { stroke: #d8b86a; stroke-width: 2.2; filter: drop-shadow(0 0 5px rgba(216,184,106,.45)); }
+  .metro-hub { fill: var(--c-metro); stroke: #fff; stroke-width: 1.5; pointer-events: none; }
+  .metro-hub-ring { fill: none; stroke: #fff; stroke-width: 1.5; opacity: 0.9; pointer-events: none; }
+  .metro-hub-ring-dark { fill: none; stroke: rgba(10,14,26,.7); stroke-width: 1; opacity: 0.9; pointer-events: none; }
+  .metro-hub-pulse { fill: none; stroke: var(--c-metro); stroke-width: 1.4; opacity: 0; pointer-events: none; transform-origin: center; transform-box: fill-box; animation: hubPulse 2.6s ease-out infinite; }
+  @keyframes hubPulse {
+    0% { opacity: .55; transform: scale(1); }
+    100% { opacity: 0; transform: scale(2.1); }
+  }
+  .facility-pin-group { cursor: pointer; }
+  .facility-pin { fill: #a3adc2; stroke: #f8fafc; stroke-width: 1.6; transition: fill .15s ease; }
+  .facility-pin-dot { fill: #f8fafc; }
+  .facility-pin-group:hover .facility-pin { fill: #d6dce6; }
+  #facilityTip { position: absolute; background: var(--surface-2); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); padding: 7px 11px; font-size: 11px; color: var(--text); pointer-events: none; max-width: 220px; z-index: 10; box-shadow: var(--shadow-soft); }
+
+  #zoomControls { position: absolute; bottom: 16px; right: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 5; }
+  .zoom-btn {
+    width: 42px; height: 42px; border-radius: 12px;
+    background: rgba(21,29,51,.72); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--border-strong); color: var(--text);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; user-select: none;
+    box-shadow: var(--shadow-soft); transition: background .15s ease, transform .1s ease;
+  }
+  .zoom-btn svg { width: 18px; height: 18px; }
+  .zoom-btn:hover { background: rgba(32,43,71,.85); }
+  .zoom-btn:active { transform: scale(.94); }
+  .zoom-btn.reset { font-size: 9px; font-weight: 800; letter-spacing: .04em; }
+
+  /* ---------- Panel content (shared by both personas) ---------- */
+  #modeToggle { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+  .mode-btn { flex: 1 1 100px; min-width: 0; background: var(--surface-2); border: 1px solid var(--border); color: var(--text-muted); font-size: 11px; font-weight: 600; padding: 9px 6px; border-radius: 999px; cursor: pointer; transition: background .2s ease, box-shadow .2s ease, color .2s ease, border-color .2s ease; }
+  .mode-btn:hover { border-color: var(--border-strong); color: #cbd5e1; }
+  .mode-btn.active { background: linear-gradient(135deg, var(--accent-org-1), var(--accent-org-2)); border-color: transparent; color: #fff; box-shadow: 0 3px 10px rgba(56,79,110,.35); }
+  #modeNote { margin-bottom: 14px; line-height: 1.55; font-size: 12px; color: var(--text-dim); }
+
+  #detail { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; min-height: 100px; box-shadow: var(--shadow-soft); }
+  #detail h2 { font-size: 15px; font-weight: 800; margin: 0 0 12px; letter-spacing: -.01em; }
+  #detail .row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; margin: 8px 0; color: #cbd5e1; gap: 8px; }
+  #detail .row b { color: var(--text); font-weight: 700; text-align: right; }
+  .placeholder { font-size: 12px; color: var(--text-dim); }
+
+  .level-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; white-space: nowrap; border: 1px solid transparent; }
+  .level-badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+  .level-none { background: rgba(148,163,184,.08); border-color: rgba(148,163,184,.25); color: var(--text-dim); }
+  .level-low { background: var(--c-green-bg); border-color: var(--c-green-border); color: var(--c-green); }
+  .level-mod { background: var(--c-gold-bg); border-color: var(--c-gold-border); color: var(--c-gold); }
+  .level-high { background: var(--c-orange-bg); border-color: var(--c-orange-border); color: var(--c-orange); }
+  .level-vhigh { background: var(--c-red-bg); border-color: var(--c-red-border); color: var(--c-red); }
+
+  #legend { margin-top: 18px; }
+  #legend .ramp-wrap { position: relative; padding-top: 9px; }
+  #legend .ramp { height: 10px; border-radius: 999px; background: linear-gradient(to right, #78716c, #cba545, #c1655c, #6e2d28); box-shadow: inset 0 1px 2px rgba(0,0,0,.25), 0 1px 0 rgba(255,255,255,.04); }
+  #legend .labels { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--text-muted); margin-top: 6px; font-weight: 500; }
+  #scoreMarker { position: absolute; top: 3px; width: 13px; height: 13px; border-radius: 50%; background: #f8fafc; border: 2px solid var(--bg-deep); box-shadow: 0 0 0 1.5px #f8fafc, 0 2px 6px rgba(0,0,0,.4); transform: translateX(-50%); transition: left .2s ease; }
+
+  #metroLegend, #facilityLegend { margin-top: 11px; font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 7px; }
+  #metroLegend .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c-metro); border: 1.5px solid #fff; flex-shrink: 0; }
+  #facilityLegend .dot { width: 8px; height: 8px; border-radius: 50%; background: #a3adc2; border: 1px solid #f8fafc; flex-shrink: 0; }
+  #facilityLegend label { cursor: pointer; user-select: none; }
+
+  details.more { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  details.more summary { cursor: pointer; font-size: 11px; color: var(--text-muted); font-weight: 600; }
+  details.more summary:hover { color: #cbd5e1; }
+  #years { margin-top: 12px; }
+  #years .label { font-size: 11px; color: var(--text-muted); margin-bottom: 7px; }
+  #years .chips { display: flex; flex-wrap: wrap; gap: 5px; max-height: 110px; overflow-y: auto; }
+  .year-chip { background: var(--surface-3); border: 1px solid var(--border); border-radius: 999px; padding: 3px 8px; font-size: 11px; color: #cbd5e1; white-space: nowrap; }
+  .badge { display: inline-block; background: var(--c-gold-bg); color: var(--c-gold); border: 1px solid var(--c-gold-border); border-radius: 999px; padding: 1px 7px; font-size: 9px; margin-left: 6px; vertical-align: middle; text-transform: uppercase; letter-spacing: .03em; }
+
+  #items { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  #items > .label { font-size: 11px; color: var(--text-muted); margin-bottom: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; }
+  #items .dtype { margin-bottom: 11px; }
+  #items .dtype-name { font-size: 12px; font-weight: 700; color: var(--c-teal); margin-bottom: 5px; }
+  #items .phase-label { font-size: 10px; color: var(--text-muted); margin: 4px 0 4px; }
+  #items .chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .item-chip { background: var(--c-teal-bg); border: 1px solid var(--c-teal-border); border-radius: 999px; padding: 3px 9px; font-size: 11px; color: var(--c-teal); white-space: nowrap; }
+  .priority-high, .priority-medium, .priority-low { font-size: 9px; text-transform: uppercase; letter-spacing: .03em; padding: 1px 6px; border-radius: 999px; margin-left: 4px; }
+  .priority-high { background: var(--c-red-bg); color: var(--c-red); }
+  .priority-medium { background: var(--c-gold-bg); color: var(--c-gold); }
+  .priority-low { background: rgba(148,163,184,.12); color: var(--text-muted); }
+
+  #top { margin-top: 18px; font-size: 12px; }
+  #top ol { padding-left: 20px; margin: 10px 0; }
+  #top li { margin-bottom: 8px; color: #cbd5e1; display: flex; align-items: center; gap: 7px; cursor: pointer; }
+  #top li:hover b { text-decoration: underline; }
+  #top b { color: var(--text); }
+
+  /* Organization-only: comparison table */
+  #orgTableSection { margin-top: 18px; }
+  .org-table-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 9px; font-size: 12px; }
+  .export-btn { background: linear-gradient(135deg, var(--accent-org-1), var(--accent-org-2)); border: none; color: #fff; font-size: 11px; font-weight: 700; padding: 8px 14px; border-radius: 999px; cursor: pointer; box-shadow: 0 3px 10px rgba(56,79,110,.35); transition: transform .1s ease; }
+  .export-btn:hover { filter: brightness(1.08); }
+  .export-btn:active { transform: scale(.97); }
+  .table-scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-md); }
+  #orgTable { border-collapse: collapse; width: 100%; font-size: 11px; white-space: nowrap; }
+  #orgTable th { background: var(--surface-2); color: var(--text-muted); text-align: left; padding: 9px 11px; cursor: pointer; position: sticky; top: 0; font-weight: 700; }
+  #orgTable th.sorted { color: var(--text); }
+  #orgTable th:hover { color: #cbd5e1; }
+  #orgTable td { padding: 8px 11px; border-top: 1px solid var(--border); color: #cbd5e1; }
+  #orgTable tr { cursor: pointer; }
+  #orgTable tr:hover td { background: rgba(255,255,255,.03); }
+
+  #footerNote { margin-top: 22px; font-size: 9px; color: var(--text-dim); line-height: 1.6; }
+
+  /* ---------- Desktop layout (min-width breakpoint layers on top) ---------- */
+  @media (min-width: 900px) {
+    #app { flex-direction: row; }
+    #mapCol { flex: 1; height: 100vh; touch-action: auto; }
+    #panel {
+      position: static;
+      max-height: none;
+      width: 360px;
+      flex-shrink: 0;
+      border-radius: 0;
+      box-shadow: none;
+      border-left: 1px solid var(--border);
+      height: 100vh;
+    }
+    #panelHandle { display: none; }
+    #panelHeader { padding: 24px 24px 10px; }
+    #panelBody { padding: 0 24px 28px; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="mapCol">
+    <div id="zoomControls">
+      <div class="zoom-btn" id="zoomIn" title="Zoom in">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      </div>
+      <div class="zoom-btn" id="zoomOut" title="Zoom out">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg>
+      </div>
+      <div class="zoom-btn reset" id="zoomReset" title="Reset view">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+      </div>
+    </div>
+  </div>
+  <div id="panel">
+    <div id="panelHandle"></div>
+    <div id="panelHeader">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.2-9.5-9.6C.6 7.6 2.4 3.8 6 3.2c2-.3 3.9.6 5 2.2C12.1 3.8 14 2.9 16 3.2c3.6.6 5.4 4.4 3.5 8.2C19 16.8 12 21 12 21z"/></svg>
+        </div>
+        <h1>Vietnam Disaster Relief Map</h1>
+      </div>
+      <div class="sub">See which areas need help most, and what to donate.</div>
+      <div id="personaToggle">
+        <button class="persona-btn active" data-persona="donor">For the Public</button>
+        <button class="persona-btn" data-persona="organization">For Organizations</button>
+      </div>
+    </div>
+    <div id="panelBody"></div>
+  </div>
+</div>
+<script src="data/vn_map_data.js"></script>
+<script type="module" src="web/main.js"></script>
+</body>
+</html>

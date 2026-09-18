@@ -53,9 +53,9 @@ export function NeedsManagement() {
   const onAdd = (e) => {
     e.preventDefault();
     setFormError(null);
-    requireLogin(async () => {
+    requireLogin(async (loggedInIdentity) => {
       try {
-        await createNeed({ organisationId: identity.organisationId, category, tag, priority });
+        await createNeed({ organisationId: loggedInIdentity.organisationId, category, tag, priority });
         setCategory("");
         setTag("");
         setPriority(false);

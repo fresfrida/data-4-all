@@ -1,18 +1,49 @@
 # 3goods Handoff
 
-Last updated: session 4 (cloud/web session) — reconciled the codebase against the actual live
-Supabase database (3G-042 / DECISIONS.md D-042), which turned out to differ substantially from what
-D-041 had assumed. See "Completed this session" below. Prior entry: session 3 resume, 3G-041
-(sitewide Footer + i18n growth).
+Last updated: session 5 (user's local machine, real network access) — ran `npm run db:seed` against
+the live Supabase project for the first time and did a full live-browser verification pass; both had
+been blocked in session 4's cloud sandbox. See "Completed this session" below. Prior entry: session 4
+(cloud/web session), reconciled the codebase against the actual live Supabase database (3G-042 /
+DECISIONS.md D-042).
 
 **Live URL: https://3goods.vercel.app** (separate Vercel project from the map site at
 `002-data-4-life.vercel.app`, account `frescyliafrida-9461`). Redeploy with `vercel deploy --prod
---yes` from inside `3goods/` after any change you want reflected there.
+--yes` from inside `3goods/` after any change you want reflected there. Not redeployed this session —
+this session's changes are dev-server-verified only; see "Exact next action."
 
 ## Current task
-**3G-042 done at the code level; live verification still blocked/pending — see "Exact next action."**
+**3G-042 fully verified live this session (see below). Next: commit the pending diff, clean up test
+data, redeploy — see "Exact next action."**
 
-## Completed this session (session 4)
+## Completed this session (session 5)
+- **`npm run db:seed` run and verified against the live Supabase project** for the first time —
+  blocked in session 4's cloud sandbox by network egress policy, works cleanly from this local
+  machine. All 8 seed items' `category_id` resolved correctly via the categories name→id map, no FK
+  violations (confirms the category-id trim/diagnostics fix from an earlier commit, `9f8de89`/
+  `5e78de9`, actually fixed the problem it targeted).
+- **Full live-browser verification pass** (headless Chrome via raw CDP — `chromium-cli` and
+  Playwright/Puppeteer weren't available in this environment; see "Known issues" for the driver
+  setup) at mobile (390px) and desktop (1280px), against the real Supabase-backed app on
+  `localhost:5174`:
+  - Discover Items: real seeded items render with correct category/area/donor; category filter chips
+    all present.
+  - Item Detail, demo-login-gated Request flow as organisation (from logged-out — this is the D-044
+    race-condition path).
+  - Needs Management: existing needs list + add-need form both render for a logged-in organisation.
+  - ChatList/ChatDetail: existing seeded conversation renders (system message + donor message), sent
+    a new live message successfully as the logged-in organisation.
+  - DonationForm: filled and submitted while logged out, resolved the demo-login prompt, donation
+    was created against the live DB and redirected to its item page with the correct donor attributed
+    — this is the exact "submit-while-logged-out" scenario the uncommitted `requireLogin` fix
+    (DECISIONS.md D-044) was written for.
+  - Zero crashes, clean console throughout (only pre-existing React Router v7 future-flag deprecation
+    warnings — harmless, unrelated).
+- Documented the `requireLogin`/`loggedInIdentity` race-condition fix as DECISIONS.md D-044 (the fix
+  itself predates this session — found uncommitted at session start — this session added the write-up
+  and the live verification evidence).
+- KANBAN.md 3G-042 updated from "code-level done" to fully verified.
+
+## Completed prior session (session 4)
 - **3G-042 — reconciled the codebase against the real live Supabase schema.** The user had already
   created and partially seeded a Supabase project (ref `hizvkpspyglvpgictqif`, tagged PRODUCTION,
   categories table seeded with 8 rows) independently of what D-041's `schema.sql` assumed — real
@@ -95,7 +126,30 @@ D-041 had assumed. See "Completed this session" below. Prior entry: session 3 re
   with `curl` (home + two deep-linked routes all 200) and a screenshot matching the local dev server.
 
 ## Known issues / caveats
+- **A second, stale checkout exists on this machine at
+  `/Users/ff/Desktop/ProjectsAI/ProjectsHackathons/002-data-4-life/3goods` (no `-ag` suffix) with its
+  own `npm run dev` left running since Thursday, bound to port 5173.** It's a different, older git
+  state (missing the automatic-JSX-runtime dev transform working correctly — hitting it threw
+  `ReferenceError: React is not defined` and rendered blank) and is *not* the repo this session (or
+  any prior 3goods session) has been working in — this checkout (`002-data-4-life-ag`) runs on
+  **port 5174**. Found by this session when an early smoke-test screenshot came back blank/erroring;
+  cost real time to diagnose (`lsof -iTCP:5173`/`:5174` is the fast way to tell them apart). Worth
+  killing that stray process (`lsof -ti:5173 | xargs kill`) or deleting that checkout entirely if it's
+  not intentionally kept around — check with the user first, it wasn't investigated further this
+  session beyond confirming it's a different directory.
+- **Live Supabase `items` table has test-data pollution**: 5 pre-existing rows titled "Smoke Test
+  Donation Item" (category Rice, all reusing the same bundled clothes photo — clearly leftover from
+  earlier manual UI testing, not from `db:seed`) plus 1 new row this session's live-test added,
+  titled "Live QA test donation (delete me)". None of this came from `src/data/items.js` / the seed
+  script (which only ever upserts its own 8 fixed-uuid rows) — it's accumulated through the actual
+  donation form UI. Harmless (valid rows, doesn't break anything) but visible in a live demo. Delete
+  via the Supabase dashboard's table editor (project ref `hizvkpspyglvpgictqif`) — filter `items` by
+  `title` containing "Smoke Test" or "delete me" before deleting, not by `donor_id`, since real seed
+  items share the same demo donor.
 - No git repository exists anywhere in `002-data-4-life/` — this Kanban is the only change record.
+  (Note: `002-data-4-life-ag`, this checkout's parent folder, *is* a git repo — that's a different,
+  newer setup from the plain `002-data-4-life` folder referenced by the point above and elsewhere in
+  this file's older entries.)
 - `/map` is an intentional placeholder (D-015) — Phase 2 not started, correctly deprioritised.
 - The demo login prompt is role-agnostic — see D-013 for why that's an accepted tradeoff, not a bug.
 - A pre-existing Vite build warning (`organisationsService.js` both statically and dynamically
@@ -121,6 +175,11 @@ D-041 had assumed. See "Completed this session" below. Prior entry: session 3 re
   a full request → accept → chat regression pass in Vietnamese at mobile and desktop widths.
 - `grep` sweep confirming no hardcoded English left in JSX text nodes or
   `placeholder`/`aria-label`/`title` attributes anywhere in `src/`.
+- **(session 5)** `npm run db:seed` against the real live Supabase project → completes with no FK
+  violations. Live browser pass (headless Chrome + raw CDP, mobile 390px + desktop 1280px) against
+  real seeded data: Discover Items, Item Detail, organisation Request flow from logged-out (D-044
+  path), Needs Management, Chat list/detail + live message send, DonationForm submit-while-logged-out
+  (D-044 path) — all clean, no crashes, no unexpected console errors.
 
 ## Checks still needed
 - ChatList and NeedsManagement at desktop width specifically (see caveat above).
@@ -129,23 +188,22 @@ D-041 had assumed. See "Completed this session" below. Prior entry: session 3 re
   a real thrown error in the browser — `ErrorState`/`useAsync` wiring was verified by code path only
   for those.
 
-## Exact next action (supersedes the priority list below, until 3G-042 is verified live)
-1. Confirm the additive SQL from DECISIONS.md D-042 has been run against the live Supabase project
-   (categories/organisations/items/needs/conversations/messages/updates additive columns + the new
-   `updates` table) — it was given to the user inline in chat, not committed as a file.
-2. Run `npm run db:seed` from an environment with real network access to `*.supabase.co` (not this
-   cloud sandbox — its network egress policy blocks that host). Verify it completes without error.
-3. Start `npm run dev` and do a real live-browser pass: post a donation (photo included, to confirm
-   the new base64 flow works), request it as an organisation, accept it, exchange chat messages
-   (confirm the translated system message still renders), and check the Updates feed. This hasn't
-   been checked live at all yet — everything in 3G-042 was verified by `npm run build` succeeding
-   only, not by exercising the app.
-4. Once verified, redeploy to Vercel — the `3goods` project referenced earlier in this file no
-   longer exists under the connected account (`list_projects` returned empty this session), so it
+## Exact next action (3G-042 is now fully live-verified — see "Completed this session (session 5)")
+1. **Commit the pending diff** (was uncommitted at this session's start, now live-verified): the
+   `requireLogin`/`loggedInIdentity` race-condition fix (D-044) across `SessionContext.jsx`,
+   `DonationForm.jsx`, `ItemDetail.jsx`, `NeedsManagement.jsx`, `ChatDetail.jsx`'s `senderId` fix, the
+   new `RoleSwitcher` nav control in `DesktopTopNav.jsx`/`MobileHeader.jsx`, and the `messages.js`
+   sender-id correction. Not committed by this session — commits are user-requested only.
+2. **Clean up live test data** — delete the "Smoke Test Donation Item" ×5 and "Live QA test donation
+   (delete me)" rows from the live `items` table (see "Known issues" above for how).
+3. **Resolve the stray duplicate checkout** on port 5173 (see "Known issues" above) — confirm with
+   the user whether to kill it, delete the checkout, or leave it; it's not part of this repo's history.
+4. Redeploy to Vercel once the above is done — the `3goods` project referenced earlier in this file no
+   longer exists under the connected account (`list_projects` returned empty in session 4), so it
    needs to be recreated from wherever the deploy actually happens, and its env vars
    (`VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY`) set fresh.
 
-### Prior priority list (once 3G-042 is verified live)
+### Prior priority list (now unblocked — 3G-042 is verified live)
 1. Phase 2 map integration (3G-020 onward) — the next big feature area, per the original priority
    order (map was always meant to come after the core journey).
 2. Phase 3 polish items: 3G-035 (FilterSheet), 3G-036 (the two remaining desktop screenshots above),
@@ -161,8 +219,14 @@ npm run i18n:check   # quick sanity check that locale files are still in sync
 ```
 
 ## Decisions genuinely needing the user
-- Confirm the D-042 additive SQL has actually been run against the live Supabase project (see
-  "Exact next action" above) — everything downstream depends on it.
+- ~~Confirm the D-042 additive SQL has actually been run against the live Supabase project~~ —
+  resolved this session: `npm run db:seed` completing with no FK violations confirms it was run.
+- OK to commit the pending diff (D-044 fix + RoleSwitcher + messages.js fix)? Not committed
+  automatically — see "Exact next action" #1.
+- OK to delete the stray test-data rows from the live `items` table, and/or kill or delete the stray
+  duplicate checkout on port 5173? See "Known issues" and "Exact next action" #2–3 — left alone this
+  session pending confirmation, since both touch state outside this repo (a live database and a
+  second checkout on disk).
 - If continuing into Phase 2, worth a quick confirmation on D-012 (3goods' category taxonomy vs. the
   root map site's) before wiring the map API client, since that's the point where the two
   taxonomies would first sit side by side in one screen.

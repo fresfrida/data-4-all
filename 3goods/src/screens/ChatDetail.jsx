@@ -42,7 +42,7 @@ export function ChatDetail() {
   if (!data.conversation) return <ErrorState message={t("screens.conversationNoLongerExists")} />;
 
   const { conversation, messages, request, item, organisation } = data;
-  const senderId = role === "organisation" ? conversation.organisationId : conversation.donorId;
+  const senderId = identity?.id;
 
   const partnerName = role === "organisation" ? t("screens.chatPartnerDonor") : organisation?.name[locale] ?? organisation?.name.en;
   const partnerType = role === "organisation" ? "donor" : "organisation";

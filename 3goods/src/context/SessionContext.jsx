@@ -56,13 +56,19 @@ export function SessionProvider({ children }) {
 
   /**
    * The single gate for "posting, requesting, and editing needs should
-   * prompt for demo login." Runs `action` immediately if already logged in;
-   * otherwise opens the shared prompt and remembers `action` to run once
-   * the user picks a demo identity, so the click isn't lost.
+   * prompt for demo login." Runs `action(identity)` immediately if already
+   * logged in; otherwise opens the shared prompt and remembers `action` to
+   * run once the user picks a demo identity, so the click isn't lost.
+   *
+   * `action` receives the resolved identity as its argument rather than
+   * relying on the caller's own `identity` from `useSession()` — when the
+   * prompt path runs, `loginAs()`'s `setSession` hasn't re-rendered yet, so
+   * a caller's closed-over `identity` would still read `null` and crash
+   * (found live-testing DonationForm's submit-while-logged-out path).
    */
   const requireLogin = (action) => {
     if (session.isLoggedIn) {
-      action();
+      action(session.identity);
       return;
     }
     setLoginPrompt({ open: true, pendingAction: action });
@@ -70,7 +76,7 @@ export function SessionProvider({ children }) {
 
   const resolveLoginPrompt = (role) => {
     loginAs(role);
-    loginPrompt.pendingAction?.();
+    loginPrompt.pendingAction?.(DEMO_IDENTITY_BY_ROLE[role]);
     setLoginPrompt({ open: false });
   };
 

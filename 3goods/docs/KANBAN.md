@@ -54,10 +54,22 @@ session; see each Done entry's evidence)
   - Evidence: `npm run i18n:check` → 168/168 keys in sync; `npm run build` → succeeds (502 KB JS
     bundle, gzip 143 KB), same pre-existing `organisationsService.js` dynamic-import warning as
     before (harmless, unrelated).
-  - **Not yet done**: `npm run db:seed` hasn't actually been run/verified — this session's cloud
-    sandbox can't reach `*.supabase.co` (network egress policy), so seeding and a live-browser
-    verification pass are still needed, from an environment with real network access. The user still
-    needs to confirm the additive SQL in D-042 has been run against the live project.
+  - **Live-verified this session** (from the user's own machine, real network access to
+    `*.supabase.co`): `npm run db:seed` completes cleanly — all 8 items' `category_id` resolved via
+    the name→id map with no FK violations (confirms the additive SQL was already run against the
+    live project, and the category-id trim/diagnostics fix from a prior commit holds). Full live
+    browser pass (headless Chrome + CDP, mobile 390px and desktop 1280px) against the real Supabase
+    data: Discover Items (seeded items render with correct category/area/donor), Item Detail,
+    demo-login-gated Request flow as organisation, Needs Management, ChatList/ChatDetail including
+    sending a live message, and DonationForm submit-while-logged-out — all exercised the
+    `requireLogin`/`loggedInIdentity` race-condition fix (see D-044) with zero crashes and a clean
+    console (only pre-existing React Router v7 future-flag warnings, unrelated). 3G-042 is now fully
+    verified, not just built.
+  - **Found, not yet cleaned up**: the live `items` table has 5 pre-existing "Smoke Test Donation
+    Item" rows plus 1 new one added by this session's DonationForm live-test (title "Live QA test
+    donation (delete me)") — leftover from earlier manual UI testing against this same project, not
+    from `db:seed`. Harmless (real schema, doesn't break anything) but worth deleting before a demo.
+    See HANDOFF.md.
 
 - **3G-041** — Sitewide Footer component + i18n key growth (undocumented work found on session
   resume, reconciled after the fact — see HANDOFF.md)

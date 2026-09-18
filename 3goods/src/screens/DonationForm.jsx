@@ -78,7 +78,7 @@ export function DonationForm() {
     setPhotoPreviews(files.map((file) => URL.createObjectURL(file)));
   };
 
-  const doSubmit = async () => {
+  const doSubmit = async (loggedInIdentity) => {
     setSubmitError(null);
     try {
       setUploadingPhotos(photoFiles.length > 0);
@@ -86,8 +86,8 @@ export function DonationForm() {
       setUploadingPhotos(false);
 
       const item = await createDonation({
-        donorId: identity.id,
-        donorName: identity.name,
+        donorId: loggedInIdentity.id,
+        donorName: loggedInIdentity.name,
         title,
         titleVi,
         category,

@@ -238,6 +238,24 @@ bumping `STORAGE_VERSION` to `"v2"`, which changes every storage key (e.g. `3goo
 a seed-value-only change is safe to leave under the same version since old and new records are
 structurally compatible; a shape change is not.
 
+## D-044 — `requireLogin(action)` passes the resolved identity as an argument, not via closure
+Found live-testing DonationForm's submit-while-logged-out path (uncommitted going into this session,
+verified live against the real Supabase project in this one): `requireLogin`'s prompt path calls
+`loginAs(role)` then immediately invokes the caller's remembered `action` in the same tick, but
+`loginAs`'s `setSession` hasn't re-rendered yet — a caller that closed over its own `identity` from
+`useSession()` (e.g. `doSubmit`'s `identity.id`) would still read the *pre-login* value (`null`) and
+crash. Fixed by having `requireLogin`/`resolveLoginPrompt` pass the resolved identity into `action`
+as an argument (`action(session.identity)` on the already-logged-in path,
+`action(DEMO_IDENTITY_BY_ROLE[role])` on the prompt-resolution path) instead of the callee reading
+`identity` from its own closure. `DonationForm.doSubmit`, `ItemDetail.onRequest`, and
+`NeedsManagement.onAdd` all updated to take `loggedInIdentity` as a parameter. General rule: any
+`requireLogin`-gated callback needs the identity it acts on to come from the callback's argument, not
+from `useSession()` in its enclosing scope — the enclosing scope's `identity` can still be stale when
+the prompt path resolves it inline.
+Live-verified this session (see 3G-042 in KANBAN.md): request-while-logged-out, donation-post-while-
+logged-out, and chat-message-send all exercised this exact path against the real Supabase-backed app
+with no crash.
+
 ---
 
 ## Deferred questions (not blocking Phase 1)

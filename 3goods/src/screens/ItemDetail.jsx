@@ -54,10 +54,10 @@ export function ItemDetail() {
   const matchesNeed = orgNeeds.some((need) => need.category === item.category && item.needTags.includes(need.tag));
 
   const onRequest = () => {
-    requireLogin(async () => {
+    requireLogin(async (loggedInIdentity) => {
       setRequestError(null);
       try {
-        await createRequest({ itemId: item.id, organisationId: identity.organisationId });
+        await createRequest({ itemId: item.id, organisationId: loggedInIdentity.organisationId });
         setJustRequested(true);
         reload();
       } catch (err) {

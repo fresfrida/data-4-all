@@ -3,6 +3,7 @@ import { useSession } from "../../context/SessionContext.jsx";
 import { useTranslate } from "../../i18n/useTranslate.js";
 import { getNavItems } from "./navConfig.js";
 import { LanguageSwitcher } from "../controls/LanguageSwitcher.jsx";
+import { RoleSwitcher } from "../controls/RoleSwitcher.jsx";
 import { DemoLoginButton } from "../controls/DemoLoginButton.jsx";
 import { HeartHandshakeIcon } from "../icons.jsx";
 import { ROUTES } from "../../lib/constants.js";
@@ -46,6 +47,7 @@ export function DesktopTopNav() {
 
         {/* Fixed Right Control Cluster - Fixed Right Column */}
         <div className="flex shrink-0 items-center gap-2.5 justify-self-end">
+          <RoleSwitcher />
           <LanguageSwitcher />
           <DemoLoginButton />
         </div>

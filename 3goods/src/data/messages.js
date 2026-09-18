@@ -7,7 +7,7 @@
  * IDs are fixed UUIDs from data/ids.js — see DECISIONS.md D-042.
  */
 
-import { MESSAGE_IDS, CONVERSATION_IDS, ORG_IDS, USER_IDS } from "./ids.js";
+import { MESSAGE_IDS, CONVERSATION_IDS, USER_IDS } from "./ids.js";
 
 /** @type {Message[]} */
 export const MESSAGES = [
@@ -23,7 +23,7 @@ export const MESSAGES = [
   {
     id: MESSAGE_IDS.message002,
     conversationId: CONVERSATION_IDS.conversation001,
-    senderId: ORG_IDS.hanoiPantry,
+    senderId: USER_IDS.orgDemo,
     senderRole: "organisation",
     text: "Thank you! Can we collect this on Saturday?",
     createdAt: "2026-09-10T07:05:00.000Z",

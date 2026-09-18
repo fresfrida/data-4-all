@@ -15,8 +15,8 @@ after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_AN
 Production env vars on this project (`vercel env ls production` to confirm) — set in session 5.
 
 ## Current task
-**3G-043, 3G-044, and 3G-045 all done. Committing/pushing/redeploying this checkpoint now — see
-"Exact next action."**
+**3G-043, 3G-044, and 3G-045 all done, committed (`7834c30`), pushed, and live in production. Nothing
+blocking — see "Exact next action."**
 
 ## Completed this session (session 6)
 - **3G-045 — items can optionally list under a 2nd category; two related UI fixes; one data bug found
@@ -300,7 +300,7 @@ Nothing is blocking. One thing worth a deliberate decision rather than just pick
 still hasn't been merged to `main` — confirm with the user whether/when to open that PR (carried over
 from session 5, still open).
 
-### Priority list (unblocked — 3G-042, 3G-043, and 3G-044 are all verified live end to end, including production)
+### Priority list (unblocked — 3G-042 through 3G-045 are all verified live end to end, including production)
 1. Phase 2 map integration (3G-020 onward) — the next big feature area, per the original priority
    order (map was always meant to come after the core journey).
 2. Phase 3 polish items: 3G-035 (FilterSheet), 3G-036 (the two remaining desktop screenshots above),
@@ -321,6 +321,8 @@ npm run i18n:check   # quick sanity check that locale files are still in sync
   instruction.
 - Session 6's two genuinely-ambiguous hero-copy questions (guest CTA, guest context pill) were both
   confirmed with the user before implementing — see DECISIONS.md D-045 for the resolutions.
+- 3G-045's scope (items: capped at 2 categories, not unbounded; needs: confirmed already unlimited via
+  multiple entries, no change needed) was confirmed with the user before implementing — see D-047.
 - Whether/when to merge `claude/supabase-connection-status-9rhtx1` into `main` — not done this
   session, no PR opened.
 - If continuing into Phase 2, worth a quick confirmation on D-012 (3goods' category taxonomy vs. the

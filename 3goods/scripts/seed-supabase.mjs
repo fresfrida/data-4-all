@@ -111,10 +111,12 @@ async function loadCategoryIdByName() {
 
 async function main() {
   const categoryId = await loadCategoryIdByName();
-  const itemCategoryIds = ITEMS.map((item) => [item.title, item.category, categoryId(item.category)]);
+  const itemCategoryIds = ITEMS.map((item) => [item.title, item.category, categoryId(item.category), item.secondaryCategory]);
   console.log(
     "[items] resolved category ids:",
-    itemCategoryIds.map(([title, slug, id]) => `${title} (${slug}) -> ${id}`).join("\n  "),
+    itemCategoryIds
+      .map(([title, slug, id, secondarySlug]) => `${title} (${slug}${secondarySlug ? ` + ${secondarySlug}` : ""}) -> ${id}`)
+      .join("\n  "),
   );
 
   await upsert(
@@ -149,6 +151,7 @@ async function main() {
       title: item.title,
       title_vi: item.titleVi ?? null,
       category_id: categoryId(item.category),
+      secondary_category_id: item.secondaryCategory ? categoryId(item.secondaryCategory) : null,
       need_tags: item.needTags ?? [],
       condition: item.condition ?? "",
       area: item.areaId,

@@ -19,15 +19,16 @@ import { ROUTES } from "../lib/constants.js";
 async function loadItemDetail(itemId, orgIdIfLoggedIn) {
   const item = await getItemById(itemId);
   if (!item) return { item: null };
-  const [area, category, tags, requests] = await Promise.all([
+  const [area, category, secondaryCategory, tags, requests] = await Promise.all([
     getAreaById(item.areaId),
     getCategoryById(item.category),
+    item.secondaryCategory ? getCategoryById(item.secondaryCategory) : null,
     getTagsForCategory(item.category),
     getRequests({ itemId }),
   ]);
   let orgNeeds = [];
   if (orgIdIfLoggedIn) orgNeeds = await getNeeds({ organisationId: orgIdIfLoggedIn });
-  return { item, area, category, tags, requests, orgNeeds };
+  return { item, area, category, secondaryCategory, tags, requests, orgNeeds };
 }
 
 export function ItemDetail() {
@@ -45,13 +46,15 @@ export function ItemDetail() {
   if (status === "error") return <ErrorState message={t("errors.generic")} onRetry={reload} />;
   if (!data.item) return <ErrorState message={t("screens.itemNoLongerExists")} />;
 
-  const { item, area, category, tags, requests, orgNeeds } = data;
+  const { item, area, category, secondaryCategory, tags, requests, orgNeeds } = data;
   const photo = item.photoPaths?.[0];
   const tagLabel = (tagId) => tags.find((tag) => tag.id === tagId)?.[locale] ?? tags.find((tag) => tag.id === tagId)?.en ?? tagId;
 
   const isOwnListing = identity && item.donorId === identity.id;
   const myRequest = orgId ? requests.find((r) => r.organisationId === orgId) : null;
-  const matchesNeed = orgNeeds.some((need) => need.category === item.category && item.needTags.includes(need.tag));
+  const matchesNeed = orgNeeds.some(
+    (need) => (need.category === item.category || need.category === item.secondaryCategory) && item.needTags.includes(need.tag),
+  );
 
   const onRequest = () => {
     requireLogin(async (loggedInIdentity) => {
@@ -78,7 +81,8 @@ export function ItemDetail() {
           <StatusBadge status={item.status} kind="item" />
         </div>
         <p className="text-sm text-ink-600">
-          {category?.[locale] ?? category?.en} · {area?.[locale] ?? area?.en}
+          {category?.[locale] ?? category?.en}
+          {secondaryCategory && ` · ${secondaryCategory[locale] ?? secondaryCategory.en}`} · {area?.[locale] ?? area?.en}
         </p>
 
         {item.needTags?.length > 0 && (

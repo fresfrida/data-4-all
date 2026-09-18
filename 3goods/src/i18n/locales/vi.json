@@ -2,6 +2,8 @@
   "app": { "name": "3goods", "tagline": "Quyên góp. Yêu cầu. Điều phối." },
   "demo": {
     "banner": "Dữ liệu minh họa — tất cả tổ chức và người quyên góp ở đây đều là hư cấu.",
+    "bannerLoggedInAs": "Đang đăng nhập với vai trò {role}.",
+    "bannerPleaseLogIn": "Vui lòng đăng nhập.",
     "loginPrompt": "Đăng nhập",
     "loginAsDonor": "Đăng nhập với vai trò Người quyên góp (demo)",
     "loginAsOrganisation": "Đăng nhập với vai trò Tổ chức (demo)",
@@ -67,6 +69,8 @@
     "titleViPlaceholder": "ví dụ: 10kg gạo sạch",
     "category": "Danh mục",
     "selectCategory": "Chọn một danh mục",
+    "secondaryCategory": "Cũng thuộc danh mục (tùy chọn)",
+    "secondaryCategoryNone": "Không có",
     "condition": "Tình trạng",
     "conditionPlaceholder": "ví dụ: Như mới, chưa mở",
     "description": "Mô tả",

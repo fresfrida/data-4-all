@@ -1,8 +1,10 @@
 # 3goods Handoff
 
-Last updated: session 6 (same machine as session 5), second checkpoint — populated real item photos
-from user-supplied stock images (3G-044 / DECISIONS.md D-046), after earlier in the same session
-removing the independent `role` switcher state (3G-043 / D-045). See "Completed this session" below.
+Last updated: session 6 (same machine as session 5), third checkpoint — items can now optionally list
+under a 2nd category (3G-045 / DECISIONS.md D-047), plus two related UI fixes (needs-board pills,
+login-state banner) and a data bug found along the way (Hanoi Community Pantry's needs had gone
+missing). Earlier the same session: populated real item photos (3G-044 / D-046), and before that,
+removed the independent `role` switcher state (3G-043 / D-045). See "Completed this session" below.
 Prior entry: session 5, first live `npm run db:seed` + full live-browser verification pass against
 the real Supabase project.
 
@@ -13,10 +15,36 @@ after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_AN
 Production env vars on this project (`vercel env ls production` to confirm) — set in session 5.
 
 ## Current task
-**3G-043 and 3G-044 both done, committed, pushed, and live in production. Nothing blocking — see
+**3G-043, 3G-044, and 3G-045 all done. Committing/pushing/redeploying this checkpoint now — see
 "Exact next action."**
 
 ## Completed this session (session 6)
+- **3G-045 — items can optionally list under a 2nd category; two related UI fixes; one data bug found
+  and fixed** (see DECISIONS.md D-047 for full detail).
+  - `items.secondary_category_id` — a nullable FK to `categories`, added via **manual SQL in the
+    Supabase SQL editor** (the anon key can't run DDL — PostgREST has no `ALTER TABLE` endpoint at
+    all, this isn't an RLS/permissions thing, it's a hard capability gap; the user ran
+    `alter table items add column if not exists secondary_category_id uuid references categories
+    (id);` when asked). Capped at one extra category, never unbounded — `itemsService.js`,
+    `DiscoverItems.jsx` (both the service-level and the screen's own client-side filter match either
+    category), `ItemCard.jsx`/`ItemDetail.jsx` (second badge), and `DonationForm.jsx` (new optional
+    "Also list under" `<select>`) all updated. Applied to the two children's-books items — they now
+    show under both Books and Children Items.
+  - Needs-board pills (home page) switched from showing need **tag** labels ("Rice packs") to the 8
+    top-level **category** names used everywhere else, deduped per organisation — was confusing the
+    user since it looked disconnected from the category system used elsewhere.
+  - The sitewide "Demonstration data..." banner (every page) now appends current login state:
+    "Please log in." / "Logged in as Donor." / "Logged in as Organisation." — per explicit request,
+    so login state is visible outside the home hero.
+  - **Found and fixed along the way**: Hanoi Community Pantry had 0 live `needs` rows despite 2 being
+    defined in seed data (`need003`/`need004`) — discovered because it was missing from the home
+    page's org board. Root cause unclear (predates this session), fixed by a plain `npm run db:seed`
+    re-run (idempotent, just inserted the missing rows fresh).
+  - Verified: `npm run i18n:check` (174/174), `npm run build`, `npm run db:seed` (17 items, 10 needs —
+    was silently 8 needs before). Live browser (headless Chrome + CDP, mobile 390px): guest/donor
+    banner text, Children Items filter surfacing both cross-category book items plus the direct
+    listing with both badges each, Item Detail showing "Books · Children Items · Hue", needs board
+    showing all 5 orgs with deduped category pills. Zero console errors.
 - **3G-044 — populated real item photos** (see DECISIONS.md D-046 for full detail). The user supplied
   16 stock photos in `assets/items/` (a folder next to, not inside, `3goods/` — outside this repo,
   never committed). Attached a photo to 6 existing seed items that had none (10kg bag of rice, Box of

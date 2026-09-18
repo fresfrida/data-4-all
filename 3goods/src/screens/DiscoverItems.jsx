@@ -26,7 +26,7 @@ export function DiscoverItems() {
   const filtered = useMemo(() => {
     if (!data) return [];
     return data.items.filter((item) => {
-      if (categoryFilter && item.category !== categoryFilter) return false;
+      if (categoryFilter && item.category !== categoryFilter && item.secondaryCategory !== categoryFilter) return false;
       if (search && !item.title.toLowerCase().includes(search.toLowerCase())) return false;
       return true;
     });
@@ -87,7 +87,13 @@ export function DiscoverItems() {
       ) : (
         <ItemGrid>
           {filtered.map((item) => (
-            <ItemCard key={item.id} item={item} categoryLabel={categoryLabel(item.category)} areaLabel={areaLabel(item.areaId)} />
+            <ItemCard
+              key={item.id}
+              item={item}
+              categoryLabel={categoryLabel(item.category)}
+              secondaryCategoryLabel={item.secondaryCategory ? categoryLabel(item.secondaryCategory) : undefined}
+              areaLabel={areaLabel(item.areaId)}
+            />
           ))}
         </ItemGrid>
       )}

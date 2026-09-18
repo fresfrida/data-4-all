@@ -29,6 +29,7 @@ export function DonationForm() {
   const [title, setTitle] = useState("");
   const [titleVi, setTitleVi] = useState("");
   const [category, setCategory] = useState("");
+  const [secondaryCategory, setSecondaryCategory] = useState("");
   const [tags, setTags] = useState([]);
   const [condition, setCondition] = useState("");
   const [areaId, setAreaId] = useState("");
@@ -77,6 +78,7 @@ export function DonationForm() {
 
   const onCategoryChange = async (nextCategory) => {
     setCategory(nextCategory);
+    if (secondaryCategory === nextCategory) setSecondaryCategory("");
     setTags([]);
     setTagOptions(await getTagsForCategory(nextCategory));
   };
@@ -110,6 +112,7 @@ export function DonationForm() {
         title,
         titleVi,
         category,
+        secondaryCategory: secondaryCategory || undefined,
         needTags: tags,
         condition,
         areaId,
@@ -189,6 +192,24 @@ export function DonationForm() {
               {c[locale] ?? c.en}
             </option>
           ))}
+        </select>
+      </label>
+
+      <label className="flex flex-col gap-1.5">
+        <span className="text-xs font-semibold text-ink-700">{t("fields.secondaryCategory")}</span>
+        <select
+          value={secondaryCategory}
+          onChange={(e) => setSecondaryCategory(e.target.value)}
+          className="rounded-lg border border-ink-600/20 px-3 py-2 text-sm"
+        >
+          <option value="">{t("fields.secondaryCategoryNone")}</option>
+          {data.categories
+            .filter((c) => c.id !== category)
+            .map((c) => (
+              <option key={c.id} value={c.id}>
+                {c[locale] ?? c.en}
+              </option>
+            ))}
         </select>
       </label>
 

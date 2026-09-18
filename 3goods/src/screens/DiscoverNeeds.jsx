@@ -4,7 +4,7 @@ import { useAsync } from "../lib/useAsync.js";
 import { useSession } from "../context/SessionContext.jsx";
 import { getNeeds } from "../services/needsService.js";
 import { getOrganisations } from "../services/organisationsService.js";
-import { getCategories, getTagsForCategory, getAreaById } from "../services/referenceDataService.js";
+import { getCategories, getAreaById } from "../services/referenceDataService.js";
 import { useLocale } from "../i18n/LocaleContext.jsx";
 import { useTranslate } from "../i18n/useTranslate.js";
 import { LoadingState } from "../components/feedback/LoadingState.jsx";
@@ -16,15 +16,11 @@ import { Avatar } from "../components/common/Avatar.jsx";
 
 async function loadNeedsBoard() {
   const [needs, organisations, categories] = await Promise.all([getNeeds(), getOrganisations(), getCategories()]);
-  const tagLabelsByCategory = {};
-  for (const category of categories) {
-    tagLabelsByCategory[category.id] = await getTagsForCategory(category.id);
-  }
   const areaCache = {};
   for (const org of organisations) {
     if (!areaCache[org.areaId]) areaCache[org.areaId] = await getAreaById(org.areaId);
   }
-  return { needs, organisations, categories, tagLabelsByCategory, areaCache };
+  return { needs, organisations, categories, areaCache };
 }
 
 /**
@@ -53,10 +49,8 @@ export function DiscoverNeeds() {
   if (status === "loading") return <LoadingState />;
   if (status === "error") return <ErrorState message={t("errors.generic")} onRetry={reload} />;
 
-  const tagLabel = (category, tagId) =>
-    data.tagLabelsByCategory[category]?.find((tag) => tag.id === tagId)?.[locale] ??
-    data.tagLabelsByCategory[category]?.find((tag) => tag.id === tagId)?.en ??
-    tagId;
+  const categoryLabel = (categoryId) =>
+    data.categories.find((c) => c.id === categoryId)?.[locale] ?? data.categories.find((c) => c.id === categoryId)?.en ?? categoryId;
 
   const totalNeedsCount = data?.needs?.length ?? 0;
   const orgsCount = data?.organisations?.length ?? 0;
@@ -216,8 +210,12 @@ export function DiscoverNeeds() {
                   </div>
 
                   <div className="flex flex-wrap gap-1.5">
-                    {needs.map((need) => (
-                      <NeedChip key={need.id} label={tagLabel(need.category, need.tag)} priority={need.priority} />
+                    {[...new Map(needs.map((need) => [need.category, need])).values()].map((need) => (
+                      <NeedChip
+                        key={need.category}
+                        label={categoryLabel(need.category)}
+                        priority={needs.some((n) => n.category === need.category && n.priority)}
+                      />
                     ))}
                   </div>
                 </div>

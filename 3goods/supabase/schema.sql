@@ -104,6 +104,13 @@ alter table items add column if not exists title_vi text;
 alter table items add column if not exists need_tags text[] not null default '{}';
 alter table items add column if not exists notes text;
 alter table items add column if not exists accepted_request_id uuid references requests (id);
+-- Optional 2nd category (e.g. a children's book can list under both Books
+-- and Children Items) — see DECISIONS.md D-047. Deliberately a single
+-- nullable FK, not an array/join table: items support at most one extra
+-- category, never unbounded many. NULL means "just the one category" (the
+-- overwhelming common case) — nothing else in the app treats this as
+-- required.
+alter table items add column if not exists secondary_category_id uuid references categories (id);
 
 alter table needs add column if not exists tag text;
 

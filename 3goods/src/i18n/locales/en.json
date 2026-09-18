@@ -2,6 +2,8 @@
   "app": { "name": "3goods", "tagline": "Donate. Request. Coordinate." },
   "demo": {
     "banner": "Demonstration data — all organisations and donors shown here are fictional.",
+    "bannerLoggedInAs": "Logged in as {role}.",
+    "bannerPleaseLogIn": "Please log in.",
     "loginPrompt": "Log in",
     "loginAsDonor": "Log in as Donor (demo)",
     "loginAsOrganisation": "Log in as Organisation (demo)",
@@ -67,6 +69,8 @@
     "titleViPlaceholder": "e.g. 10kg gạo sạch",
     "category": "Category",
     "selectCategory": "Select a category",
+    "secondaryCategory": "Also list under (optional)",
+    "secondaryCategoryNone": "None",
     "condition": "Condition",
     "conditionPlaceholder": "e.g. Like new, unopened",
     "description": "Description",

@@ -26,6 +26,7 @@ async function fromRow(row, usersById) {
     title: row.title,
     titleVi: row.title_vi ?? undefined,
     category: await getCategorySlugFromDbId(row.category_id),
+    secondaryCategory: (await getCategorySlugFromDbId(row.secondary_category_id)) ?? undefined,
     needTags: row.need_tags ?? [],
     condition: row.condition ?? "",
     areaId: row.area ?? "",
@@ -45,6 +46,7 @@ async function toInsertRow(payload) {
     title: payload.title.trim(),
     title_vi: payload.titleVi || null,
     category_id: await getCategoryDbId(payload.category),
+    secondary_category_id: payload.secondaryCategory ? await getCategoryDbId(payload.secondaryCategory) : null,
     need_tags: payload.needTags ?? [],
     condition: payload.condition ?? "",
     area: payload.areaId,
@@ -89,7 +91,7 @@ export async function getItems(filters = {}) {
   }
 
   if (filters.category) {
-    rows = rows.filter((item) => item.category === filters.category);
+    rows = rows.filter((item) => item.category === filters.category || item.secondaryCategory === filters.category);
   }
   if (filters.areaId) {
     rows = rows.filter((item) => item.areaId === filters.areaId);

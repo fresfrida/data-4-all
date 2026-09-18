@@ -38,6 +38,27 @@ session; see each Done entry's evidence)
 
 ## Done
 
+- **3G-045** — Items support an optional 2nd category; needs-board pills show categories not tags;
+  sitewide banner shows login state (see DECISIONS.md D-047)
+  - Deliverable: `items.secondary_category_id` (nullable FK, added via manual Supabase SQL — anon
+    key has no DDL access) lets an item optionally list under a second category (e.g. children's
+    books under both Books and Children Items), capped at one extra, never unbounded.
+    `itemsService`/`DiscoverItems`/`ItemCard`/`ItemDetail`/`DonationForm` all updated to read, filter,
+    display, and set it. Applied to `item003`/`item010`. Home page needs-board pills switched from
+    tag labels to category labels (deduped per org). Sitewide "Demonstration data..." banner now
+    appends "Please log in." / "Logged in as Donor." / "Logged in as Organisation.". Also found and
+    fixed (via a plain `npm run db:seed` re-run): Hanoi Community Pantry had 0 live `needs` rows
+    despite 2 being defined in seed data — root cause unclear, predates this session.
+  - Deps: none. Acceptance: `npm run i18n:check` passes, `npm run build` succeeds, live-browser check
+    of the full category-filter/badge/form flow.
+  - Evidence: `npm run i18n:check` → 174/174 keys in sync. `npm run build` → succeeds. `npm run
+    db:seed` → `[items] seeded 17 rows`, `[needs] seeded 10 rows` (was silently 8 before, missing
+    Hanoi Community Pantry's 2). Live browser (headless Chrome + CDP, mobile 390px): guest/donor
+    banner text correct; Discover Items filtered to "Children Items" surfaces both children's-books
+    items (primary category Books) plus the direct Children Items listing, each with both category
+    badges; Item Detail shows "Books · Children Items · Hue"; needs board shows all 5 organisations
+    with deduped category-name pills. Zero console errors.
+
 - **3G-044** — Populated real item photos from user-supplied stock images (`assets/items/` outside the
   repo, not committed — see DECISIONS.md D-046)
   - Deliverable: attached a matching photo to 7 existing seed items that had none (`item001`–`item007`

@@ -77,6 +77,9 @@
  * @property {string} donorName
  * @property {string} title
  * @property {Category} category
+ * @property {Category} [secondaryCategory]  optional 2nd category (e.g. a children's
+ *   book lists under both Books and Children Items) — see DECISIONS.md D-047.
+ *   Deliberately capped at one extra, never unbounded many.
  * @property {string[]} needTags        subset of tags relevant to `category`
  * @property {string} condition         e.g. "Like new", "Well used, still functional"
  * @property {string} areaId

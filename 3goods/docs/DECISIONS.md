@@ -337,6 +337,52 @@ Follow-up (same session): the user supplied one more photo, `children_school_bag
 was still missing one after the initial pass above. Same treatment (static path, not base64). Every
 original seed item (`item001`–`item008`) now has a photo.
 
+## D-047 — Items support an optional 2nd category; needs remain single-category, unlimited via multiple entries
+User asked whether an item could belong to two categories (e.g. a children's book under both Books
+and Children Items) and, separately, whether an organisation's needs could span more than 2
+categories. These are different questions with different answers:
+- **Needs**: already unbounded — an organisation publishes one `needs` row per category/tag it wants
+  (see seed data: Hanoi Community Pantry has both Rice and Household Items needs), and
+  `NeedsManagement.jsx`'s `createNeed` has no cap on how many an org can add. No schema change; this
+  was a misunderstanding surfaced while reviewing the needs-board UI (see below), not a real gap.
+- **Items**: were genuinely capped at exactly one category (`items.category_id`, a single FK — see
+  D-005). Added `items.secondary_category_id`, a second nullable FK to `categories`, applied via a
+  manual `alter table` in the Supabase SQL editor (anon key has no DDL access — PostgREST doesn't
+  expose `ALTER TABLE` at all, regardless of key permissions; this is a recurring pattern for schema
+  changes in this project, see D-042's original additive migration). Deliberately a single extra
+  column, not an array or join table: **at most one extra category, never unbounded many** — chosen
+  because unlimited categories-per-item would force `DonationForm`'s need-tag picker (currently
+  scoped to one category's tag list via `getTagsForCategory`) into meaningfully more UI complexity for
+  a case (a second category) that's rare in practice. `null` is the overwhelming common case.
+  - `itemsService.js` maps `secondary_category_id` ↔ `item.secondaryCategory` (undefined when absent);
+    `getItems({category})` and `DiscoverItems.jsx`'s client-side filter both match on *either*
+    category so an item still surfaces under both its filter chips. `ItemCard`/`ItemDetail` show a
+    second badge when present. `DonationForm.jsx` gained a second, optional `<select>` ("Also list
+    under") that excludes whatever the primary category currently is.
+  - Applied to the two children's-books items (`item003`, `item010`): `category: "Books"` +
+    `secondaryCategory: "Children Items"`.
+- **Found and fixed along the way**: while reviewing the needs board, discovered Hanoi Community
+  Pantry had **zero** live `needs` rows even though `src/data/needs.js` defines two for it
+  (`need003`/`need004`) — root cause unclear (predates this session, not caused by anything done
+  here; the DB had no error, the rows were simply never persisted). Re-running `npm run db:seed`
+  (idempotent) inserted them fresh with no further changes needed.
+- **Also fixed this session** (same investigation, unrelated to the category work itself): the home
+  page's "Discover needs by Organisation" board was showing need **tag** labels ("Rice packs",
+  "Canned food & noodles") as its pills, not the 8 top-level **category** names used everywhere else
+  in the app (filter chips, item badges) — confusing, per the user. Switched to category labels,
+  deduped per organisation (an org with two Books-category needs now shows one "Books" chip, not two,
+  taking the `priority` star if *any* of its needs in that category is a priority).
+- **Also**: the sitewide "Demonstration data..." banner (visible on every page) now appends the
+  current login state — "Please log in.", "Logged in as Donor.", or "Logged in as Organisation." —
+  per explicit user request, so login state is visible outside the home page hero (which already had
+  this via its guest/logged-in pill, but only on `/`).
+Live-verified (headless Chrome + CDP, mobile 390px): guest banner reads "...Please log in."; donor
+banner reads "...Logged in as Donor."; Discover Items filtered to "Children Items" correctly surfaces
+both children's-books items (primary category Books) alongside the actual Children Items listing,
+each showing both category badges; Item Detail shows "Books · Children Items · Hue"; the needs board
+shows 5 organisations (Hanoi Community Pantry restored) with deduped category-name pills. Zero
+console errors.
+
 ---
 
 ## Deferred questions (not blocking Phase 1)

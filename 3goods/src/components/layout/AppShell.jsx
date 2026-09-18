@@ -4,6 +4,7 @@ import { DesktopTopNav } from "./DesktopTopNav.jsx";
 import { MobileBottomNav } from "./MobileBottomNav.jsx";
 import { Footer } from "./Footer.jsx";
 import { DemoLoginPrompt } from "../controls/DemoLoginPrompt.jsx";
+import { useSession } from "../../context/SessionContext.jsx";
 import { useTranslate } from "../../i18n/useTranslate.js";
 
 /**
@@ -12,7 +13,9 @@ import { useTranslate } from "../../i18n/useTranslate.js";
  * content area, via <Outlet/>.
  */
 export function AppShell() {
+  const { isLoggedIn, role } = useSession();
   const t = useTranslate();
+  const loginStateText = isLoggedIn ? t("demo.bannerLoggedInAs", { role: t(`role.${role}`) }) : t("demo.bannerPleaseLogIn");
 
   return (
     <div className="flex h-dvh w-full flex-col overflow-hidden bg-cream-50">
@@ -21,7 +24,7 @@ export function AppShell() {
         <MobileHeader />
         <DesktopTopNav />
         <div className="border-b border-accent-200 bg-accent-50 px-4 py-1.5 text-center text-[11px] font-medium text-accent-700">
-          {t("demo.banner")}
+          {t("demo.banner")} {loginStateText}
         </div>
       </div>
 

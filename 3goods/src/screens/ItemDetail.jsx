@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { useAsync } from "../lib/useAsync.js";
 import { useRequestActions } from "../lib/useRequestActions.js";
 import { getItemById } from "../services/itemsService.js";
-import { getRequests, createRequest } from "../services/requestsService.js";
+import { getRequests, createRequest, deriveDisplayStatus } from "../services/requestsService.js";
 import { getNeeds } from "../services/needsService.js";
 import { getOrganisations } from "../services/organisationsService.js";
 import { getConversations } from "../services/chatService.js";
@@ -183,11 +183,11 @@ export function ItemDetail() {
           </div>
         )}
 
-        {role === "organisation" && !isOwnListing && item.status === "available" && (
+        {role === "organisation" && !isOwnListing && (item.status === "available" || myRequest) && (
           <>
             {myRequest || justRequested ? (
               <p className="w-fit rounded-full bg-good-100 px-4 py-2 text-sm font-semibold text-good-600">
-                {t(`requestStatus.${myRequest?.status ?? "requested"}`)}
+                {t(`requestStatus.${myRequest ? deriveDisplayStatus(myRequest, item) : "requested"}`)}
               </p>
             ) : (
               <button

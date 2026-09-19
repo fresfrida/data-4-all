@@ -160,7 +160,11 @@
     "sets": "sets",
     "sets_one": "set",
     "packs": "packs",
-    "packs_one": "pack"
+    "packs_one": "pack",
+    "cans": "cans",
+    "cans_one": "can",
+    "books": "books",
+    "books_one": "book"
   },
   "systemMessages": {
     "request_accepted": "Request accepted. You can arrange collection here."

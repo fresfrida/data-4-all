@@ -4,7 +4,7 @@
  * files, with a `_one` variant for a quantity of exactly 1); anything else
  * already in the DB is shown as typed.
  */
-export const UNITS = ["kg", "pieces", "boxes", "bags", "sets", "packs"];
+export const UNITS = ["kg", "pieces", "boxes", "bags", "sets", "packs", "cans", "books"];
 
 /** Parses a form field into a positive whole number, or null when blank. Throws nothing; callers validate with isValidQuantity. */
 export function parseQuantity(raw) {

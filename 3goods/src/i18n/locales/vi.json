@@ -160,7 +160,11 @@
     "sets": "bộ",
     "sets_one": "bộ",
     "packs": "gói",
-    "packs_one": "gói"
+    "packs_one": "gói",
+    "cans": "lon",
+    "cans_one": "lon",
+    "books": "cuốn",
+    "books_one": "cuốn"
   },
   "systemMessages": {
     "request_accepted": "Yêu cầu đã được chấp nhận. Bạn có thể sắp xếp việc nhận tại đây."

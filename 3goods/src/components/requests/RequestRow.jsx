@@ -21,6 +21,7 @@ export function RequestRow({ request, item, organisation, conversation, busy, on
   const t = useTranslate();
 
   const orgName = organisation?.name[locale] ?? organisation?.name.en ?? request.organisationId;
+  const displayStatus = deriveDisplayStatus(request, item);
   const isThisBusy = busy?.requestId === request.id;
   const disabled = Boolean(busy);
 
@@ -48,9 +49,9 @@ export function RequestRow({ request, item, organisation, conversation, busy, on
           </Link>
         )}
 
-        <StatusBadge status={deriveDisplayStatus(request, item)} />
+        <StatusBadge status={displayStatus} />
 
-        {request.status === "requested" ? (
+        {displayStatus === "unavailable" ? null : displayStatus === "requested" ? (
           <button
             type="button"
             onClick={() => onAccept(request.id)}

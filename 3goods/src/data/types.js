@@ -56,6 +56,8 @@
  * @property {Category} category
  * @property {string} tag              e.g. "Rice", "Sanitary pads"
  * @property {boolean} priority        true = priority need
+ * @property {number|null} [quantity]  optional whole number, with `unit`
+ * @property {string|null} [unit]      a code from lib/quantity.js UNITS
  * @property {string} createdAt        ISO string
  */
 

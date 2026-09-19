@@ -176,6 +176,8 @@ async function main() {
       category_id: categoryId(need.category),
       tag: need.tag,
       priority: need.priority ? "high" : "medium",
+      quantity: need.quantity ?? null,
+      unit: need.unit ?? null,
       status: "open",
       created_at: need.createdAt,
     })),

@@ -15,7 +15,7 @@
  */
 
 import { getAll, getById, insert, update as dbUpdate } from "../lib/db.js";
-import { getItemById, _markItemReserved } from "./itemsService.js";
+import { getItemById, _markItemReserved, reopenItemAvailability } from "./itemsService.js";
 import { ensureConversationForRequest, postSystemMessage } from "./chatService.js";
 import { pushUpdate } from "./updatesService.js";
 import { AppError } from "../lib/errors.js";
@@ -98,10 +98,13 @@ export async function createRequest({ itemId, organisationId }) {
 }
 
 /**
- * The one place "only one accepted organisation per listing" is enforced.
- * Throws rather than silently no-op-ing if the item was already reserved by
- * a different request between the donor opening the screen and tapping
- * Accept — the UI should show that error, not pretend it worked.
+ * The one place "only one accepted organisation per listing" is enforced
+ * (D-009). Throws `itemAlreadyReserved` rather than silently no-op-ing if the
+ * item is already held by a *different* request — e.g. the donor accepted
+ * another organisation from a second tab — so the UI shows that error instead
+ * of pretending it worked. Accepting a request that has already moved past
+ * "requested" (accepted / arranging / completed) is a no-op, so a stale tap
+ * can't post a second "request accepted" message or regress its status.
  */
 export async function acceptRequest(requestId) {
   const request = await getRequestById(requestId);
@@ -109,6 +112,10 @@ export async function acceptRequest(requestId) {
 
   const item = await getItemById(request.itemId);
   if (!item) throw new AppError("itemForRequestNotFound");
+
+  const heldByAnotherRequest = item.acceptedRequestId ? item.acceptedRequestId !== requestId : item.status === "reserved";
+  if (heldByAnotherRequest) throw new AppError("itemAlreadyReserved");
+  if (["accepted", "arranging_collection", "completed"].includes(request.status)) return request;
 
   // Independent writes go out together; the system message has to wait for
   // the conversation to exist. Fewer sequential round-trips = shorter wait
@@ -143,9 +150,20 @@ export async function declineRequest(requestId) {
   return row ? fromRow(row) : null;
 }
 
-/** Reverts a specific request back to pending/requested status without affecting other requests. */
+/**
+ * Reverts a specific request back to pending/requested status without
+ * affecting other requests' own records. If this request was the one holding
+ * the item, the item is released too (available again, no accepted request) —
+ * otherwise it would stay reserved to a request that is no longer accepted,
+ * and every sibling request would show "no longer available" with nobody able
+ * to accept them.
+ */
 export async function revertRequestToPending(requestId) {
+  const request = await getRequestById(requestId);
+  if (!request) return null;
   const row = await dbUpdate("requests", requestId, { status: "requested" });
+  const item = await getItemById(request.itemId);
+  if (item?.acceptedRequestId === requestId) await reopenItemAvailability(item.id);
   return row ? fromRow(row) : null;
 }
 
@@ -183,8 +201,15 @@ export async function updateRequestStatus(requestId, status) {
 }
 
 /**
- * Multiple requests can coexist so donors can distribute items (e.g. 10kg rice).
+ * What a request should *show* right now (D-009). A pending request is never
+ * mutated when a sibling is accepted — it's derived as "unavailable" while
+ * the item is held by a different request, and goes back to plain "requested"
+ * if that acceptance is undone. Every screen that shows or gates on a request's
+ * status goes through this instead of reading `request.status` directly.
  */
 export function deriveDisplayStatus(request, item) {
+  if (request.status === "requested" && item?.acceptedRequestId && item.acceptedRequestId !== request.id) {
+    return "unavailable";
+  }
   return request.status;
 }

@@ -47,7 +47,7 @@ export function Updates() {
         <h1 className="text-xl font-bold text-ink-800">{t("nav.updates")}</h1>
         {role === "donor" && (
           <Link to={ROUTES.discoverNeeds} className="text-sm font-semibold text-accent-600 hover:underline">
-            {t("nav.discoverNeeds")}
+            {t("nav.organisations")}
           </Link>
         )}
       </div>

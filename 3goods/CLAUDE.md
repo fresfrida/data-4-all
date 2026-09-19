@@ -44,15 +44,25 @@ file's comment for why.
 - **Components never import seed data or touch Supabase directly.** All data access goes through
   `src/services/*.js` (async functions: `getItems`, `createDonation`, `getNeeds`, `createRequest`,
   `getMessages`, etc.). Services call `src/lib/db.js`, the one storage engine, backed by Supabase/
-  Postgres (see `supabase/schema.sql` for tables + RLS, `docs/DECISIONS.md` D-041 for why/how). No
-  real auth — every table and the `item-photos` bucket use a single permissive policy; don't reuse
-  this pattern for real user data without adding real auth first. `.env.local` needs
-  `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` (see `.env.example`); `npm run db:seed` pushes
-  `src/data/*.js` into the real tables (idempotent, safe to re-run).
-- **Donation photos are persisted** (D-041 supersedes D-008): `DonationForm` uploads selected files
-  to the public `item-photos` Storage bucket via `services/storageService.js`, and the returned
-  public URL(s) go in `photoPaths` — the same field seed items already used for bundled
-  `public/demo-items/` images.
+  Postgres (see `supabase/schema.sql` for tables + RLS). No real auth — every table uses a single
+  permissive policy; don't reuse this pattern for real user data without adding real auth first.
+  `.env.local` needs `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` (see `.env.example`); `npm run
+  db:seed` pushes `src/data/*.js` into the real tables (idempotent via the fixed uuids in
+  `src/data/ids.js`, safe to re-run).
+  - **The live database's column names/shapes don't match this app's camelCase model 1:1**
+    (uuid `category_id`/`org_id`/`donor_id` foreign keys instead of plain-text fields, a single
+    `image_base64` instead of a `photoPaths` array, `organisations.name`/`description` as plain
+    text instead of bilingual `{en, vi}`, no `updates` table in the original live schema, etc. — see
+    DECISIONS.md D-042 for the full reconciliation). Every service's `fromRow`/`toRow`-style
+    functions are the *only* place that translation happens — screens and components keep using
+    the same shapes documented in `src/data/types.js` regardless of what the DB column is actually
+    called. When adding a new service function, follow this pattern rather than leaking a raw
+    Supabase row shape into a screen.
+- **Donation photos are stored as base64** (D-042 supersedes D-041's Storage-bucket approach):
+  `DonationForm` reads the first selected file as a base64 data URL via `services/storageService.js`
+  (no network call, no bucket), and it goes in `photoPaths[0]` — the same field seed items already
+  used for bundled `public/demo-items/` images. Only one photo per item is supported (the live
+  schema has room for exactly one).
 - **Business rules live in the service layer, not in screens.** E.g. `requestsService.acceptRequest`
   is responsible for enforcing "one accepted organisation per listing," updating item status, and
   ensuring a conversation + update notification exist — a screen never orchestrates that by calling

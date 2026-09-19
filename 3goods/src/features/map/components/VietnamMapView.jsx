@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { MapView } from "../vendor/mapView.js";
+import { applyGreyBaseHeat } from "../heatColors.js";
 import "../../../styles/map.css";
 
 export function VietnamMapView({ data, field = "disaster_score", showFacilities = true, selectedProvince, onSelectProvince }) {
@@ -20,6 +21,7 @@ export function VietnamMapView({ data, field = "disaster_score", showFacilities 
 
     mapInstance.setField(field);
     mapInstance.setShowFacilities(showFacilities);
+    applyGreyBaseHeat(containerRef.current, data.features, field);
     if (selectedProvince) mapInstance.setSelected(selectedProvince);
 
     mapInstance.onSelect = (name) => {
@@ -36,12 +38,14 @@ export function VietnamMapView({ data, field = "disaster_score", showFacilities 
   useEffect(() => {
     if (mapViewRef.current) {
       mapViewRef.current.setField(field);
+      applyGreyBaseHeat(containerRef.current, data.features, field);
     }
   }, [field]);
 
   useEffect(() => {
     if (mapViewRef.current) {
       mapViewRef.current.setShowFacilities(showFacilities);
+      applyGreyBaseHeat(containerRef.current, data.features, field);
     }
   }, [showFacilities]);
 

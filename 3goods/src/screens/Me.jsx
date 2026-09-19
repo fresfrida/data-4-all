@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import { useAsync } from "../lib/useAsync.js";
-import { getItems, reopenItemAvailability } from "../services/itemsService.js";
-import { getRequests, acceptRequest, revertRequestToPending, deriveDisplayStatus } from "../services/requestsService.js";
+import { useRequestActions } from "../lib/useRequestActions.js";
+import { translateError } from "../lib/errors.js";
+import { getItems } from "../services/itemsService.js";
+import { getRequests } from "../services/requestsService.js";
 import { getOrganisations } from "../services/organisationsService.js";
 import { getConversations } from "../services/chatService.js";
 import { useSession } from "../context/SessionContext.jsx";
@@ -12,6 +14,8 @@ import { ErrorState } from "../components/feedback/ErrorState.jsx";
 import { EmptyState } from "../components/feedback/EmptyState.jsx";
 import { StatusBadge } from "../components/status/StatusBadge.jsx";
 import { Avatar } from "../components/common/Avatar.jsx";
+import { RequestRow } from "../components/requests/RequestRow.jsx";
+import { Spinner } from "../components/feedback/Spinner.jsx";
 import { ROUTES } from "../lib/constants.js";
 
 async function loadMyDonations(donorId) {
@@ -24,7 +28,7 @@ async function loadMyDonations(donorId) {
   for (const item of items) {
     requestsByItem[item.id] = await getRequests({ itemId: item.id });
   }
-  return { items, organisations, requestsByItem, conversations };
+  return { donorId, items, organisations, requestsByItem, conversations };
 }
 
 /** Donor's own profile + donation/request tracking. */
@@ -33,15 +37,8 @@ export function Me() {
   const { locale } = useLocale();
   const t = useTranslate();
   const donorId = identity?.id;
-  const { status, data, error, reload } = useAsync(() => loadMyDonations(donorId), [donorId]);
-
-  if (role !== "donor") {
-    return (
-      <div className="rounded-card border border-dashed border-ink-600/20 bg-white/60 p-6 text-center text-sm text-ink-600">
-        {t("screens.meRoleGate")}
-      </div>
-    );
-  }
+  const { status, data, error, reload, refresh } = useAsync(() => loadMyDonations(donorId), [donorId]);
+  const { busy, error: actionError, accept, revert } = useRequestActions(refresh);
 
   if (!isLoggedIn) {
     return (
@@ -61,31 +58,21 @@ export function Me() {
     );
   }
 
-  if (status === "loading" || !data) return <LoadingState />;
+  if (role !== "donor") {
+    return (
+      <div className="rounded-card border border-dashed border-ink-600/20 bg-white/60 p-6 text-center text-sm text-ink-600">
+        {t("screens.meRoleGate")}
+      </div>
+    );
+  }
+
+  // A refetch keeps the current content on screen (light inline indicator below);
+  // the full-page spinner is only for the very first load or a different donor.
+  const isRefreshing = status === "loading" && data?.donorId === donorId;
+  if ((status === "loading" && !isRefreshing) || !data) return <LoadingState />;
   if (status === "error") return <ErrorState message={t("errors.generic")} onRetry={reload} />;
 
   const getOrg = (orgId) => data.organisations.find((o) => o.id === orgId);
-
-  const onAccept = (requestId) => {
-    requireLogin(async () => {
-      await acceptRequest(requestId);
-      reload();
-    });
-  };
-
-  const onRevertRequest = (requestId) => {
-    requireLogin(async () => {
-      await revertRequestToPending(requestId);
-      reload();
-    });
-  };
-
-  const onReopen = (itemId) => {
-    requireLogin(async () => {
-      await reopenItemAvailability(itemId);
-      reload();
-    });
-  };
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 flex flex-col gap-6">
@@ -96,16 +83,25 @@ export function Me() {
           <p className="text-xs text-ink-600 font-medium">
             Donor Account •{" "}
             <Link to={ROUTES.discoverNeeds} className="font-semibold text-accent-600 hover:underline">
-              {t("nav.discoverNeeds")}
+              {t("nav.organisations")}
             </Link>
           </p>
         </div>
       </div>
 
+      {actionError && <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{translateError(actionError, t)}</p>}
+
       <div>
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-base font-bold text-ink-800">{t("screens.myDonationsHeading")}</h2>
-          <span className="text-xs font-semibold text-ink-600">{data.items.length} items listed</span>
+          <span className="flex items-center gap-2 text-xs font-semibold text-ink-600">
+            {isRefreshing && (
+              <span role="status" className="flex items-center gap-1.5 font-medium text-accent-700">
+                <Spinner /> {t("actions.updating")}
+              </span>
+            )}
+            {data.items.length} items listed
+          </span>
         </div>
 
         {data.items.length === 0 ? (
@@ -131,69 +127,22 @@ export function Me() {
 
                   {requests.length > 0 ? (
                     <div className="flex flex-col gap-2.5 pt-1">
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-ink-600">Organisation Requests ({requests.length})</span>
-                      {requests.map((request) => {
-                        const org = getOrg(request.organisationId);
-                        const orgName = org?.name[locale] ?? org?.name.en ?? request.organisationId;
-                        const displayStatus = deriveDisplayStatus(request, item);
-                        const matchedConversation = data.conversations.find((c) => c.requestId === request.id);
-
-                        return (
-                          <div key={request.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-3 rounded-2xl bg-cream-50 border border-ink-600/10">
-                            <div className="flex items-center gap-2.5">
-                              <Avatar name={orgName} id={request.organisationId} type="organisation" size="sm" />
-                              <div className="flex flex-col">
-                                <span className="text-xs font-bold text-ink-800">{orgName}</span>
-                                <span className="text-[10px] text-ink-600">Requested: {new Date(request.createdAt).toLocaleDateString()}</span>
-                              </div>
-                            </div>
-
-                            <div className="flex items-center gap-2 self-end sm:self-auto flex-wrap">
-                              <StatusBadge status={displayStatus} />
-                              
-                              {request.status === "requested" && (
-                                <button
-                                  type="button"
-                                  onClick={() => onAccept(request.id)}
-                                  className="rounded-full bg-accent-500 px-3.5 py-1 text-xs font-bold text-white hover:bg-accent-600 transition-all shadow-2xs"
-                                >
-                                  {t("actions.accept")}
-                                </button>
-                              )}
-
-                              {request.status !== "requested" && (
-                                <button
-                                  type="button"
-                                  onClick={() => onRevertRequest(request.id)}
-                                  className="rounded-full border border-accent-300 bg-accent-50 px-3 py-1 text-[11px] font-bold text-accent-700 hover:bg-accent-100 transition-all shadow-2xs"
-                                  title="Undo request status and set back to pending"
-                                >
-                                  {request.status === "completed" ? t("actions.reopen") : t("actions.undo")}
-                                </button>
-                              )}
-
-                              {matchedConversation ? (
-                                <Link
-                                  to={ROUTES.chatDetail(matchedConversation.id)}
-                                  className="rounded-full border border-accent-500 bg-white px-3.5 py-1 text-xs font-bold text-accent-700 hover:bg-accent-50 transition-all"
-                                >
-                                  💬 {t("nav.chat")}
-                                </Link>
-                              ) : (
-                                <Link
-                                  to={ROUTES.chatList}
-                                  className="rounded-full border border-ink-600/20 bg-white px-3 py-1 text-xs font-semibold text-ink-700 hover:bg-cream-100"
-                                >
-                                  {t("nav.chat")}
-                                </Link>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-ink-600">{t("screens.orgRequestsHeading", { count: requests.length })}</span>
+                      {requests.map((request) => (
+                        <RequestRow
+                          key={request.id}
+                          request={request}
+                          item={item}
+                          organisation={getOrg(request.organisationId)}
+                          conversation={data.conversations.find((c) => c.requestId === request.id)}
+                          busy={busy}
+                          onAccept={accept}
+                          onRevert={revert}
+                        />
+                      ))}
                     </div>
                   ) : (
-                    <p className="text-xs text-ink-600 italic">No organisation requests yet for this item.</p>
+                    <p className="text-xs text-ink-600 italic">{t("screens.noOrgRequests")}</p>
                   )}
                 </div>
               );

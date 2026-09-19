@@ -23,7 +23,7 @@ export function OrganisationCard({ organisation, areaLabel }) {
           <div className="flex items-center gap-1.5 flex-wrap">
             <p className="text-sm font-bold text-ink-800 hover:text-accent-600 truncate">{orgName}</p>
             {organisation.verified && (
-              <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700">✓ {t("screens.verifiedBadge")}</span>
+              <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700">{t("screens.verifiedBadge")}</span>
             )}
           </div>
           <p className="text-[11px] text-ink-600">📍 {areaLabel}</p>

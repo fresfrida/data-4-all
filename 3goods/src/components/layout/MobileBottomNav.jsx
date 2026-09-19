@@ -3,7 +3,7 @@ import { useSession } from "../../context/SessionContext.jsx";
 import { useTranslate } from "../../i18n/useTranslate.js";
 import { getNavItems } from "./navConfig.js";
 
-/** Exactly the five role-specific items, End(exact) match on donor `/` so Discover Needs doesn't fight the tab bar for "active" state incorrectly. */
+/** The role-specific items from getNavItems (3 for guest, 5 when logged in). End(exact) match on donor `/` so Discover Needs doesn't fight the tab bar for "active" state incorrectly. */
 export function MobileBottomNav() {
   const session = useSession();
   const t = useTranslate();

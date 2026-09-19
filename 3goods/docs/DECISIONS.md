@@ -16,7 +16,7 @@ The five donor tabs (Updates, Map, +, Chat, Me) don't literally include Discover
 per user: it's the default route reached via the header logo, **and** a visible "Discover needs"
 link is placed on the donor Updates screen and Me screen so it's never hidden behind the logo alone.
 
-## D-004 — `role` and `session` (demo login) are separate state
+## D-004 — `role` and `session` (demo login) are separate state (superseded by D-045)
 - `role`: which nav/UI renders (`donor` | `organisation`). Freely switchable via `RoleSwitcher` for
   testing, independent of login state.
 - `session`: `{ isLoggedIn, identity }`, set by demo login/logout, persisted to `localStorage`
@@ -28,6 +28,12 @@ state" means logged-out, not nav-less).
 Demo login identities: logging in as Donor uses a fixed demo donor user; logging in as Organisation
 attaches to one seeded organisation record (so "My Organisation" has real seed data to show as
 "yours"). Both are visibly labeled as demo, never asked for a password.
+
+**Superseded by D-045**: independent `role` state turned out to produce a 4th, confusing UI state —
+a guest could flavor themselves as "donor" or "organisation" before ever logging in, so a
+role-mismatch message could show to someone who was never actually logged in as anything. D-045
+removes `role` as separate state entirely; the demo login identities and their "visibly labeled as
+demo, no password" property described above are unchanged.
 
 ## D-005 — One category field, tags underneath, no duplicate field
 The map's four shared categories (Food, Household Items, Clothes, Books) are the only `category`
@@ -88,7 +94,65 @@ auth and tighter per-row policies first.
 - Not yet done: real multi-user testing (two browsers/devices seeing the same data), Vercel env vars
   for the live deployment, and a live-browser verification pass — see HANDOFF.md.
 
-## D-009 — "One accepted organisation per listing" lives in `requestsService`
+## D-042 — Reconciled the codebase against the actual live Supabase schema (supersedes D-041's schema)
+A separate Claude Code session (this repo's cloud/web session) found that the real Supabase project
+the user had already created and partially seeded (project ref `hizvkpspyglvpgictqif`, tagged
+PRODUCTION) does **not** match what D-041's `schema.sql` assumed — it was built independently
+(8 tables: `categories`, `conversations`, `items`, `messages`, `needs`, `organisations`, `requests`,
+`users`), with snake_case columns, real Postgres `uuid` primary keys (`gen_random_uuid()`), a
+normalized `categories` table, and a real `users` table, none of which the D-041 code accounted for.
+Rather than pick one side and redo the other, both were reconciled:
+- **`supabase/schema.sql`** now documents the actual live schema exactly, plus an "additive
+  migration" section (safe `alter table add column if not exists` / new `create table`) that
+  restores fields the live schema simplified away but that were real, working features: bilingual
+  organisation name/description (`name_vi`/`description_vi`), demo/past-donations badges
+  (`is_demo`, `past_received_item_ids`), item Vietnamese titles/need tags/notes (`title_vi`,
+  `need_tags`, `notes`), the "which request got accepted" link (`items.accepted_request_id`), the
+  specific need-tag matching field (`needs.tag`), the conversation-by-request lookup
+  (`conversations.request_id`), and translated system chat messages (`messages.system_code`,
+  `params`, `sender_role`). The notifications/"Updates" feed has no live equivalent at all, so it's
+  a brand-new `updates` table, not a restore.
+- **Every service** (`itemsService`, `needsService`, `organisationsService`, `requestsService`,
+  `chatService`, `updatesService`) now has an internal `fromRow`/`toRow`-style mapping layer between
+  the live snake_case/uuid DB shape and this app's existing camelCase `Item`/`Need`/etc. shapes
+  (`src/data/types.js`) — screens and components were **not** touched, since they only ever went
+  through services. `referenceDataService.js` gained `getCategoryDbId`/`getCategorySlugFromDbId` to
+  translate between the app's stable category slug (e.g. `"Rice"`) and the live `categories.id`
+  uuid (which can't be hardcoded — it was already randomly generated when the user first seeded
+  that table by hand).
+- **`storageService.js` was rewritten**, not just remapped: the live schema stores a single
+  `image_base64` text column per item/message instead of a Storage bucket path, so photo "upload"
+  is now a browser-side `FileReader` base64 read with no network call and no bucket to manage. Only
+  one photo per item is supported now (down from D-041's multiple-photo array) — see the
+  `photoPaths` note in CLAUDE.md.
+- **Seed data got fixed uuids**: `src/data/ids.js` holds one `crypto.randomUUID()` per seed record
+  (organisations, users, items, needs, requests, conversations, messages, updates), replacing the
+  old human-readable string ids (`"item-001"`) that can't be stored in a `uuid` column. Every
+  `src/data/*.js` file and `scripts/seed-supabase.mjs` were updated to use them; the flavour donor
+  names on items 003–008 (Linh Tran, Duc Pham, etc.) are now real `users` rows too, since
+  `items.donor_id` is a foreign key rather than a free-text `donorName`.
+- 3G-040 (`docs/MIGRATION.md`, in KANBAN's Backlog) is stale — a real migration happened without
+  going through that planned doc. Its Backlog entry is removed rather than written up after the
+  fact.
+- Not yet done from this session: the user still needs to run the additive SQL above against the
+  live project (given to them inline, not as a file) if they haven't already; `npm run db:seed`
+  hasn't been run or verified from this environment (this cloud sandbox's network egress doesn't
+  allow reaching `*.supabase.co` — see HANDOFF.md); no live-browser verification pass yet.
+
+## D-043 — Real donors can optionally add a Vietnamese title; no auto-translation
+Follow-up to D-042: user raised that `items.title_vi` only ever gets populated for hand-authored
+seed data — a real donor posting through `DonationForm` had no way to provide one, so every live
+item would show only its English title to Vietnamese-language viewers too. Considered three options:
+a shared generic `translations` table (rejected — adds a join/extra query for 2 fields on 2 tables,
+pure overhead at this scale, doesn't address the actual gap anyway), real machine translation via an
+API (rejected — network latency + cost + an API dependency, and reverses the existing "never
+auto-translate user content" rule from D-016/D-017), or a plain optional second input (chosen).
+`DonationForm` now has an optional "Vietnamese title" field next to the required English one —
+blank is fine, falls back to the English title exactly like seed data already does via
+`item.titleVi ?? item.title`. Deliberately scoped to *title only* (not description/notes/condition):
+title is the one field shown in item cards, search results, and chat headers, so it carries the most
+value per bit of added form friction; other fields stay English-only user content, consistent with
+the app's existing "shown exactly as typed" policy for everything else a donor writes. — "One accepted organisation per listing" lives in `requestsService`
 `requestsService.acceptRequest(requestId)` is the single place that enforces this: it checks the
 item has no existing accepted request, sets the item to reserved, marks the given request accepted,
 and leaves other pending requests on that item as-is in storage but displays them as "no longer
@@ -179,6 +243,379 @@ bumping `STORAGE_VERSION` to `"v2"`, which changes every storage key (e.g. `3goo
 **bump `STORAGE_VERSION` whenever a record's shape changes, not only when its seed values change** —
 a seed-value-only change is safe to leave under the same version since old and new records are
 structurally compatible; a shape change is not.
+
+## D-044 — `requireLogin(action)` passes the resolved identity as an argument, not via closure
+Found live-testing DonationForm's submit-while-logged-out path (uncommitted going into this session,
+verified live against the real Supabase project in this one): `requireLogin`'s prompt path calls
+`loginAs(role)` then immediately invokes the caller's remembered `action` in the same tick, but
+`loginAs`'s `setSession` hasn't re-rendered yet — a caller that closed over its own `identity` from
+`useSession()` (e.g. `doSubmit`'s `identity.id`) would still read the *pre-login* value (`null`) and
+crash. Fixed by having `requireLogin`/`resolveLoginPrompt` pass the resolved identity into `action`
+as an argument (`action(session.identity)` on the already-logged-in path,
+`action(DEMO_IDENTITY_BY_ROLE[role])` on the prompt-resolution path) instead of the callee reading
+`identity` from its own closure. `DonationForm.doSubmit`, `ItemDetail.onRequest`, and
+`NeedsManagement.onAdd` all updated to take `loggedInIdentity` as a parameter. General rule: any
+`requireLogin`-gated callback needs the identity it acts on to come from the callback's argument, not
+from `useSession()` in its enclosing scope — the enclosing scope's `identity` can still be stale when
+the prompt path resolves it inline.
+Live-verified this session (see 3G-042 in KANBAN.md): request-while-logged-out, donation-post-while-
+logged-out, and chat-message-send all exercised this exact path against the real Supabase-backed app
+with no crash.
+
+## D-045 — Removed independent `role` state; there are exactly three identity states (supersedes D-004)
+User-requested (3G-043): collapse the 4-state model (guest-flavored-donor, guest-flavored-org,
+logged-in-donor, logged-in-org) down to the 3 states the product actually has — logged out (guest),
+logged in as Donor, logged in as Organisation. `role` is no longer stored; it's derived at render
+time as `identity?.role ?? null` (`SessionContext.jsx`). Concretely:
+- `readInitial()`/`session` shape dropped the separate `role` field — just `{ isLoggedIn, identity }`.
+  A stored session is only ever restored if `isLoggedIn` is true and `identity.role` is valid;
+  anything else falls back to the single logged-out default.
+- `logout()` now resets to that same `{ isLoggedIn: false, identity: null }` state unconditionally —
+  no more "clears identity but leaves role alone." Every logout returns to the identical neutral
+  guest state, regardless of which role was active before.
+- `setRole()` and `RoleSwitcher.jsx` are deleted outright — there is no way to pick a role before
+  logging in. `DemoLoginButton.jsx` (existing component, unchanged) is now the only header identity
+  control: "Log in" when logged out (opens `DemoLoginPrompt`, the existing Donor/Organisation demo
+  picker — same modal `requireLogin`-gated actions already used), "Log out" when logged in.
+- Every screen that gated on `role !== "donor"`/`role !== "organisation"` directly
+  (`DonationForm.jsx`, `NeedsManagement.jsx`, `MyOrganisation.jsx`, `Me.jsx`) now checks
+  `!isLoggedIn` *first* and shows a login prompt (reusing the `EmptyState` + `requireLogin(() => {})`
+  pattern `Me.jsx`/`Updates.jsx`/`ChatList.jsx` already had) — the role-mismatch message only shows
+  for the rare case of actually being logged in as the *other* role (e.g. an organisation directly
+  visiting `/me`). Copy changed from "Switch to the X view (top of the page)" (referenced the deleted
+  switcher) to "This page is for X — you're logged in as Y." `ChatDetail.jsx` had no login gate at
+  all (a latent gap, not previously flagged since it doesn't early-return on `role`) — given the same
+  `!isLoggedIn` guard for consistency with `ChatList.jsx`.
+- `ItemDetail.jsx`'s `role === "organisation"` Request-button gate needed no code change — it now
+  naturally reads as "only a logged-in organisation sees this," since a guest's derived `role` is
+  `null`. Decided against adding a guest-facing "log in to request" prompt in its place (kept scope
+  minimal, not requested).
+- Home page hero (`DiscoverNeeds.jsx`) restores the original 3-CTA design intent (documented in
+  HANDOFF.md's session-2 notes: "Donate Items", "Relief Heatmap", "Browse Items" — "Browse Items"
+  had been dropped somewhere along the way and folded into a role-conditional slot). Guest and
+  organisation both see "📦 Browse Items" (→ `/discover`, no login needed — browsing already works
+  without an account) + "🗺️ Relief Map"; only a logged-in donor sees "+ Donate Items" in that slot.
+  Confirmed with the user rather than guessed, since "Donate Items" for a guest would imply a
+  register flow that doesn't exist. The two context pills ("Viewing as: {role}" / "Demo account:
+  {name}", both assumed always-logged-in) collapsed to: a single "Browsing as guest" pill when
+  logged out, or one merged "Logged in as {name} · {role}" pill when logged in.
+- Translation copy updated in both `en.json`/`vi.json`: `demo.loginPrompt` "Switch demo role" → "Log
+  in"; `demo.loginAsDonor`/`loginAsOrganisation` "Switch to X (demo)" → "Log in as X (demo)"; added
+  `demo.browsingAsGuest`; removed unused `role.switchLabel`; `hero.ctaBrowse` "Browse Needs" → "Browse
+  Items" (was defined but never wired into the JSX until now).
+Live-verified this session (headless Chrome + CDP, mobile 390px and desktop 1280px): guest home page
+(Log in button, Browsing-as-guest pill, Browse Items + Map CTAs, no Donate CTA), `/donate/new` as
+guest shows the login prompt not a role-mismatch message, login-as-Donor (merged pill, Donate CTA,
+donor nav), visiting an organisation-only page while logged in as donor shows the new mismatch copy,
+logout returns to the exact same guest state, login-as-Organisation (Needs Management and My
+Organisation both load real seeded data), a guest viewing Item Detail sees no Request button (no
+crash), a logged-in organisation viewing the same item does see it. Zero console errors throughout
+(previously-seen React Router v7 future-flag warnings are pre-existing and unrelated).
+
+## D-046 — Seed item photos: static `public/demo-items/` paths, not base64-in-DB
+User supplied 16 stock photos (`assets/items/` — a folder outside `3goods/`, not committed, not part
+of this repo) to populate real item photos: 6 attached to existing seed items that had none, 9 became
+brand-new items (3G-044). These are large PNGs (up to ~830KB each); base64-encoding all 15 into the
+`items.image_base64` column (as D-042 does for a real donor's live-uploaded photo via
+`storageService.js`) would mean ~1MB+ of text per row and a materially heavier `items` table for
+purely bundled demo content. Used the same pattern `item008`'s original photo already established
+instead: copy the file into `public/demo-items/`, reference it by its static `/demo-items/<name>.png`
+path in `photoPaths[0]`. `seed-supabase.mjs` passes `photoPaths[0]` straight through as
+`image_base64` either way — the column doesn't care whether the string is a data URI or a path, and
+`<img src={photo}>` in `ItemDetail`/`ItemCard` renders both identically, so no code changed. **This
+split is deliberate and should stay**: bundled/seed demo photos → static public path; a real donor's
+own upload through `DonationForm` → base64 via `storageService.js` (unchanged, still the only way to
+get a new photo into the live app without editing `public/` and re-seeding).
+One image (`food_to_donate.png`) was deliberately not used — near-duplicate of two other food photos
+already assigned, and its bread/apples/garlic don't fit any category well. Category assignment for
+the two backpack/luggage images was corrected mid-session from a first guess of "Household Items" to
+**Miscellaneous** per explicit user feedback — no existing need-tag fits general bags/luggage, and
+`needTags` is not a required field, so both items ship with an empty tag list rather than a forced
+mismatch.
+Follow-up (same session): the user supplied one more photo, `children_school_bag.png`, for `item004`
+"School bag, lightly used" — the one original seed item that had launched with `photoPaths: []` and
+was still missing one after the initial pass above. Same treatment (static path, not base64). Every
+original seed item (`item001`–`item008`) now has a photo.
+
+## D-047 — Items support an optional 2nd category; needs remain single-category, unlimited via multiple entries
+User asked whether an item could belong to two categories (e.g. a children's book under both Books
+and Children Items) and, separately, whether an organisation's needs could span more than 2
+categories. These are different questions with different answers:
+- **Needs**: already unbounded — an organisation publishes one `needs` row per category/tag it wants
+  (see seed data: Hanoi Community Pantry has both Rice and Household Items needs), and
+  `NeedsManagement.jsx`'s `createNeed` has no cap on how many an org can add. No schema change; this
+  was a misunderstanding surfaced while reviewing the needs-board UI (see below), not a real gap.
+- **Items**: were genuinely capped at exactly one category (`items.category_id`, a single FK — see
+  D-005). Added `items.secondary_category_id`, a second nullable FK to `categories`, applied via a
+  manual `alter table` in the Supabase SQL editor (anon key has no DDL access — PostgREST doesn't
+  expose `ALTER TABLE` at all, regardless of key permissions; this is a recurring pattern for schema
+  changes in this project, see D-042's original additive migration). Deliberately a single extra
+  column, not an array or join table: **at most one extra category, never unbounded many** — chosen
+  because unlimited categories-per-item would force `DonationForm`'s need-tag picker (currently
+  scoped to one category's tag list via `getTagsForCategory`) into meaningfully more UI complexity for
+  a case (a second category) that's rare in practice. `null` is the overwhelming common case.
+  - `itemsService.js` maps `secondary_category_id` ↔ `item.secondaryCategory` (undefined when absent);
+    `getItems({category})` and `DiscoverItems.jsx`'s client-side filter both match on *either*
+    category so an item still surfaces under both its filter chips. `ItemCard`/`ItemDetail` show a
+    second badge when present. `DonationForm.jsx` gained a second, optional `<select>` ("Also list
+    under") that excludes whatever the primary category currently is.
+  - Applied to the two children's-books items (`item003`, `item010`): `category: "Books"` +
+    `secondaryCategory: "Children Items"`.
+  - **Follow-up, same session**: user asked to review the full 17-item catalog for other genuine
+    cases. Added 2 more — `item006` "Baby clothes bundle (0-12 months)" (`Clothes` +
+    `secondaryCategory: "Children Items"` — baby-specific clothing, same logic as the books) and
+    `item009` "Assorted pantry staples" (`Non-Perishable Food` + `secondaryCategory: "Rice"` — its own
+    description names rice as a contents item). Deliberately left the rest single-category: a few had
+    only incidental mentions of a second category (e.g. "Lightly used clothes & shoes" mentions a
+    couple of kids' sneakers inside an otherwise general adult-clothes bin; "Assorted backpacks" are
+    generic hiking bags, not specifically school bags) — general rule applied: a second category is
+    for items that are *predominantly* about that category, not items that merely touch on it.
+- **Found and fixed along the way**: while reviewing the needs board, discovered Hanoi Community
+  Pantry had **zero** live `needs` rows even though `src/data/needs.js` defines two for it
+  (`need003`/`need004`) — root cause unclear (predates this session, not caused by anything done
+  here; the DB had no error, the rows were simply never persisted). Re-running `npm run db:seed`
+  (idempotent) inserted them fresh with no further changes needed.
+- **Also fixed this session** (same investigation, unrelated to the category work itself): the home
+  page's "Discover needs by Organisation" board was showing need **tag** labels ("Rice packs",
+  "Canned food & noodles") as its pills, not the 8 top-level **category** names used everywhere else
+  in the app (filter chips, item badges) — confusing, per the user. Switched to category labels,
+  deduped per organisation (an org with two Books-category needs now shows one "Books" chip, not two,
+  taking the `priority` star if *any* of its needs in that category is a priority).
+- **Also**: the sitewide "Demonstration data..." banner (visible on every page) now appends the
+  current login state — "Please log in.", "Logged in as Donor.", or "Logged in as Organisation." —
+  per explicit user request, so login state is visible outside the home page hero (which already had
+  this via its guest/logged-in pill, but only on `/`).
+Live-verified (headless Chrome + CDP, mobile 390px): guest banner reads "...Please log in."; donor
+banner reads "...Logged in as Donor."; Discover Items filtered to "Children Items" correctly surfaces
+both children's-books items (primary category Books) alongside the actual Children Items listing,
+each showing both category badges; Item Detail shows "Books · Children Items · Hue"; the needs board
+shows 5 organisations (Hanoi Community Pantry restored) with deduped category-name pills. Zero
+console errors.
+
+## D-048 — Guest nav split into Organisations/Items Donated; map's category translations fixed; every org needs Clothes
+Several small user-reported fixes done together:
+- **New item**: `item018` "Assorted kitchen appliances & cookware" (Household Items, tag `cookware`)
+  from a user-supplied photo (`KitchenAppliances.jpg` → `public/demo-items/kitchen-appliances.jpg`),
+  same treatment as 3G-044/3G-045's items.
+- **Rice sack photo "disappeared" — it hadn't.** `item001`'s photo is correctly wired and renders
+  fine; `item001` is deliberately seeded `status: "reserved"` (D-042/D-009 — so logging in
+  immediately shows a real in-progress collection), and Discover Items only lists `"available"` items
+  by default. A reserved item is still visible on its own Item Detail page, just not the browse grid.
+  No code change; confirmed live in production.
+- **Map's "Suggested Relief Item Categories" showed untranslated English for some categories.** Root
+  cause: `MapScreenShell.jsx` had a hardcoded `CATEGORY_NAME_MAP` with a *stale* pre-3goods taxonomy
+  ("Canned Food", "Blankets", "Medical Kits", "Clean Water") that no longer matches what
+  `public/data/donation_items_by_disaster.json` actually returns — which, it turns out, already uses
+  3goods' exact 8 category slugs (confirmed by inspecting the file directly). Any category not in the
+  stale map fell through to the raw untranslated slug. Fixed by deleting the duplicate hardcoded map
+  entirely and looking labels up from `data/categories.js`'s `getCategoryById` (the one real source of
+  truth for category labels) instead — this also means the map can never drift out of sync with the
+  category list again, unlike the hardcoded copy that already had.
+  - Note: this doesn't fully resolve D-012 (whether the map's *taxonomy itself* is authoritative vs.
+    3goods') — it turns out they already agree in practice for this particular data file, which made
+    the immediate bug a translation-lookup bug, not a taxonomy-mismatch bug. Worth re-checking D-012
+    if the map's other data sources (facility categories, disaster-type labels) turn out to diverge.
+- **Every organisation now has a Clothes need** (`need011`–`need015`, one per org) — none had one
+  before despite Clothes being a core category. Alternates `adult_clothes`/`childrens_clothes` tags.
+- **Guest nav reorganised**: replaced the single "Discover" (→ `/`) item with two —
+  "Organisations" (→ `/`, the needs board) and "Items Donated" (→ `/discover`, the items board) —
+  **guest-only**; logged-in donor/organisation nav is unchanged (still exactly 5 items each), per
+  explicit user confirmation after discussing the mobile bottom nav's fixed layout (it evenly splits
+  width across however many items `getNavItems()` returns — was a hardcoded "exactly five" assumption
+  in a comment, now just descriptive, not enforced). Root complaint this addresses: the bottom nav's
+  Map icon visibly jumped position between a 2-item guest bar and a 5-item logged-in bar; guest is now
+  its own consistent 3-item bar (Organisations, Items Donated, Map) rather than an inconsistent 2.
+  - **Found while verifying live**: the desktop top nav's per-item pill width (`w-[128px]`, fixed)
+    truncated both new labels in *both* languages ("Organisati…" / "Items Dona…" in English,
+    "Vật phẩm đ…" in Vietnamese) — not a translation-length-only issue, English overflowed too.
+    Fixed by widening to `w-[152px]` and additionally shortening the Vietnamese `itemsDonated` label
+    from "Vật phẩm đã quyên góp" to "Đồ quyên góp" (still accurate, more consistent in length with
+    this nav's other short labels).
+Live-verified (headless Chrome + CDP, mobile 390px + desktop 1280px, both languages): kitchen item
+renders and filters correctly; rice sack item confirmed intact on both dev and production; map's 8
+suggested categories all translate correctly in EN and VI; needs board shows Clothes on all 5 orgs;
+guest bottom nav reads "Organisations / Items Donated / Map" (VI: "Các tổ chức / Đồ quyên góp / Bản
+đồ") with no truncation at either breakpoint; logged-in organisation nav confirmed unchanged. Zero
+console errors throughout.
+
+## D-049 — Landing page split into Home (hero only) + Discover Needs moved to its own page; hero stats swap; two copy fixes; Me.jsx bubble order
+Several more user-reported fixes:
+- **Landing page split**: `/` used to be the hero *and* the full "Discover needs by Organisation"
+  board stacked underneath it. Per explicit user request, these are now two pages, mirroring how
+  Discover Items already works: `/` → new `Home.jsx`, hero only (title, guest/login pill, CTA
+  buttons, stats strip); `/organisations` → `DiscoverNeeds.jsx` (unchanged content, just the hero
+  removed and restyled to the same simple header+filter+grid pattern `DiscoverItems.jsx` already
+  uses). `ROUTES.discoverNeeds` changed from `"/"` to `"/organisations"`; added `ROUTES.home = "/"`.
+  Every existing `ROUTES.discoverNeeds` reference (Updates/Me/Footer's "Discover needs" links, the
+  guest nav's "Organisations" item) needed no code change — they already used the constant, not a
+  hardcoded path, so they followed automatically. `NotFound.jsx`'s "back to home" link changed to
+  `ROUTES.home` explicitly (it was pointing at the needs board before, which would now be wrong).
+  Also deleted a bit of pre-existing dead code (`homeRoute` in `DesktopTopNav`/`MobileHeader`, computed
+  but never read since at least 3G-043 — its meaning would have drifted further out of sync with this
+  change, better gone than stale).
+- **Hero stats were already DB-derived, just wrong**: the user assumed the 3 stat tiles were
+  hardcoded; they were always computed from live `organisations`/`needs` queries, but the "10
+  Organisations" / "10 Provinces" numbers were inflated by the still-unresolved stale-duplicate-org
+  issue from earlier in this session (see the "Known issues" carried in HANDOFF.md — investigated
+  twice now, deletion blocked both times by tool-level safety guards on bulk deletes; needs the user's
+  own hand or explicit re-confirmation to finish). Per request, swapped the 3rd tile from "Active
+  Relief Needs" to "Registered Donors" — added `usersService.getDonorCount()` (new file; first
+  service to read the `users` table directly rather than only through `itemsService`'s internal donor
+  name lookups). The other two tiles (orgs, provinces) keep their existing live-query logic unchanged
+  — once the stale rows are actually deleted, all three numbers self-correct with no further code
+  change needed.
+- **`DonationForm.jsx`'s collection-windows "Add" button said "Add need"** — a copy-paste artifact,
+  reusing `actions.addNeed` (genuinely meant for `NeedsManagement`'s add-a-need button) for a
+  completely different action. New `actions.addWindow` key ("Add"/"Thêm"). Field label changed to
+  "Collection time windows (if necessary)" (new `fields.collectionWindowsOptional` key, kept separate
+  from the existing `fields.collectionWindows` key since that one is still used as a factual label on
+  Item Detail, where "(if necessary)" would read oddly).
+- **`Me.jsx`'s request-row bubbles reordered**: Chat now comes first (only shown once a conversation
+  actually exists — i.e. after acceptance; a still-`requested` row has no conversation yet, so no Chat
+  bubble), then the status badge, then Accept/Undo/Reopen. Previously Chat was last, and a generic
+  "Chat" link always showed even pre-acceptance (linking to the whole chat list, not anything
+  specific to that request).
+- **On "why do we have arranging_collection, is this a state?"**: yes, deliberately — it's the real
+  in-between state once an organisation accepts a request but before collection is actually done,
+  advanced via buttons inside `ChatDetail.jsx` (`accepted` → "Mark as arranging collection" →
+  `arranging_collection` → "Mark as completed" → `completed`), tracked because the chat's own UI needs
+  to know which advancement button to show next. `Me.jsx`'s simplified view was already collapsing it
+  correctly (both `accepted` and `arranging_collection` show the same "Undo" button — the status badge
+  text is the only place the distinction surfaces there), so no code change was needed for the
+  behavior described; removing the status itself would be a larger, separate change (touches
+  `REQUEST_STATUSES`, `ChatDetail.jsx`'s advancement flow, D-009's request lifecycle, seed data) not
+  requested here.
+Live-verified (headless Chrome + CDP, mobile 390px): `/` renders hero-only with no console errors;
+`/organisations` renders the needs board with intro text, filters, and org cards, matching
+`DiscoverItems.jsx`'s visual pattern; guest nav's "Organisations" link correctly lands on the new
+page; `DonationForm`'s collection-windows section reads "Collection time windows (if necessary)" +
+"Add"; `Me.jsx` shows Chat first only when applicable (confirmed across `requested` — no chat,
+`arranging_collection` — chat + Undo, rows).
+
+## D-050 — Punch-list pass: shared Organisations board on `/` and `/organisations`; real map scores; live hero stats
+- **Home = hero + Organisations board again (reverses D-049's split).** Per the user, `/` shows the hero
+  *and* the Organisations board; `/organisations` still shows it full-page. Implemented once as
+  `components/needs/OrganisationsBoard.jsx` (h2 on `/` because the hero owns the h1); `DiscoverNeeds.jsx` is a
+  thin wrapper. No pagination yet (user: "if required in the future").
+- **Labels**: the guest nav already used `nav.organisations`/`nav.itemsDonated`; only the footer, two
+  Updates/Me links and the logged-in organisation nav still used the old `nav.discover*` keys. Chose a global
+  rename to the two existing keys and deleted the dead ones. Side effect: "Items Donated" wraps to two lines in
+  the 5-slot organisation bottom nav at 375px (D-048 had avoided this by leaving that nav alone).
+- **Hero stats**: donors = `users.role = 'donor'` (already fetched-cheap, one table read; distinct
+  `items.donor_id` would miss donors who haven't listed anything); verified organisations = `verified = true`;
+  provinces = distinct `areaId` across organisations (all orgs, not just verified — "where we operate").
+  `AREAS` has 8 entries including "Mekong Delta" (a region), so its length is not "provinces". "All use ++" was
+  read as "count-up animation for all three" (`useCountUp`, IntersectionObserver, reduced-motion safe).
+- **Stale live rows deleted** (user-approved, exact ids from HANDOFF): 6 `users`, then 5 `organisations`. Checked
+  first that no other table referenced them (only one stale user → one stale org). Not reversible; the seed
+  script would re-create canonical rows only.
+- **The heatmap was never coloured**: `public/data/vn_provinces.geojson` was raw GADM boundaries (63 features,
+  zero score fields), so every province hit the vendor "no data" fill (blue-tinted `#94a3b8`) and
+  `properties.province` never matched anything (panel fell back to "Vietnam" with made-up 8.2 / 16.8% / 65%
+  numbers). Replaced it with the scored FeatureCollection from `3goods-map/data/vn_map_data.js` (data copy, the
+  root-site-first rule for vendor *code* is untouched) and mapped the real field names in the wrapper
+  (`poverty_pct`→`poverty_rate`, `coverage_gap`→`coverage_gap_score`, single `disaster_type`→`disaster_types`
+  split on "; ", item-needs key "Typhoon"→"Storm", default province "Ha Tinh"→"HàTĩnh"). Province names in the
+  data have no spaces ("HàTĩnh"); `formatProvince` re-inserts them for display. Invented fallback numbers removed
+  (CLAUDE.md: never invent a score) — a missing value shows "—". Per-province recommended categories merge all of
+  a province's disaster types, keeping the highest priority per category. Nearby-organisation matching used to
+  compare org *names* with the province and never matched; replaced with an explicit area-id → province table.
+- **Greyscale**: vendor `scoreRamp` starts at a warm stone grey and paints no-data blue-slate. Rather than edit
+  vendor code, `features/map/heatColors.js` re-fills the `.province` paths after each vendor render using the same
+  gold/terracotta/maroon stops but anchored at neutral grey (136,136,136) with neutral grey (160,160,160) for no
+  data. Re-applied after every `setField`/`setShowFacilities` (both re-render the SVG).
+- **Priority chips**: "(high)" text stripped; red/amber/grey now map to high/medium/low (low was amber before).
+  Priority stays available to screen readers via an `sr-only` span + `title`. A High/Medium/Low key bar sits above
+  the chips. `map.priority*` locale strings are now capitalised because the key bar reuses them.
+- **Banner**: "Please log in." / "Logged in as X." is `<strong>`, the disclaimer is `font-normal`.
+- **"Verified (demo)" → "Verified"** (`screens.verifiedBadge`, both locales). The standalone demo badge on every
+  card/profile was already separate and stays. `OrganisationCard` also prepended its own "✓", giving a double tick;
+  removed the prefix there.
+- **"What is OSM Pins?"**: the "Show OSM Pins" toggle shows OpenStreetMap community facility points (hospitals,
+  shelters, etc.) — context from the map data set, never registered 3goods organisations (CLAUDE.md map data
+  separation rule, task 3G-023). Copy left unchanged pending the user's decision.
+- **rice photo (item001)**: no change — live row already has `/demo-items/rice-sack.png` (D-046 keeps bundled seed
+  photos as static paths, not base64); it's `reserved`, so it's absent from the Discover Items grid by design.
+- Small fixes found while verifying: the fixed mobile bottom nav covered the footer (added `pb-16 sm:pb-0` to
+  `<main>`); hero stat labels truncated at 375px (allowed to wrap).
+
+## D-051 — Demo login picks a specific seeded account; tab title; em dashes
+- **Picker, not a fixed pair.** The login prompt is two steps: role, then a list of real accounts. All seeded
+  accounts are selectable (5 donors, 5 organisations); no subset. Still a demo: no password, same
+  "demo access only" notice. `SessionContext.loginAs(identity)` and `resolveLoginPrompt(identity)` take the
+  identity object; the hardcoded `DEMO_IDENTITY_BY_ROLE` table was removed. A session already stored in
+  localStorage keeps working (same identity shape).
+- **Source of the list**: `usersService.getLoginIdentities()` reads `users` + `organisations`. Donors are
+  `users.role = 'donor'`. Organisation identities join each organisation to its `users` row via `org_id`:
+  `id` is the users row id, `organisationId` the organisations row id, `name` the English org name (an
+  organisation with no users row would silently not appear).
+- **Why 4 new `users` rows**: chat messages FK `sender_id` to `users(id)`, and organisation screens use
+  `identity.id` as the sender, so an organisation without its own users row could log in but not chat. Only
+  Hanoi Community Pantry had one. Added rows for the other four (`OTHER_ORG_USERS`, ids in `ids.js`) and
+  upserted them live by id. They have role `organisation`, so the "Registered Donors" stat is unchanged.
+- **Tab title** is `3goods` in `index.html`; no route sets `document.title`.
+- **Em dashes** replaced only in `en.json`/`vi.json` values (9 each): colon for "label: detail", period for
+  two-sentence gates, parentheses for the "(fictional, not a real charity)" aside. Placeholders like
+  `{sizeKb}` untouched.
+
+## D-052 — Pre-demo bug fixes: request actions, blank-message investigation, quantity/unit
+- **Accept feedback.** `useRequestActions(refresh)` sets `busy` the moment the button is tapped (inside the
+  login-gated action, so a dismissed login prompt can't strand it) and clears it only after the action *and* the
+  screen's refetch are done, so the button can't flash back to "Accept" on stale data and a double tap can't post
+  the "request accepted" chat message twice. `useAsync` keeps the previous `data` during a reload and gained
+  `refresh()` (a promise). Me/ItemDetail show the full-page spinner only for a first load or a different
+  donor/item (`data.donorId` / `data.itemId` guard against showing another user's stale data), otherwise a small
+  "Updating…" hint. `acceptRequest`'s independent writes (request status + item reserved; system message +
+  notification) now run in parallel; the conversation still has to exist before its message.
+- **Donor acts from the item page.** `RequestRow` (extracted from Me.jsx) is shared by Me and ItemDetail; ItemDetail
+  loads organisations + conversations only for the owning donor. Me's previously hardcoded English request labels
+  now use locale keys. The Accept button shows for any `requested` row, same as before (D-009: several requests can
+  be accepted).
+- **"Every new chat creates a blank message row" — not reproduced.** Only three call sites write to `messages`:
+  `sendMessage` (rejects empty text), `postSystemMessage` (only called by `acceptRequest`), and the seed script.
+  `ensureConversationForRequest` writes only `conversations`. Live check: two fresh accepts produced two conversations
+  with exactly one message each, `sender_id` null, `body` null, `system_code = request_accepted` (per D-016/D-042 a
+  system message stores its code, never text), and the whole table has 0 rows with neither `body` nor `system_code`.
+  The row that looks empty is that system message viewed in the table editor. It renders as "Request accepted. You
+  can arrange collection here." in both chat list and thread. No live cleanup was needed. Added an invariant guard
+  (`postSystemMessage` throws `systemCodeRequired` without a code). Deliberately did **not** add a text `body` to
+  system rows (D-016).
+- **Organisation confirmation update.** `createRequest` pushes `request_submitted` to the requesting organisation
+  (target = organisation id, as for other organisation notifications) alongside the donor's `item_requested`.
+- **Quantity + unit.** `needs.quantity`/`unit` already existed; `items.quantity`/`unit` do not (confirmed by probing
+  the live table). `unit` is a code from a fixed list (`kg, pieces, boxes, bags, sets, packs`, `lib/quantity.js`),
+  labelled from `units.*` with a `_one` form for a quantity of 1; unknown legacy text is shown as typed. Quantity is
+  optional, a whole number ≥ 1 (`quantityInvalid`); unit is only stored with a quantity. On the organisations board a
+  category pill shows the *sum* of its needs' quantities only when every quantified need shares a unit, otherwise
+  nothing (no kg + boxes). Seeded needs have no quantities (none invented).
+- **Item migration (run by the user; the anon key can't do DDL):**
+  `alter table items add column if not exists quantity integer;`
+  `alter table items add column if not exists unit text;`
+  `itemsService` only writes those two columns when a quantity is entered, so listings without one keep working
+  before the SQL is applied; a listing *with* one fails with the generic error until it is. Display paths were
+  verified against an injected API response, not real stored data.
+
+## D-053 — Enforce D-009 in acceptRequest / deriveDisplayStatus; Undo releases the item; seed need quantities
+- **Bug, not a product choice.** D-009 says one accepted organisation per listing, but `acceptRequest` never checked
+  (its comment claimed it did), `deriveDisplayStatus` returned `request.status` unchanged, and the Accept button gated
+  on the raw status. Fix: `acceptRequest` throws the existing `itemAlreadyReserved` when the item's
+  `acceptedRequestId` is a *different* request (or the item is reserved with no accepted id); it returns the request
+  unchanged if it is already accepted/arranging/completed (no duplicate system message, no status regression).
+  `deriveDisplayStatus` returns "unavailable" for a `requested` request whose item is held by another request; the
+  sibling's stored row is never mutated (D-009's derived-status rule). `RequestRow` (Me + ItemDetail) and the
+  organisation's own item-page pill use it; an "unavailable" row shows no button.
+- **Undo/Re-open must release the item.** `revertRequestToPending` previously only reset the request, leaving the item
+  reserved to a request that was no longer accepted. With the new rule that would have left every sibling stuck on
+  "no longer available". It now calls `reopenItemAvailability` when the item's accepted request is the one being
+  reverted. (Side effect: the item is browsable again after Undo, which is the intent.)
+- **Seed quantities** (user-supplied): need001 200 kg, 002 100 cans, 003 300 kg, 004 50 pieces, 005 100 books, 006 80
+  sets, 007 40 pieces, 008 60 pieces, 009 100 packs, 010 120 pieces. Applied to `src/data/needs.js`, the seed script
+  mapping, and the live rows (targeted update by fixed id). Added units `cans` ("lon") and `books` ("cuốn").
+- **UAT cleanup.** One "UAT TEST MESSAGE" lived *inside the seeded rice conversation*, so only that message was
+  deleted (deleting "its conversation and request" would have removed the seeded in-progress collection). The other
+  belonged to a separate test chain (item "UAT TEST - Rice Pack 20260919" → request → conversation → notifications),
+  deleted in full including the test item, which the request could not be removed without.
+- Not done: removing an item from an organisation's `past_received_item_ids` on Re-open (see HANDOFF).
 
 ---
 

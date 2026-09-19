@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAsync } from "../lib/useAsync.js";
+import { useRequestActions } from "../lib/useRequestActions.js";
 import { getItemById } from "../services/itemsService.js";
-import { getRequests, createRequest } from "../services/requestsService.js";
+import { getRequests, createRequest, deriveDisplayStatus } from "../services/requestsService.js";
 import { getNeeds } from "../services/needsService.js";
+import { getOrganisations } from "../services/organisationsService.js";
+import { getConversations } from "../services/chatService.js";
 import { getAreaById, getCategoryById, getTagsForCategory } from "../services/referenceDataService.js";
 import { translateError } from "../lib/errors.js";
 import { useSession } from "../context/SessionContext.jsx";
@@ -14,20 +17,31 @@ import { ErrorState } from "../components/feedback/ErrorState.jsx";
 import { CategoryIcon } from "../components/items/CategoryIcon.jsx";
 import { StatusBadge } from "../components/status/StatusBadge.jsx";
 import { Avatar } from "../components/common/Avatar.jsx";
+import { RequestRow } from "../components/requests/RequestRow.jsx";
+import { Spinner } from "../components/feedback/Spinner.jsx";
 import { ROUTES } from "../lib/constants.js";
+import { formatQuantity } from "../lib/quantity.js";
 
-async function loadItemDetail(itemId, orgIdIfLoggedIn) {
+async function loadItemDetail(itemId, orgIdIfLoggedIn, donorIdIfLoggedIn) {
   const item = await getItemById(itemId);
   if (!item) return { item: null };
-  const [area, category, tags, requests] = await Promise.all([
+  const [area, category, secondaryCategory, tags, requests] = await Promise.all([
     getAreaById(item.areaId),
     getCategoryById(item.category),
+    item.secondaryCategory ? getCategoryById(item.secondaryCategory) : null,
     getTagsForCategory(item.category),
     getRequests({ itemId }),
   ]);
   let orgNeeds = [];
   if (orgIdIfLoggedIn) orgNeeds = await getNeeds({ organisationId: orgIdIfLoggedIn });
-  return { item, area, category, tags, requests, orgNeeds };
+  // The listing's own donor also sees who has requested it (and can accept), so
+  // load the organisations + conversations those request rows need.
+  let organisations = [];
+  let conversations = [];
+  if (donorIdIfLoggedIn && item.donorId === donorIdIfLoggedIn) {
+    [organisations, conversations] = await Promise.all([getOrganisations(), getConversations({ donorId: donorIdIfLoggedIn })]);
+  }
+  return { itemId, item, area, category, secondaryCategory, tags, requests, orgNeeds, organisations, conversations };
 }
 
 export function ItemDetail() {
@@ -36,30 +50,38 @@ export function ItemDetail() {
   const { locale } = useLocale();
   const t = useTranslate();
   const orgId = role === "organisation" ? identity?.organisationId : null;
-  const { status, data, error, reload } = useAsync(() => loadItemDetail(itemId, orgId), [itemId, orgId]);
+  const donorId = role === "donor" ? identity?.id : null;
+  const { status, data, error, reload, refresh } = useAsync(() => loadItemDetail(itemId, orgId, donorId), [itemId, orgId, donorId]);
+  const { busy, error: actionError, accept, revert } = useRequestActions(refresh);
   // Raw error object, not a pre-translated string — see D-017.
   const [requestError, setRequestError] = useState(null);
   const [justRequested, setJustRequested] = useState(false);
 
-  if (status === "loading") return <LoadingState />;
+  // A refetch of the same item keeps the page on screen (inline indicator); the
+  // full-page spinner is for the first load or navigating to a different item.
+  const isRefreshing = status === "loading" && data?.itemId === itemId;
+  if ((status === "loading" && !isRefreshing) || !data) return <LoadingState />;
   if (status === "error") return <ErrorState message={t("errors.generic")} onRetry={reload} />;
   if (!data.item) return <ErrorState message={t("screens.itemNoLongerExists")} />;
 
-  const { item, area, category, tags, requests, orgNeeds } = data;
+  const { item, area, category, secondaryCategory, tags, requests, orgNeeds, organisations, conversations } = data;
   const photo = item.photoPaths?.[0];
   const tagLabel = (tagId) => tags.find((tag) => tag.id === tagId)?.[locale] ?? tags.find((tag) => tag.id === tagId)?.en ?? tagId;
 
   const isOwnListing = identity && item.donorId === identity.id;
+  const isOwnerDonor = role === "donor" && isOwnListing;
   const myRequest = orgId ? requests.find((r) => r.organisationId === orgId) : null;
-  const matchesNeed = orgNeeds.some((need) => need.category === item.category && item.needTags.includes(need.tag));
+  const matchesNeed = orgNeeds.some(
+    (need) => (need.category === item.category || need.category === item.secondaryCategory) && item.needTags.includes(need.tag),
+  );
 
   const onRequest = () => {
-    requireLogin(async () => {
+    requireLogin(async (loggedInIdentity) => {
       setRequestError(null);
       try {
-        await createRequest({ itemId: item.id, organisationId: identity.organisationId });
+        await createRequest({ itemId: item.id, organisationId: loggedInIdentity.organisationId });
         setJustRequested(true);
-        reload();
+        refresh();
       } catch (err) {
         setRequestError(err);
       }
@@ -78,7 +100,8 @@ export function ItemDetail() {
           <StatusBadge status={item.status} kind="item" />
         </div>
         <p className="text-sm text-ink-600">
-          {category?.[locale] ?? category?.en} · {area?.[locale] ?? area?.en}
+          {category?.[locale] ?? category?.en}
+          {secondaryCategory && ` · ${secondaryCategory[locale] ?? secondaryCategory.en}`} · {area?.[locale] ?? area?.en}
         </p>
 
         {item.needTags?.length > 0 && (
@@ -93,6 +116,13 @@ export function ItemDetail() {
 
         {matchesNeed && (
           <p className="rounded-lg bg-accent-50 px-3 py-2 text-xs text-accent-700">{t("screens.matchesNeedNote")}</p>
+        )}
+
+        {item.quantity !== null && item.quantity !== undefined && (
+          <p className="text-sm text-ink-700">
+            <span className="font-semibold">{t("fields.quantity")}: </span>
+            {formatQuantity(item.quantity, item.unit, t)}
+          </p>
         )}
 
         {item.condition && (
@@ -121,11 +151,43 @@ export function ItemDetail() {
 
         {requestError && <p className="text-sm text-red-700">{translateError(requestError, t)}</p>}
 
-        {role === "organisation" && !isOwnListing && item.status === "available" && (
+        {isOwnerDonor && (
+          <div className="flex flex-col gap-2.5 border-t border-ink-600/10 pt-3">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-ink-600">
+                {t("screens.orgRequestsHeading", { count: requests.length })}
+              </span>
+              {isRefreshing && (
+                <span role="status" className="flex items-center gap-1.5 text-xs font-medium text-accent-700">
+                  <Spinner /> {t("actions.updating")}
+                </span>
+              )}
+            </div>
+            {actionError && <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{translateError(actionError, t)}</p>}
+            {requests.length === 0 ? (
+              <p className="text-xs italic text-ink-600">{t("screens.noOrgRequests")}</p>
+            ) : (
+              requests.map((request) => (
+                <RequestRow
+                  key={request.id}
+                  request={request}
+                  item={item}
+                  organisation={organisations.find((o) => o.id === request.organisationId)}
+                  conversation={conversations.find((c) => c.requestId === request.id)}
+                  busy={busy}
+                  onAccept={accept}
+                  onRevert={revert}
+                />
+              ))
+            )}
+          </div>
+        )}
+
+        {role === "organisation" && !isOwnListing && (item.status === "available" || myRequest) && (
           <>
             {myRequest || justRequested ? (
               <p className="w-fit rounded-full bg-good-100 px-4 py-2 text-sm font-semibold text-good-600">
-                {t(`requestStatus.${myRequest?.status ?? "requested"}`)}
+                {t(`requestStatus.${myRequest ? deriveDisplayStatus(myRequest, item) : "requested"}`)}
               </p>
             ) : (
               <button

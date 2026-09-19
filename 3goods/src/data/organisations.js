@@ -4,12 +4,18 @@
  * All organisations here are fictional demonstration data created for this
  * prototype — none are real Vietnamese charities. `isDemo: true` is surfaced
  * in the UI (OrganisationCard, OrganisationProfile), not just recorded here.
+ *
+ * IDs are fixed UUIDs (see data/ids.js) matching the live Supabase schema's
+ * `uuid` primary keys — not the DB's `gen_random_uuid()` default — so
+ * seeding stays idempotent and other seed files can reference them.
  */
+
+import { ORG_IDS } from "./ids.js";
 
 /** @type {Organisation[]} */
 export const ORGANISATIONS = [
   {
-    id: "org-food-share",
+    id: ORG_IDS.foodShare,
     name: { en: "Vietnam Food Share", vi: "Chia Sẻ Thực Phẩm Việt Nam" },
     mission: {
       en: "Redistributing edible surplus food to families facing food insecurity.",
@@ -21,7 +27,7 @@ export const ORGANISATIONS = [
     pastReceivedItemIds: [],
   },
   {
-    id: "org-hanoi-pantry",
+    id: ORG_IDS.hanoiPantry,
     name: { en: "Hanoi Community Pantry", vi: "Kho Thực Phẩm Cộng Đồng Hà Nội" },
     mission: {
       en: "A neighbourhood pantry stocked entirely from local donations.",
@@ -33,7 +39,7 @@ export const ORGANISATIONS = [
     pastReceivedItemIds: [],
   },
   {
-    id: "org-books-children",
+    id: ORG_IDS.booksChildren,
     name: { en: "Books for Children Vietnam", vi: "Sách Cho Trẻ Em Việt Nam" },
     mission: {
       en: "Building small reading corners in under-resourced schools.",
@@ -45,7 +51,7 @@ export const ORGANISATIONS = [
     pastReceivedItemIds: [],
   },
   {
-    id: "org-warm-homes",
+    id: ORG_IDS.warmHomes,
     name: { en: "Warm Homes Collective", vi: "Liên Minh Mái Ấm" },
     mission: {
       en: "Furnishing basic household items for families rebuilding after loss.",
@@ -57,7 +63,7 @@ export const ORGANISATIONS = [
     pastReceivedItemIds: [],
   },
   {
-    id: "org-care-bridge",
+    id: ORG_IDS.careBridge,
     name: { en: "Care Bridge Da Nang", vi: "Cầu Nối Yêu Thương Đà Nẵng" },
     mission: {
       en: "Connecting new parents with essential baby and hygiene items.",

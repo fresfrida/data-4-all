@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAsync } from "../lib/useAsync.js";
 import { getAreas, getCategories, getTagsForCategory } from "../services/referenceDataService.js";
+import { UNITS, parseQuantity } from "../lib/quantity.js";
 import { createDonation } from "../services/itemsService.js";
 import { uploadItemPhotos } from "../services/storageService.js";
 import { translateError } from "../lib/errors.js";
@@ -9,6 +10,7 @@ import { useSession } from "../context/SessionContext.jsx";
 import { useLocale } from "../i18n/LocaleContext.jsx";
 import { useTranslate } from "../i18n/useTranslate.js";
 import { LoadingState } from "../components/feedback/LoadingState.jsx";
+import { EmptyState } from "../components/feedback/EmptyState.jsx";
 import { NeedChip } from "../components/needs/NeedChip.jsx";
 import { ROUTES } from "../lib/constants.js";
 
@@ -17,16 +19,18 @@ async function loadFormReferenceData() {
   return { areas, categories };
 }
 
-/** Donor posts a donation. Gated to donor role + demo login (D-004/D-005). */
+/** Donor posts a donation. Gated to donor role + demo login (D-045/D-005). */
 export function DonationForm() {
   const { status, data } = useAsync(loadFormReferenceData, []);
-  const { role, identity, requireLogin } = useSession();
+  const { role, isLoggedIn, requireLogin } = useSession();
   const { locale } = useLocale();
   const t = useTranslate();
   const navigate = useNavigate();
 
   const [title, setTitle] = useState("");
+  const [titleVi, setTitleVi] = useState("");
   const [category, setCategory] = useState("");
+  const [secondaryCategory, setSecondaryCategory] = useState("");
   const [tags, setTags] = useState([]);
   const [condition, setCondition] = useState("");
   const [areaId, setAreaId] = useState("");
@@ -35,6 +39,8 @@ export function DonationForm() {
   const [windowInput, setWindowInput] = useState("");
   const [collectionWindows, setCollectionWindows] = useState([]);
   const [notes, setNotes] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [unit, setUnit] = useState(UNITS[0]);
   const [photoFiles, setPhotoFiles] = useState([]);
   const [photoPreviews, setPhotoPreviews] = useState([]);
   const [uploadingPhotos, setUploadingPhotos] = useState(false);
@@ -47,6 +53,24 @@ export function DonationForm() {
 
   if (status === "loading" || !data) return <LoadingState />;
 
+  if (!isLoggedIn) {
+    return (
+      <EmptyState
+        title={t("screens.guestBrowsingTitle")}
+        hint={t("demo.notSecure")}
+        action={
+          <button
+            type="button"
+            onClick={() => requireLogin(() => {})}
+            className="rounded-full bg-accent-500 px-4 py-2 text-sm font-semibold text-white hover:bg-accent-600"
+          >
+            {t("demo.loginAsDonor")}
+          </button>
+        }
+      />
+    );
+  }
+
   if (role !== "donor") {
     return (
       <div className="rounded-card border border-dashed border-ink-600/20 bg-white/60 p-6 text-center text-sm text-ink-600">
@@ -57,6 +81,7 @@ export function DonationForm() {
 
   const onCategoryChange = async (nextCategory) => {
     setCategory(nextCategory);
+    if (secondaryCategory === nextCategory) setSecondaryCategory("");
     setTags([]);
     setTagOptions(await getTagsForCategory(nextCategory));
   };
@@ -77,7 +102,7 @@ export function DonationForm() {
     setPhotoPreviews(files.map((file) => URL.createObjectURL(file)));
   };
 
-  const doSubmit = async () => {
+  const doSubmit = async (loggedInIdentity) => {
     setSubmitError(null);
     try {
       setUploadingPhotos(photoFiles.length > 0);
@@ -85,12 +110,16 @@ export function DonationForm() {
       setUploadingPhotos(false);
 
       const item = await createDonation({
-        donorId: identity.id,
-        donorName: identity.name,
+        donorId: loggedInIdentity.id,
+        donorName: loggedInIdentity.name,
         title,
+        titleVi,
         category,
+        secondaryCategory: secondaryCategory || undefined,
         needTags: tags,
         condition,
+        quantity: parseQuantity(quantity),
+        unit,
         areaId,
         description,
         deliveryOption,
@@ -143,6 +172,16 @@ export function DonationForm() {
       </label>
 
       <label className="flex flex-col gap-1.5">
+        <span className="text-xs font-semibold text-ink-700">{t("fields.titleVi")}</span>
+        <input
+          value={titleVi}
+          onChange={(e) => setTitleVi(e.target.value)}
+          className="rounded-lg border border-ink-600/20 px-3 py-2 text-sm"
+          placeholder={t("fields.titleViPlaceholder")}
+        />
+      </label>
+
+      <label className="flex flex-col gap-1.5">
         <span className="text-xs font-semibold text-ink-700">{t("fields.category")}</span>
         <select
           required
@@ -158,6 +197,24 @@ export function DonationForm() {
               {c[locale] ?? c.en}
             </option>
           ))}
+        </select>
+      </label>
+
+      <label className="flex flex-col gap-1.5">
+        <span className="text-xs font-semibold text-ink-700">{t("fields.secondaryCategory")}</span>
+        <select
+          value={secondaryCategory}
+          onChange={(e) => setSecondaryCategory(e.target.value)}
+          className="rounded-lg border border-ink-600/20 px-3 py-2 text-sm"
+        >
+          <option value="">{t("fields.secondaryCategoryNone")}</option>
+          {data.categories
+            .filter((c) => c.id !== category)
+            .map((c) => (
+              <option key={c.id} value={c.id}>
+                {c[locale] ?? c.en}
+              </option>
+            ))}
         </select>
       </label>
 
@@ -192,6 +249,37 @@ export function DonationForm() {
           placeholder={t("fields.conditionPlaceholder")}
         />
       </label>
+
+      <div className="flex gap-3">
+        <label className="flex flex-1 flex-col gap-1.5">
+          <span className="text-xs font-semibold text-ink-700">{t("fields.quantityOptional")}</span>
+          <input
+            type="number"
+            inputMode="numeric"
+            min="1"
+            step="1"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+            placeholder={t("fields.quantityPlaceholder")}
+            className="rounded-lg border border-ink-600/20 px-3 py-2 text-sm"
+          />
+        </label>
+        <label className="flex flex-1 flex-col gap-1.5">
+          <span className="text-xs font-semibold text-ink-700">{t("fields.unit")}</span>
+          <select
+            value={unit}
+            onChange={(e) => setUnit(e.target.value)}
+            disabled={quantity === ""}
+            className="rounded-lg border border-ink-600/20 px-3 py-2 text-sm disabled:opacity-50"
+          >
+            {UNITS.map((u) => (
+              <option key={u} value={u}>
+                {t(`units.${u}`)}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
 
       <label className="flex flex-col gap-1.5">
         <span className="text-xs font-semibold text-ink-700">{t("fields.description")}</span>
@@ -247,7 +335,7 @@ export function DonationForm() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <span className="text-xs font-semibold text-ink-700">{t("fields.collectionWindows")}</span>
+        <span className="text-xs font-semibold text-ink-700">{t("fields.collectionWindowsOptional")}</span>
         <div className="flex gap-2">
           <input
             value={windowInput}
@@ -256,7 +344,7 @@ export function DonationForm() {
             placeholder={t("fields.collectionWindowPlaceholder")}
           />
           <button type="button" onClick={addWindow} className="rounded-lg border border-ink-600/20 px-3 text-sm font-semibold">
-            {t("actions.addNeed")}
+            {t("actions.addWindow")}
           </button>
         </div>
         {collectionWindows.length > 0 && (

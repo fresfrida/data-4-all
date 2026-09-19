@@ -5,9 +5,11 @@
  * rule as the old localStorage engine, see CLAUDE.md).
  *
  * Anon/public key only — there is no real auth in this prototype (D-004),
- * so every table and the `item-photos` bucket use permissive RLS policies
- * (see supabase/schema.sql). Don't put a service-role key in a VITE_ env var:
- * anything prefixed VITE_ ships in the client bundle.
+ * so every table uses a permissive RLS policy (see supabase/schema.sql).
+ * Photos are stored as base64 directly on the row, not in a Storage bucket
+ * (see DECISIONS.md D-042), so there's no bucket policy to keep in sync
+ * here. Don't put a service-role key in a VITE_ env var: anything prefixed
+ * VITE_ ships in the client bundle.
  */
 import { createClient } from "@supabase/supabase-js";
 

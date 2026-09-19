@@ -5,14 +5,11 @@ import { getNavItems } from "./navConfig.js";
 import { LanguageSwitcher } from "../controls/LanguageSwitcher.jsx";
 import { DemoLoginButton } from "../controls/DemoLoginButton.jsx";
 import { HeartHandshakeIcon } from "../icons.jsx";
-import { ROUTES } from "../../lib/constants.js";
 
 export function DesktopTopNav() {
   const session = useSession();
-  const { role } = session;
   const t = useTranslate();
   const items = getNavItems(session, t);
-  const homeRoute = role === "organisation" ? ROUTES.discoverItems : ROUTES.discoverNeeds;
 
   return (
     <header className="sticky top-0 z-30 hidden border-b border-ink-600/10 bg-white/95 backdrop-blur sm:block shadow-xs">
@@ -33,7 +30,7 @@ export function DesktopTopNav() {
               to={to}
               end={to === "/"}
               className={({ isActive }) =>
-                `flex w-[128px] shrink-0 items-center justify-center gap-1.5 rounded-full px-2 py-1.5 text-sm font-semibold transition-all ${
+                `flex w-[152px] shrink-0 items-center justify-center gap-1.5 rounded-full px-2 py-1.5 text-sm font-semibold transition-all ${
                   isActive ? "bg-accent-100 text-accent-700 shadow-2xs" : "text-ink-600 hover:text-ink-900 hover:bg-cream-100"
                 }`
               }

@@ -21,8 +21,8 @@ export function Footer() {
 
         {/* Navigation & Links */}
         <div className="flex flex-wrap items-center gap-4 font-medium text-ink-600 text-xs">
-          <Link to={ROUTES.discoverNeeds} className="hover:text-accent-600 transition-colors">{t("nav.discoverNeeds")}</Link>
-          <Link to={ROUTES.discoverItems} className="hover:text-accent-600 transition-colors">{t("nav.discover")}</Link>
+          <Link to={ROUTES.discoverNeeds} className="hover:text-accent-600 transition-colors">{t("nav.organisations")}</Link>
+          <Link to={ROUTES.discoverItems} className="hover:text-accent-600 transition-colors">{t("nav.itemsDonated")}</Link>
           <Link to={ROUTES.map} className="hover:text-accent-600 transition-colors">🗺️ {t("nav.map")}</Link>
           <span className="text-ink-300">•</span>
           <span className="hover:underline cursor-pointer">{t("footer.privacy")}</span>

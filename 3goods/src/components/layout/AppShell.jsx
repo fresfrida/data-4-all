@@ -4,6 +4,7 @@ import { DesktopTopNav } from "./DesktopTopNav.jsx";
 import { MobileBottomNav } from "./MobileBottomNav.jsx";
 import { Footer } from "./Footer.jsx";
 import { DemoLoginPrompt } from "../controls/DemoLoginPrompt.jsx";
+import { useSession } from "../../context/SessionContext.jsx";
 import { useTranslate } from "../../i18n/useTranslate.js";
 
 /**
@@ -12,7 +13,9 @@ import { useTranslate } from "../../i18n/useTranslate.js";
  * content area, via <Outlet/>.
  */
 export function AppShell() {
+  const { isLoggedIn, role } = useSession();
   const t = useTranslate();
+  const loginStateText = isLoggedIn ? t("demo.bannerLoggedInAs", { role: t(`role.${role}`) }) : t("demo.bannerPleaseLogIn");
 
   return (
     <div className="flex h-dvh w-full flex-col overflow-hidden bg-cream-50">
@@ -20,13 +23,13 @@ export function AppShell() {
       <div className="shrink-0 z-30">
         <MobileHeader />
         <DesktopTopNav />
-        <div className="border-b border-accent-200 bg-accent-50 px-4 py-1.5 text-center text-[11px] font-medium text-accent-700">
-          {t("demo.banner")}
+        <div className="border-b border-accent-200 bg-accent-50 px-4 py-1.5 text-center text-[11px] font-normal text-accent-700">
+          {t("demo.banner")} <strong className="font-bold text-accent-800">{loginStateText}</strong>
         </div>
       </div>
 
       {/* Middle Scrollable Content Area */}
-      <main className="flex-1 overflow-y-auto flex flex-col justify-between">
+      <main className="flex-1 overflow-y-auto flex flex-col justify-between pb-16 sm:pb-0">
         <div className="w-full flex-1">
           <Outlet />
         </div>

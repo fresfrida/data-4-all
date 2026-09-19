@@ -56,6 +56,8 @@
  * @property {Category} category
  * @property {string} tag              e.g. "Rice", "Sanitary pads"
  * @property {boolean} priority        true = priority need
+ * @property {number|null} [quantity]  optional whole number, with `unit`
+ * @property {string|null} [unit]      a code from lib/quantity.js UNITS
  * @property {string} createdAt        ISO string
  */
 
@@ -77,6 +79,9 @@
  * @property {string} donorName
  * @property {string} title
  * @property {Category} category
+ * @property {Category} [secondaryCategory]  optional 2nd category (e.g. a children's
+ *   book lists under both Books and Children Items) — see DECISIONS.md D-047.
+ *   Deliberately capped at one extra, never unbounded many.
  * @property {string[]} needTags        subset of tags relevant to `category`
  * @property {string} condition         e.g. "Like new", "Well used, still functional"
  * @property {string} areaId

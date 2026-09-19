@@ -11,6 +11,7 @@ import { useLocale } from "../i18n/LocaleContext.jsx";
 import { useTranslate } from "../i18n/useTranslate.js";
 import { LoadingState } from "../components/feedback/LoadingState.jsx";
 import { ErrorState } from "../components/feedback/ErrorState.jsx";
+import { EmptyState } from "../components/feedback/EmptyState.jsx";
 import { StatusBadge } from "../components/status/StatusBadge.jsx";
 import { Avatar } from "../components/common/Avatar.jsx";
 import { ROUTES } from "../lib/constants.js";
@@ -30,19 +31,39 @@ async function loadChatDetail(chatId) {
 /** One conversation's messages + collection-progress controls. */
 export function ChatDetail() {
   const { chatId } = useParams();
-  const { role, identity } = useSession();
+  const { role, identity, isLoggedIn, requireLogin } = useSession();
   const { locale } = useLocale();
   const t = useTranslate();
   const { status, data, error, reload } = useAsync(() => loadChatDetail(chatId), [chatId]);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
 
+  if (!isLoggedIn) {
+    return (
+      <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6">
+        <EmptyState
+          title={t("screens.guestBrowsingTitle")}
+          hint={t("demo.notSecure")}
+          action={
+            <button
+              type="button"
+              onClick={() => requireLogin(() => {})}
+              className="rounded-full bg-accent-500 px-4 py-2 text-sm font-semibold text-white hover:bg-accent-600"
+            >
+              {t("demo.loginPrompt")}
+            </button>
+          }
+        />
+      </div>
+    );
+  }
+
   if (status === "loading") return <LoadingState />;
   if (status === "error") return <ErrorState message={t("errors.generic")} onRetry={reload} />;
   if (!data.conversation) return <ErrorState message={t("screens.conversationNoLongerExists")} />;
 
   const { conversation, messages, request, item, organisation } = data;
-  const senderId = role === "organisation" ? conversation.organisationId : conversation.donorId;
+  const senderId = identity?.id;
 
   const partnerName = role === "organisation" ? t("screens.chatPartnerDonor") : organisation?.name[locale] ?? organisation?.name.en;
   const partnerType = role === "organisation" ? "donor" : "organisation";

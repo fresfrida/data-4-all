@@ -5,30 +5,43 @@ import { loadFullMapData } from "../api/mapApiClient.js";
 import { getOrganisations } from "../../../services/organisationsService.js";
 import { getNeeds } from "../../../services/needsService.js";
 import { VietnamMapView } from "./VietnamMapView.jsx";
-import { levelFromNormalized, fieldRange, normalize } from "../vendor/scoring.js";
 import { LoadingState } from "../../../components/feedback/LoadingState.jsx";
 import { ErrorState } from "../../../components/feedback/ErrorState.jsx";
 import { NeedChip } from "../../../components/needs/NeedChip.jsx";
 import { useTranslate } from "../../../i18n/useTranslate.js";
 import { useLocale } from "../../../i18n/LocaleContext.jsx";
 import { ROUTES } from "../../../lib/constants.js";
+import { getCategoryById } from "../../../data/categories.js";
 
-const CATEGORY_NAME_MAP = {
-  "Rice": { en: "Rice & Grains", vi: "Gạo & Lương thực" },
-  "Canned Food": { en: "Canned Food", vi: "Thực phẩm đóng hộp" },
-  "Blankets": { en: "Blankets & Clothes", vi: "Chăn mền & Áo ấm" },
-  "Medical Kits": { en: "Medical Kits", vi: "Dụng cụ y tế" },
-  "Clean Water": { en: "Clean Water", vi: "Nước sạch" },
-  "Clothes": { en: "Clothes", vi: "Quần áo" },
-  "Hygiene Products": { en: "Hygiene Products", vi: "Đồ vệ sinh cá nhân" },
-  "Books": { en: "Books & Stationery", vi: "Sách vở & Đồ dùng" },
+// Keys are the disaster types the province data / item-needs file actually use.
+const DISASTER_TYPE_MAP = {
+  Flood: { en: "Flood", vi: "Lũ lụt" },
+  Storm: { en: "Storm", vi: "Bão" },
+  Drought: { en: "Drought", vi: "Hạn hán" },
+  Wildfire: { en: "Wildfire", vi: "Cháy rừng" },
 };
 
-const DISASTER_TYPE_MAP = {
-  "Flood": { en: "Flood", vi: "Lũ lụt" },
-  "Typhoon": { en: "Typhoon", vi: "Bão nhiệt đới" },
-  "Landslide": { en: "Landslide", vi: "Sạt lở đất" },
-  "Drought": { en: "Hạn hán", vi: "Hạn hán" },
+const PRIORITY_RANK = { high: 3, medium: 2, low: 1 };
+
+// 3goods organisation area ids -> the province name used in the map data.
+// "mekong" is a region, not a province, so it has no single match.
+const AREA_TO_PROVINCE = {
+  hanoi: "HàNội",
+  hcmc: "HồChíMinh",
+  danang: "ĐàNẵng",
+  hue: "ThừaThiênHuế",
+  cantho: "CầnThơ",
+  haiphong: "HảiPhòng",
+  nhatrang: "KhánhHòa",
+};
+
+// The GADM province names have their spaces stripped ("HàTĩnh") — put them back for display.
+const formatProvince = (name) => (name ? name.replace(/(\p{Ll})(\p{Lu})/gu, "$1 $2") : "");
+
+const PRIORITY_STYLES = {
+  high: "bg-rose-50 text-rose-700 border-rose-200",
+  medium: "bg-amber-50 text-amber-700 border-amber-200",
+  low: "bg-slate-100 text-slate-600 border-slate-300",
 };
 
 async function loadMapShellData() {
@@ -43,41 +56,52 @@ export function MapScreenShell() {
 
   const [activeLayer, setActiveLayer] = useState("disaster_score");
   const [showFacilities, setShowFacilities] = useState(true);
-  const [selectedProvince, setSelectedProvince] = useState("Ha Tinh");
+  const [selectedProvince, setSelectedProvince] = useState("HàTĩnh");
 
   const selectedFeature = useMemo(() => {
     if (!data?.mapData?.features) return null;
     return data.mapData.features.find((f) => f.properties.province === selectedProvince) || data.mapData.features[0];
   }, [data, selectedProvince]);
 
+  const disasterTypes = useMemo(
+    () => (selectedFeature?.properties.disaster_types ?? "").split("; ").filter(Boolean),
+    [selectedFeature]
+  );
+
   const nearbyOrgs = useMemo(() => {
     if (!data?.organisations || !selectedProvince) return [];
-    // Match orgs whose area name or id contains or matches selected province
-    const query = selectedProvince.toLowerCase();
-    return data.organisations.filter(
-      (org) => org.name.en.toLowerCase().includes(query) || org.name.vi.toLowerCase().includes(query) || org.areaId.includes(query)
-    );
+    return data.organisations.filter((org) => AREA_TO_PROVINCE[org.areaId] === selectedProvince);
   }, [data, selectedProvince]);
 
   const recommendedCategories = useMemo(() => {
-    if (!data?.mapData?.itemNeeds || !selectedFeature) return [];
-    const disasterType = selectedFeature.properties.disaster_type || "Flood";
-    const needsForType = data.mapData.itemNeeds.by_disaster_type?.[disasterType] || {};
-    return Object.entries(needsForType).map(([catName, info]) => ({
-      name: catName,
-      priority: info.priority,
-      items: info.items || [],
-    }));
-  }, [data, selectedFeature]);
+    const { itemNeeds } = data?.mapData ?? {};
+    if (!itemNeeds || !selectedFeature) return [];
+    // A province can carry several disaster types; a category takes its highest priority across them.
+    const byCategory = new Map();
+    for (const type of disasterTypes) {
+      const needsForType = itemNeeds.by_disaster_type?.[type] ?? {};
+      for (const [name, info] of Object.entries(needsForType)) {
+        if (!info.items?.length) continue;
+        const seen = byCategory.get(name);
+        if (!seen || (PRIORITY_RANK[info.priority] ?? 0) > (PRIORITY_RANK[seen.priority] ?? 0)) {
+          byCategory.set(name, { name, priority: info.priority });
+        }
+      }
+    }
+    return [...byCategory.values()].sort((a, b) => (PRIORITY_RANK[b.priority] ?? 0) - (PRIORITY_RANK[a.priority] ?? 0));
+  }, [data, selectedFeature, disasterTypes]);
 
   if (status === "loading") return <LoadingState />;
   if (status === "error") return <ErrorState message={t("errors.generic")} onRetry={reload} />;
 
+  // Show the real value or a dash — never a made-up fallback score.
   const pProps = selectedFeature?.properties || {};
-  const disasterScore = pProps.disaster_score ?? (pProps.poverty_pct ? parseFloat((pProps.poverty_pct * 0.35 + 4.2).toFixed(1)) : 8.2);
-  const povertyPct = pProps.poverty_pct ?? 16.8;
-  const currentScoreDisplay = activeLayer === "poverty_pct" ? `${povertyPct}%` : (activeLayer === "coverage_gap" ? `${pProps.coverage_gap ?? 65}%` : disasterScore);
-  const disasterTypeDisplay = DISASTER_TYPE_MAP[pProps.disaster_type]?.[locale] ?? pProps.disaster_type ?? (locale === "vi" ? "Lũ lụt / Bão" : "Flood / Typhoon");
+  const provinceName = formatProvince(pProps.province);
+  const disasterScoreDisplay = typeof pProps.disaster_score === "number" ? pProps.disaster_score.toFixed(2) : "—";
+  const povertyDisplay = typeof pProps.poverty_rate === "number" ? `${pProps.poverty_rate}%` : "—";
+  const disasterTypeDisplay = disasterTypes.length
+    ? disasterTypes.map((type) => DISASTER_TYPE_MAP[type]?.[locale] ?? type).join(", ")
+    : "—";
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 flex flex-col gap-5">
@@ -108,9 +132,9 @@ export function MapScreenShell() {
             </button>
             <button
               type="button"
-              onClick={() => setActiveLayer("poverty_pct")}
+              onClick={() => setActiveLayer("poverty_rate")}
               className={`flex flex-1 sm:flex-initial items-center justify-center gap-1 rounded-lg px-2.5 sm:px-3 py-1.5 transition-all text-xs whitespace-nowrap ${
-                activeLayer === "poverty_pct"
+                activeLayer === "poverty_rate"
                   ? "bg-white text-accent-700 shadow-2xs font-bold border border-ink-600/10"
                   : "text-ink-600 hover:text-ink-900 font-medium"
               }`}
@@ -120,9 +144,9 @@ export function MapScreenShell() {
             </button>
             <button
               type="button"
-              onClick={() => setActiveLayer("coverage_gap")}
+              onClick={() => setActiveLayer("coverage_gap_score")}
               className={`flex flex-1 sm:flex-initial items-center justify-center gap-1 rounded-lg px-2.5 sm:px-3 py-1.5 transition-all text-xs whitespace-nowrap ${
-                activeLayer === "coverage_gap"
+                activeLayer === "coverage_gap_score"
                   ? "bg-white text-accent-700 shadow-2xs font-bold border border-ink-600/10"
                   : "text-ink-600 hover:text-ink-900 font-medium"
               }`}
@@ -169,21 +193,23 @@ export function MapScreenShell() {
           />
           <div className="text-[11px] text-ink-600 flex justify-between items-center px-1">
             <span>{t("map.clickHint")}</span>
-            <span className="font-semibold">{selectedProvince || t("map.allVietnam")}</span>
+            <span className="font-semibold">{provinceName || t("map.allVietnam")}</span>
           </div>
         </div>
 
         {/* Region Detail & Recommended Items Panel */}
         <div className="flex flex-col gap-4">
           <div className="rounded-card border border-ink-600/10 bg-white p-5 sm:p-6 shadow-sm flex flex-col gap-3">
-            <div className="flex items-center justify-between border-b border-ink-600/10 pb-2.5">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-ink-600/10 pb-2.5">
               <div>
                 <span className="text-[10px] uppercase font-bold text-accent-600 tracking-wider">{t("map.selectedRegion")}</span>
-                <h2 className="text-lg font-bold text-ink-800">{pProps.province || "Vietnam"}</h2>
+                <h2 className="text-lg font-bold text-ink-800">{provinceName || t("map.allVietnam")}</h2>
               </div>
-              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-cream-200 text-ink-800">
-                {pProps.region || "Central"}
-              </span>
+              {pProps.poverty_region && (
+                <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-cream-200 text-ink-800">
+                  {pProps.poverty_region}
+                </span>
+              )}
             </div>
 
             <div className="space-y-2 text-xs text-ink-700">
@@ -193,34 +219,42 @@ export function MapScreenShell() {
               </div>
               <div className="flex justify-between items-center">
                 <span>{t("map.disasterSeverityScore")}</span>
-                <b className="font-bold text-ink-900">{currentScoreDisplay}</b>
+                <b className="font-bold text-ink-900">{disasterScoreDisplay}</b>
               </div>
               <div className="flex justify-between items-center">
                 <span>{t("map.povertyRateProxy")}</span>
-                <b className="font-bold text-ink-900">{povertyPct}%</b>
+                <b className="font-bold text-ink-900">{povertyDisplay}</b>
               </div>
             </div>
 
             {/* Recommended Relief Categories */}
             <div className="pt-2 border-t border-ink-600/10 space-y-2">
               <h3 className="text-xs font-bold text-ink-800">{t("map.suggestedCategories")}</h3>
+              {recommendedCategories.length > 0 && (
+                <div role="group" aria-label={t("map.priorityKeyTitle")} className="flex flex-col gap-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-ink-600">{t("map.priorityKeyTitle")}</span>
+                  <div className="flex overflow-hidden rounded-full text-[10px] font-bold text-center">
+                    <span className="flex-1 bg-rose-500 py-1 text-white">{t("map.priorityHigh")}</span>
+                    <span className="flex-1 bg-amber-400 py-1 text-amber-950">{t("map.priorityMedium")}</span>
+                    <span className="flex-1 bg-slate-300 py-1 text-slate-800">{t("map.priorityLow")}</span>
+                  </div>
+                </div>
+              )}
               <div className="flex flex-wrap gap-1.5">
                 {recommendedCategories.length > 0 ? (
                   recommendedCategories.map((cat) => {
-                    const catLabel = CATEGORY_NAME_MAP[cat.name]?.[locale] ?? cat.name;
+                    const catLabel = getCategoryById(cat.name)?.[locale] ?? cat.name;
                     const priorityKey = cat.priority === "high" ? "map.priorityHigh" : cat.priority === "medium" ? "map.priorityMedium" : "map.priorityLow";
                     const priorityLabel = t(priorityKey);
 
                     return (
                       <span
                         key={cat.name}
-                        className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border ${
-                          cat.priority === "high"
-                            ? "bg-rose-50 text-rose-700 border-rose-200"
-                            : "bg-amber-50 text-amber-700 border-amber-200"
-                        }`}
+                        title={`${catLabel} — ${priorityLabel}`}
+                        className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border ${PRIORITY_STYLES[cat.priority] ?? PRIORITY_STYLES.low}`}
                       >
-                        {catLabel} ({priorityLabel})
+                        {catLabel}
+                        <span className="sr-only"> ({priorityLabel})</span>
                       </span>
                     );
                   })
@@ -254,7 +288,7 @@ export function MapScreenShell() {
               </div>
             ) : (
               <div className="text-xs text-ink-600 py-2">
-                {t("map.noOrgsNearby", { province: selectedProvince })}
+                {t("map.noOrgsNearby", { province: provinceName })}
               </div>
             )}
 
@@ -262,7 +296,7 @@ export function MapScreenShell() {
               to={ROUTES.donateNew}
               className="mt-1 w-full text-center py-2.5 px-4 rounded-full bg-accent-500 hover:bg-accent-600 text-white text-xs font-bold shadow-sm transition-all"
             >
-              {t("map.postDonationFor", { province: selectedProvince })}
+              {t("map.postDonationFor", { province: provinceName })}
             </Link>
           </div>
         </div>

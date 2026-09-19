@@ -3,13 +3,17 @@ import { CategoryIcon } from "./CategoryIcon.jsx";
 import { StatusBadge } from "../status/StatusBadge.jsx";
 import { Avatar } from "../common/Avatar.jsx";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
+import { useTranslate } from "../../i18n/useTranslate.js";
+import { formatQuantity } from "../../lib/quantity.js";
 import { ROUTES } from "../../lib/constants.js";
 
 /**
- * @param {{item: import('../../data/types.js').Item, categoryLabel: string, areaLabel: string, showStatus?: boolean}} props
+ * @param {{item: import('../../data/types.js').Item, categoryLabel: string, secondaryCategoryLabel?: string, areaLabel: string, showStatus?: boolean}} props
  */
-export function ItemCard({ item, categoryLabel, areaLabel, showStatus = false }) {
+export function ItemCard({ item, categoryLabel, secondaryCategoryLabel, areaLabel, showStatus = false }) {
   const { locale } = useLocale();
+  const t = useTranslate();
+  const quantityLabel = formatQuantity(item.quantity, item.unit, t);
   const photo = item.photoPaths?.[0];
   const displayTitle = locale === "vi" ? (item.titleVi ?? item.title) : item.title;
 
@@ -32,8 +36,20 @@ export function ItemCard({ item, categoryLabel, areaLabel, showStatus = false })
         </div>
         <div className="flex flex-col items-start gap-1 text-xs text-ink-600 font-medium">
           <span className="text-xs font-semibold text-ink-700">📍 {areaLabel}</span>
-          <span className="inline-block rounded-full bg-cream-100 px-2.5 py-0.5 text-[10px] text-ink-600 border border-ink-600/10 font-medium">
-            {categoryLabel}
+          <span className="flex flex-wrap gap-1">
+            <span className="inline-block rounded-full bg-cream-100 px-2.5 py-0.5 text-[10px] text-ink-600 border border-ink-600/10 font-medium">
+              {categoryLabel}
+            </span>
+            {quantityLabel && (
+              <span className="inline-block rounded-full bg-accent-50 px-2.5 py-0.5 text-[10px] text-accent-700 border border-accent-200/60 font-semibold">
+                {quantityLabel}
+              </span>
+            )}
+            {secondaryCategoryLabel && (
+              <span className="inline-block rounded-full bg-cream-100 px-2.5 py-0.5 text-[10px] text-ink-600 border border-ink-600/10 font-medium">
+                {secondaryCategoryLabel}
+              </span>
+            )}
           </span>
         </div>
         <div className="mt-auto pt-2 border-t border-ink-600/5 flex items-center gap-2">

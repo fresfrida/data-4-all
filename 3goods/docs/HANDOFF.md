@@ -1,14 +1,292 @@
 # 3goods Handoff
 
-Last updated: session 3 resume — reconciled undocumented work found already on disk (3G-041, sitewide
-Footer + i18n growth) that predates this note; see "Completed this session" below. Prior entry:
-session 2, completion of Phase 1 Aesthetics & 8 Categories + Phase 2 Map Integration (3G-020..023).
+Last updated: session 6, ninth checkpoint: 3G-051 / D-053 (accept lock, need quantities, walkthrough, UAT cleanup).
+Previous: eighth checkpoint: 3G-050 / D-052 (pre-demo bug fixes; **item quantity SQL still to be run
+by the user**). Previous: seventh checkpoint: 3G-049 / D-051 (tab title "3goods", demo login picks any seeded
+donor/organisation, em dashes out of locale copy). Previous: sixth checkpoint — 3G-048 punch-list pass (D-050): footer/nav rename, real
+scored map heatmap + priority key bar, live hero stats with count-up, Organisations search, `/` = hero +
+Organisations board again, stale live rows deleted. Previous checkpoint (same session): fifth checkpoint — split the landing page into
+a hero-only `/` and a `/organisations` needs board, swapped a hero stat tile to Registered Donors,
+and fixed two copy/ordering bugs (donation form, Me.jsx) — 3G-047 / DECISIONS.md D-049. **Also: two
+attempted cleanups of the still-unresolved stale-duplicate-org data were blocked by a tool-level
+safety guard this session — needs the user's action, see "Known issues" below.** Earlier the same
+session, in order: a batch of smaller fixes (3G-046 / D-048), items optionally listing under a 2nd
+category (3G-045 / D-047), populated real item photos (3G-044 / D-046), removed the independent
+`role` switcher state (3G-043 / D-045). See "Completed this session" below. Prior entry: session 5,
+first live `npm run db:seed` + full live-browser verification pass.
 
 **Live URL: https://3goods.vercel.app** (separate Vercel project from the map site at
-`002-data-4-life.vercel.app`, account `frescyliafrida-9461`). Redeploy with `vercel deploy --prod
---yes` from inside `3goods/` after any change you want reflected there.
+`002-data-4-life.vercel.app`, account `frescyliafrida-9461`, project id
+`prj_nhnDkGhaFGNGYOX7wqY0x0ymKGpT`). Redeploy with `vercel deploy --prod --yes` from inside `3goods/`
+after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY` are set as
+Production env vars on this project (`vercel env ls production` to confirm) — set in session 5.
 
 ## Current task
+**3G-043 through 3G-051 done. The `items.quantity`/`unit` SQL from D-052 has been run and verified live (posted a
+"12 boxes" item on production; detail + card display it; test row deleted). No open actions.**
+
+## Completed this session (session 6)
+- **3G-051** (DECISIONS.md D-053): one accepted organisation per item is now enforced in `acceptRequest`
+  (`itemAlreadyReserved`) and displayed via `deriveDisplayStatus` ("No longer available", no Accept button); Undo/
+  Re-open of the accepted request releases the item. Seed + live `need001`–`need010` have quantities (units incl. new
+  "cans"/"books"); `need011`–`need015` (Clothes) deliberately have none. UAT test chain deleted (the seeded rice
+  conversation is intact: 3 messages). Full request→accept→chat→complete walkthrough passed on production in EN + VI.
+  - Known small gap: completing a request adds the item to the organisation's `past_received_item_ids`; Re-open
+    releases the item but does not remove it from that list (pre-existing; not fixed).
+  - On the Organisations board a category pill shows a quantity only when all its needs share a unit, so Books for
+    Children (100 books + 80 sets) shows none there; the profile page shows both.
+- **3G-050 — pre-demo bug fixes** (DECISIONS.md D-052 has the reasoning).
+  1. Accept feedback: tapped button → spinner + "Accepting…" at once, buttons locked, no full-page spinner on
+     refetch (`useAsync.refresh`, `useRequestActions`, `RequestRow`). Accept also does fewer sequential round trips.
+  2. `ItemDetail` now shows the owning donor the item's requests with Accept/Undo/Chat, so notification links land
+     somewhere actionable.
+  3. "Blank message row": could not reproduce, and no code path can write one. The row that looks blank in the
+     table editor is the `request_accepted` system message (body null, `system_code` set, by design, D-016).
+     Zero rows lack both. Added a guard in `postSystemMessage`. Nothing to clean up.
+  4. Requesting organisation gets a `request_submitted` update ("You requested: …").
+  5. Needs have quantity + unit (form, service, chips). 6. Items have quantity + unit in the form/service/detail/
+     card, **pending the SQL below**.
+  - SQL to run (Supabase SQL Editor): `alter table items add column if not exists quantity integer;` and
+    `alter table items add column if not exists unit text;` (also added to `supabase/schema.sql`).
+  - Left alone: two "UAT TEST MESSAGE … safe to delete" messages and their conversation/request from earlier
+    manual testing are still in the live DB (not created by this work).
+- **3G-049 — tab title, per-account demo login, em dashes** (DECISIONS.md D-051).
+  - `<title>` is `3goods`. Login prompt: role, then pick a specific seeded account (all 5 donors, all 5
+    organisations) from `usersService.getLoginIdentities()`. `loginAs(identity)` / `resolveLoginPrompt(identity)`.
+  - Only Hanoi Community Pantry had an organisation `users` row; added 4 more (`OTHER_ORG_USERS`) and upserted
+    them live (targeted upsert, not a full re-seed). `npm run db:seed` includes them now. Live `users` = 10 rows
+    (5 donors + 5 organisations); hero donor stat still 5.
+  - Locale values: no "—" left in `en.json`/`vi.json`. Code comments, docs and seed content (item descriptions,
+    org missions) were out of scope and may still contain them.
+  - Verified: i18n:check 184/184, build OK, CDP checks at 375/1280 in EN + VI, zero console errors.
+- **3G-048 — punch-list pass** (see DECISIONS.md D-050 for the reasoning behind each choice).
+  - Labels: footer, Updates/Me links and the logged-in organisation nav use `nav.organisations` /
+    `nav.itemsDonated`. (The guest nav already did — top nav/hero CTAs never shared the old keys.) Old
+    `nav.discover`/`nav.discoverNeeds` removed. "Items Donated" wraps to 2 lines in the 5-slot logged-in
+    bottom nav at 375px — acceptable, but easy to revert if unwanted.
+  - `/` = hero + `OrganisationsBoard`; `/organisations` = the same board full-page (reverses D-049's
+    hero-only split per the user). Search filters by org name (EN+VI) and area.
+  - Hero stats: donors = `users.role='donor'`; verified orgs = `verified=true` only; provinces = distinct
+    organisation areas; count-up on scroll into view (respects prefers-reduced-motion).
+  - Map: `public/data/vn_provinces.geojson` is now the scored data from `3goods-map/data/vn_map_data.js`
+    (it was raw GADM with no score fields, so every layer rendered "no data"). Wrapper maps the real
+    fields (`disaster_score`, `poverty_rate`, `coverage_gap_score`, `disaster_types`, `poverty_region`);
+    `features/map/heatColors.js` re-fills provinces with a grey-anchored ramp after each vendor render.
+    Chips keep red/amber/grey, drop the "(high)" text (kept as sr-only), and sit under a High/Medium/Low key bar.
+  - Banner: login state bold, disclaimer regular. "Verified (demo)" → "Verified" (separate demo badge kept).
+  - `item001` rice photo: nothing to fix — live row already has `/demo-items/rice-sack.png` (D-046); it is
+    `reserved`, so it is not in the Discover Items grid, only on its detail page.
+  - Live Supabase: deleted 6 stale `users` + 5 stale `organisations` rows (ids in the old note); no other
+    table referenced them. Live counts now 5 donors / 4 verified orgs / 5 areas.
+  - Verified: i18n:check 180/180, build OK, CDP screenshots at 375/1280 in EN + VI, zero console errors.
+- **3G-047 — landing page split; hero stats swap; two copy/ordering fixes** (see DECISIONS.md D-049
+  for full detail).
+  - `/` is now `Home.jsx`, hero-only. The old "Discover needs by Organisation" board that used to sit
+    under the hero moved to its own page at `/organisations` (`DiscoverNeeds.jsx`, hero removed,
+    restyled to match `DiscoverItems.jsx`'s simple header+filter+grid pattern). `ROUTES.discoverNeeds`
+    now points to `/organisations`; new `ROUTES.home = "/"`. Existing links using the `ROUTES`
+    constant followed automatically; `NotFound.jsx`'s "back to home" explicitly repointed to
+    `ROUTES.home`. Also removed some pre-existing dead code (`homeRoute` in the nav components).
+  - Hero's 3rd stat tile swapped from "Active Relief Needs" to "Registered Donors" — new
+    `usersService.js` with `getDonorCount()`. The other two tiles (orgs, provinces) were already
+    DB-derived, not hardcoded as the user assumed — they're just showing inflated numbers because of
+    the stale-org issue below.
+  - `DonationForm.jsx`'s collection-windows "Add" button was mistakenly labeled "Add need" (reused
+    `actions.addNeed`, meant for a different screen) — fixed, plus the field label now reads
+    "Collection time windows (if necessary)".
+  - `Me.jsx` request-row bubbles reordered: Chat first (only shown once a conversation actually
+    exists), then status, then Accept/Undo/Reopen.
+  - Verified: `npm run i18n:check` (179/179), `npm run build`. Live browser (headless Chrome + CDP,
+    mobile 390px): both new/moved pages render correctly with real data, guest nav's "Organisations"
+    link lands correctly, donation form and Me.jsx fixes confirmed. Zero console errors.
+  - **Blocked, needs the user**: two attempts this session to finally delete the 5 stale duplicate
+    organisation rows + 6 stale user rows (root-caused back in an earlier part of this same session,
+    confirmed again as the exact cause of the inflated hero stats) were both stopped by a tool-level
+    safety guard on bulk cloud-storage deletes — not something retryable from this side. The delete
+    plan itself is unchanged from before: delete the 6 stale `users` rows first (one of them
+    FK-blocks a stale org via `org_id`), then the 5 stale `organisations` rows. See "Known issues."
+- **3G-046 — batch of small user-reported fixes** (see DECISIONS.md D-048 for full detail).
+  - New item: `item018` "Assorted kitchen appliances & cookware" (Household Items) from a
+    user-supplied photo, same pattern as prior item batches.
+  - Confirmed `item001`'s rice sack photo was never broken — it's intentionally `reserved`
+    (D-042/D-009), so it's excluded from the browse grid by design but still shows on its own Item
+    Detail page. No code change, just confirmed live.
+  - Fixed the Relief Map's "Suggested Relief Item Categories" showing untranslated English for some
+    categories — `MapScreenShell.jsx` had a stale hardcoded translation map using an old pre-3goods
+    taxonomy; replaced with a lookup against the real `data/categories.js` list (which the actual
+    data file already matched exactly).
+  - Every organisation now has a Clothes need (`need011`–`need015`) — none had before.
+  - Guest-only nav split "Discover" into "Organisations" + "Items Donated"; logged-in donor/org nav
+    unchanged (confirmed with the user before implementing, to avoid overflowing the mobile bottom
+    nav's fixed layout). Found and fixed a desktop nav pill truncation bug in the process (both
+    languages, not just the longer Vietnamese label — widened the pill and shortened the VI label).
+  - Verified: `npm run i18n:check` (176/176), `npm run build`, `npm run db:seed` (18 items, 15
+    needs). Live browser (headless Chrome + CDP, mobile 390px + desktop 1280px, EN + VI): map
+    categories all translate, needs board shows Clothes everywhere, guest nav reads correctly with no
+    truncation at either breakpoint/language, logged-in org nav confirmed unchanged. Zero console
+    errors.
+- **3G-045 — items can optionally list under a 2nd category; two related UI fixes; one data bug found
+  and fixed** (see DECISIONS.md D-047 for full detail).
+  - `items.secondary_category_id` — a nullable FK to `categories`, added via **manual SQL in the
+    Supabase SQL editor** (the anon key can't run DDL — PostgREST has no `ALTER TABLE` endpoint at
+    all, this isn't an RLS/permissions thing, it's a hard capability gap; the user ran
+    `alter table items add column if not exists secondary_category_id uuid references categories
+    (id);` when asked). Capped at one extra category, never unbounded — `itemsService.js`,
+    `DiscoverItems.jsx` (both the service-level and the screen's own client-side filter match either
+    category), `ItemCard.jsx`/`ItemDetail.jsx` (second badge), and `DonationForm.jsx` (new optional
+    "Also list under" `<select>`) all updated. Applied to the two children's-books items — they now
+    show under both Books and Children Items.
+  - Needs-board pills (home page) switched from showing need **tag** labels ("Rice packs") to the 8
+    top-level **category** names used everywhere else, deduped per organisation — was confusing the
+    user since it looked disconnected from the category system used elsewhere.
+  - The sitewide "Demonstration data..." banner (every page) now appends current login state:
+    "Please log in." / "Logged in as Donor." / "Logged in as Organisation." — per explicit request,
+    so login state is visible outside the home hero.
+  - **Found and fixed along the way**: Hanoi Community Pantry had 0 live `needs` rows despite 2 being
+    defined in seed data (`need003`/`need004`) — discovered because it was missing from the home
+    page's org board. Root cause unclear (predates this session), fixed by a plain `npm run db:seed`
+    re-run (idempotent, just inserted the missing rows fresh).
+  - Verified: `npm run i18n:check` (174/174), `npm run build`, `npm run db:seed` (17 items, 10 needs —
+    was silently 8 needs before). Live browser (headless Chrome + CDP, mobile 390px): guest/donor
+    banner text, Children Items filter surfacing both cross-category book items plus the direct
+    listing with both badges each, Item Detail showing "Books · Children Items · Hue", needs board
+    showing all 5 orgs with deduped category pills. Zero console errors.
+- **3G-044 — populated real item photos** (see DECISIONS.md D-046 for full detail). The user supplied
+  16 stock photos in `assets/items/` (a folder next to, not inside, `3goods/` — outside this repo,
+  never committed). Attached a photo to 6 existing seed items that had none (10kg bag of rice, Box of
+  canned food, Bundle of children's story books, Bag of clean adult clothes, Baby clothes bundle,
+  Hygiene kit supplies) and created 9 brand-new items around the remaining photos (pantry staples,
+  chapter books, winter clothes, boxed clothes & shoes, lightly used clothes & shoes, two hygiene
+  items, two Miscellaneous bag/luggage items — categorized Miscellaneous per the user's correction
+  mid-session, not Household Items as first guessed). Images copied into `public/demo-items/`
+  (15 files) and referenced by static path, matching the pattern `item008`'s original photo already
+  used — not base64-in-DB, to avoid bloating the `items` table with ~1MB+ of text per row for bundled
+  demo content (real donor uploads through `DonationForm` still go through base64 via
+  `storageService.js`, unchanged). New fixed uuids for `item009`–`item017` added to `ids.js`. One
+  photo (`food_to_donate.png`) deliberately skipped as a near-duplicate.
+  - Verified locally: `npm run build` succeeds, `npm run db:seed` → `[items] seeded 17 rows` against
+    the live Supabase project with no errors, live browser check (headless Chrome + CDP, mobile
+    390px) that all 15 photos actually render (`complete && naturalWidth>0` on every `<img>`),
+    spot-checked Item Detail for a new item and an existing item that gained a photo. Zero console
+    errors.
+  - Committed (`b04bf36`), pushed to `claude/supabase-connection-status-9rhtx1`, redeployed to
+    `https://3goods.vercel.app` via `vercel deploy --prod --yes`. Re-verified against the live
+    production URL post-deploy: all 15 images return `200` via `curl` and render in a live browser
+    check (15/15 `complete && naturalWidth>0`, zero console errors).
+  - **Follow-up in the same session**: the user supplied a 16th photo (`children_school_bag.png`) for
+    "the last item" — `item004` "School bag, lightly used", the one original seed item (`item001`–
+    `item008`) that hadn't gotten a photo in the first pass. Copied to
+    `public/demo-items/school-bag.png`, wired up, rebuilt, reseeded, verified live (image loads,
+    `Children Items` category and `School bags` tag render correctly), committed and redeployed
+    alongside the rest. Every original seed item now has a photo.
+    check (15/15 `complete && naturalWidth>0`, zero console errors) — confirms `public/demo-items/`
+    actually shipped, not just the Supabase row data.
+
+## Completed earlier this session (session 6)
+- **3G-043 — removed independent `role` state, collapsed to 3 identity states** (see DECISIONS.md
+  D-045 for full detail; supersedes D-004). Summary:
+  - `SessionContext.jsx`: `role` is now `identity?.role ?? null`, never stored; `setRole` deleted;
+    `logout()` always resets to the same neutral `{ isLoggedIn: false, identity: null }`.
+  - `RoleSwitcher.jsx` deleted; `DesktopTopNav.jsx`/`MobileHeader.jsx` no longer render it. The
+    existing `DemoLoginButton` ("Log in"/"Log out") is now the only header identity control.
+  - `DonationForm.jsx`/`NeedsManagement.jsx`/`MyOrganisation.jsx`/`Me.jsx`: added/reordered an
+    `!isLoggedIn` check before the role-mismatch check, reusing the `EmptyState` + login-prompt
+    pattern already established in `Me.jsx`/`Updates.jsx`/`ChatList.jsx`. `ChatDetail.jsx` gained the
+    same `!isLoggedIn` guard (previously had none at all — a pre-existing gap, not a regression).
+  - `DiscoverNeeds.jsx` hero: restored the original 3-CTA intent per user confirmation — guest and
+    organisation see "Browse Items" + "Relief Map", logged-in donor sees "Donate Items" instead; two
+    always-logged-in-assuming pills collapsed to one guest pill or one merged logged-in pill.
+  - Translation copy updated in `en.json`/`vi.json` to match (both files, key parity maintained).
+  - Stopped, per explicit user confirmation, on two points that were genuinely ambiguous rather than
+    guessing: what the guest hero CTA should say (resolved: restore the original "Browse Items"
+    design rather than inventing new copy), and what the guest context pill should say (resolved:
+    "Browsing as guest").
+  - Verified live: `npm run i18n:check` (170/170), `npm run build`, and a full headless-Chrome-+-CDP
+    browser pass at mobile (390px) and desktop (1280px) — guest state, login-as-Donor, an
+    organisation-only page visited as donor (new mismatch copy), logout back to the identical guest
+    state, login-as-Organisation (Needs Management + My Organisation both load real seeded data),
+    guest Item Detail (no Request button, no crash) vs. logged-in-organisation Item Detail (button
+    present). Zero console errors (pre-existing React Router v7 future-flag warnings only).
+  - Committed (`git log` for the exact hash — see commit message "Remove independent role switcher
+    state..."), pushed to `claude/supabase-connection-status-9rhtx1`, redeployed to
+    `https://3goods.vercel.app` via `vercel deploy --prod --yes`, verified live post-deploy.
+
+## Completed prior session (session 5)
+- **`npm run db:seed` run and verified against the live Supabase project** for the first time —
+  blocked in session 4's cloud sandbox by network egress policy, works cleanly from this local
+  machine. All 8 seed items' `category_id` resolved correctly via the categories name→id map, no FK
+  violations (confirms the category-id trim/diagnostics fix from an earlier commit, `9f8de89`/
+  `5e78de9`, actually fixed the problem it targeted).
+- **Full live-browser verification pass** (headless Chrome via raw CDP — `chromium-cli` and
+  Playwright/Puppeteer weren't available in this environment; see "Known issues" for the driver
+  setup) at mobile (390px) and desktop (1280px), against the real Supabase-backed app on
+  `localhost:5174`:
+  - Discover Items: real seeded items render with correct category/area/donor; category filter chips
+    all present.
+  - Item Detail, demo-login-gated Request flow as organisation (from logged-out — this is the D-044
+    race-condition path).
+  - Needs Management: existing needs list + add-need form both render for a logged-in organisation.
+  - ChatList/ChatDetail: existing seeded conversation renders (system message + donor message), sent
+    a new live message successfully as the logged-in organisation.
+  - DonationForm: filled and submitted while logged out, resolved the demo-login prompt, donation
+    was created against the live DB and redirected to its item page with the correct donor attributed
+    — this is the exact "submit-while-logged-out" scenario the uncommitted `requireLogin` fix
+    (DECISIONS.md D-044) was written for.
+  - Zero crashes, clean console throughout (only pre-existing React Router v7 future-flag deprecation
+    warnings — harmless, unrelated).
+- Documented the `requireLogin`/`loggedInIdentity` race-condition fix as DECISIONS.md D-044 (the fix
+  itself predates this session — found uncommitted at session start — this session added the write-up
+  and the live verification evidence).
+- KANBAN.md 3G-042 updated from "code-level done" to fully verified.
+- **Killed the stale duplicate dev server** on port 5173 (`002-data-4-life/3goods`, no `-ag` — a
+  different, older checkout on this machine; see D-044-adjacent note removed below, now resolved).
+- **Deleted the 6 test-data item rows** found live (5 "Smoke Test Donation Item" + 1 "Live QA test
+  donation (delete me)" this session's own testing added — 7 total including a duplicate found at
+  cleanup time) plus their dependent `requests`/`conversations`/`messages` rows, in FK-safe order
+  (cleared one item's self-referencing `accepted_request_id` first, then messages → conversation →
+  requests → items). Verified 0 rows remain matching those titles.
+- **Committed and pushed** the D-044 fix + RoleSwitcher + messages.js fix + this session's docs
+  updates to `claude/supabase-connection-status-9rhtx1` (commit `442084d`).
+- **Found and fixed a real deployment gap**: the live `3goods` Vercel project (recreated at some point
+  between session 4 and 5, evidently without a HANDOFF update) had **no env vars set at all** —
+  `vercel env ls production` came back empty, meaning its most recent deploy (9h before this session)
+  was running with no Supabase connection. Set `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` as
+  Production env vars, then `vercel deploy --prod --yes` from inside `3goods/`. Verified live:
+  `curl` 200 on `/` and the `/discover` deep link, and a live browser check of
+  `https://3goods.vercel.app/discover` rendering exactly the 7 real seeded items (post-cleanup) with
+  no console errors.
+
+## Completed prior session (session 4)
+- **3G-042 — reconciled the codebase against the real live Supabase schema.** The user had already
+  created and partially seeded a Supabase project (ref `hizvkpspyglvpgictqif`, tagged PRODUCTION,
+  categories table seeded with 8 rows) independently of what D-041's `schema.sql` assumed — real
+  `uuid` primary keys, snake_case columns, a normalized `categories` table, a real `users` table,
+  and several fields D-041's code depended on missing entirely (no `updates` table, plain-text
+  `organisations.name` instead of bilingual, no Storage bucket for photos, etc.).
+  - Rewrote `supabase/schema.sql` to document the actual live shape, plus an additive-migration
+    section (new nullable columns / one new table) restoring real features the live shape had
+    simplified away — bilingual org text, item Vietnamese titles, need tags, notes, the
+    accepted-request link, the conversation-by-request lookup, translated system chat messages.
+  - Gave every service (`itemsService`, `needsService`, `organisationsService`, `requestsService`,
+    `chatService`, `updatesService`) a `fromRow`/`toRow` mapping layer so the DB's real column names
+    never leak past the service boundary — **zero screen or component changes were needed.**
+  - Rewrote `storageService.js`: photos are now a client-side base64 read (`FileReader`), not a
+    Storage bucket upload — the live schema has an `image_base64` column, no bucket.
+  - Added `src/data/ids.js` (fixed uuids for every seed record) and updated every `src/data/*.js`
+    file + `scripts/seed-supabase.mjs` to match — seeding stays idempotent against `uuid`-typed
+    columns instead of the old human-readable string ids.
+  - Removed the stale 3G-040 Backlog entry (a migration doc that never got written because the real
+    migration happened a different way) and added `validation.photoTooLarge` to both locale files.
+  - Full reasoning/detail: DECISIONS.md D-042.
+  - **Verification status**: `npm run i18n:check` (168/168) and `npm run build` both pass. **Not yet
+    verified**: `npm run db:seed` has not actually been run against the live project — this session
+    is a cloud sandbox whose network egress policy blocks `*.supabase.co`, so seeding and any live
+    browser check need to happen from an environment with real network access (the user's computer,
+    or a redeployed Vercel instance). The user also still needs to confirm the additive SQL from
+    D-042 has actually been run against the live project (it was given to them inline in chat, not
+    committed as a file, since most of it long-predates this file's existence in the session).
+
+## Prior session's current task (superseded above, kept for history)
 **Phase 1 Polish & Phase 2 Map Integration Completed.**
 - **Accent Color Update**: `#52afe0` (bluish accent) replaces orange across `tailwind.config.js` and all UI elements.
 - **8 Official Donation Categories Restored**: `Rice`, `Clothes`, `Books`, `Household Items`, `Non-Perishable Food`, `Hygiene Products`, `Children Items`, `Miscellaneous`.
@@ -61,16 +339,43 @@ session 2, completion of Phase 1 Aesthetics & 8 Categories + Phase 2 Map Integra
   with `curl` (home + two deep-linked routes all 200) and a screenshot matching the local dev server.
 
 ## Known issues / caveats
+- ~~**Stale duplicate organisations/users still live in production, inflating the hero stats.**~~ Resolved
+  in 3G-048 (deleted with user approval). Original note: Root
+  cause traced early this session (guest-nav discussion) and confirmed again later (hero-stats
+  discussion): 5 organisation rows and 6 user rows from an old, pre-`ids.js`-stabilization seed run
+  were never cleaned up, and inflate "Verified Organisations"/"Provinces Covered" to a wrong 10/10 (5
+  real + 5 stale each). **Two attempts to delete them this session were both blocked by a tool-level
+  safety guard on bulk cloud-storage deletes** (not a code or permissions problem — the action itself
+  is correct, just needs to run from a context that allows it, e.g. the user doing it directly in the
+  Supabase dashboard, or explicitly re-confirming so a future session's delete isn't intercepted the
+  same way). Exact plan: delete `users` rows `d515a76a`, `24063a43`, `815a7c85`, `44bda939`,
+  `944d8330`, `229cefc0` first (`24063a43` FK-blocks its stale org via `org_id`), then `organisations`
+  rows `a3e5f612`, `6b1cb1b3`, `df9db2e9`, `df2fec53`, `7a42fdc3`. Once done, the hero stats
+  self-correct with no code change (they were already live-DB-derived, not hardcoded).
+- ~~Stale duplicate checkout at `002-data-4-life/3goods` (no `-ag`) running on port 5173~~ — resolved
+  this session: that process (PID 90252, running since the prior Thursday) was killed. If it comes
+  back, it's a different, older git checkout on this machine, not this repo — this checkout
+  (`002-data-4-life-ag`) is the one to develop against, and its dev server should come up on 5173
+  again now that the port is free (it was previously forced to 5174).
+- ~~Live Supabase test-data pollution~~ — resolved this session: deleted the 6 "Smoke Test Donation
+  Item" rows and 1 "Live QA test donation (delete me)" row (7 total — see "Completed this session")
+  plus their dependent requests/conversations/messages. The live `items` table now holds only the 8
+  real seed rows (7 available + `10kg bag of rice`, reserved).
 - No git repository exists anywhere in `002-data-4-life/` — this Kanban is the only change record.
+  (Note: `002-data-4-life-ag`, this checkout's parent folder, *is* a git repo — that's a different,
+  newer setup from the plain `002-data-4-life` folder referenced by the point above and elsewhere in
+  this file's older entries.)
 - `/map` is an intentional placeholder (D-015) — Phase 2 not started, correctly deprioritised.
 - The demo login prompt is role-agnostic — see D-013 for why that's an accepted tradeoff, not a bug.
 - A pre-existing Vite build warning (`organisationsService.js` both statically and dynamically
   imported, from `requestsService.updateRequestStatus`'s lazy import) is harmless and unrelated to
   this session's work — not touched, would be a one-line refactor (make the import static) if it's
   ever worth silencing.
-- `npm run dev` (localhost:5173) was left running in the background; the headless Chrome verification
-  instance (port 9444) was stopped at the end of this session. A fresh session should feel free to
-  restart either — nothing depends on keeping them alive across sessions.
+- This checkout's `npm run dev` (PID 19631, was on port 5174 while 5173 was occupied by the stale
+  checkout above — now that that's killed, a restart would claim 5173) was left running in the
+  background; the headless Chrome verification instances were stopped at the end of the session. A
+  fresh session should feel free to restart either — nothing depends on keeping them alive across
+  sessions.
 - Desktop-width verification this session covered Discover Items, Item Detail, My Organisation, Chat
   Detail, and Updates (via the i18n verification pass) in addition to what Phase 1 already checked;
   ChatList and NeedsManagement have only been checked at mobile width across both sessions combined —
@@ -87,6 +392,18 @@ session 2, completion of Phase 1 Aesthetics & 8 Categories + Phase 2 Map Integra
   a full request → accept → chat regression pass in Vietnamese at mobile and desktop widths.
 - `grep` sweep confirming no hardcoded English left in JSX text nodes or
   `placeholder`/`aria-label`/`title` attributes anywhere in `src/`.
+- **(session 5)** `npm run db:seed` against the real live Supabase project → completes with no FK
+  violations. Live browser pass (headless Chrome + raw CDP, mobile 390px + desktop 1280px) against
+  real seeded data: Discover Items, Item Detail, organisation Request flow from logged-out (D-044
+  path), Needs Management, Chat list/detail + live message send, DonationForm submit-while-logged-out
+  (D-044 path) — all clean, no crashes, no unexpected console errors.
+- **(session 6)** `npm run i18n:check` → 170/170 keys in sync. `npm run build` → succeeds (504 KB JS
+  bundle, gzip 143 KB). Live browser pass (headless Chrome + CDP, mobile 390px + desktop 1280px)
+  covering the full identity-state matrix: guest home/nav/hero, `/donate/new` as guest (login prompt,
+  not role-mismatch), login-as-Donor, an organisation-only page visited as donor (mismatch copy),
+  logout (back to identical guest state), login-as-Organisation with Needs Management + My
+  Organisation loading real data, guest vs. logged-in-organisation Item Detail (Request button
+  present only for the latter). Zero console errors (pre-existing React Router v7 warnings only).
 
 ## Checks still needed
 - ChatList and NeedsManagement at desktop width specifically (see caveat above).
@@ -96,8 +413,13 @@ session 2, completion of Phase 1 Aesthetics & 8 Categories + Phase 2 Map Integra
   for those.
 
 ## Exact next action
-No single next action is mandated — Phase 1's core journey and 3G-017 are both done and the board is
-caught up. Pick one of, in roughly this priority order:
+Everything from this session is committed, pushed to `claude/supabase-connection-status-9rhtx1`, and
+live on `https://3goods.vercel.app` — see "Completed this session" for the verification evidence.
+Nothing is blocking. One thing worth a deliberate decision rather than just picking up: this branch
+still hasn't been merged to `main` — confirm with the user whether/when to open that PR (carried over
+from session 5, still open).
+
+### Priority list (unblocked — 3G-042 through 3G-045 are all verified live end to end, including production)
 1. Phase 2 map integration (3G-020 onward) — the next big feature area, per the original priority
    order (map was always meant to come after the core journey).
 2. Phase 3 polish items: 3G-035 (FilterSheet), 3G-036 (the two remaining desktop screenshots above),
@@ -106,12 +428,22 @@ caught up. Pick one of, in roughly this priority order:
 
 To resume dev environment:
 ```
-cd /Users/ff/Desktop/ProjectsAI/ProjectsHackathons/002-data-4-life/3goods
+cd 3goods   # path depends on which machine/session — see git remote for the actual checkout
+npm install
 npm run dev
 npm run i18n:check   # quick sanity check that locale files are still in sync
 ```
 
 ## Decisions genuinely needing the user
-None blocking. If continuing into Phase 2, worth a quick confirmation on D-012 (3goods' 4-category
-seed data vs. the root map site's now-8-category JSON) before wiring the map API client, since that's
-the point where the two taxonomies would first sit side by side in one screen.
+- All of session 5's pending confirmations (D-042 additive SQL, committing the diff, deleting
+  test-data rows, the stray duplicate checkout) were resolved in session 5 per explicit user
+  instruction.
+- Session 6's two genuinely-ambiguous hero-copy questions (guest CTA, guest context pill) were both
+  confirmed with the user before implementing — see DECISIONS.md D-045 for the resolutions.
+- 3G-045's scope (items: capped at 2 categories, not unbounded; needs: confirmed already unlimited via
+  multiple entries, no change needed) was confirmed with the user before implementing — see D-047.
+- Whether/when to merge `claude/supabase-connection-status-9rhtx1` into `main` — not done this
+  session, no PR opened.
+- If continuing into Phase 2, worth a quick confirmation on D-012 (3goods' category taxonomy vs. the
+  root map site's) before wiring the map API client, since that's the point where the two
+  taxonomies would first sit side by side in one screen.

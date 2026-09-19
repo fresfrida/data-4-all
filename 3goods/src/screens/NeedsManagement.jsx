@@ -3,6 +3,7 @@ import { useAsync } from "../lib/useAsync.js";
 import { getNeeds, createNeed, setNeedPriority, removeNeed } from "../services/needsService.js";
 import { getCategories, getTagsForCategory } from "../services/referenceDataService.js";
 import { translateError } from "../lib/errors.js";
+import { UNITS, parseQuantity, formatQuantity } from "../lib/quantity.js";
 import { useSession } from "../context/SessionContext.jsx";
 import { useLocale } from "../i18n/LocaleContext.jsx";
 import { useTranslate } from "../i18n/useTranslate.js";
@@ -20,7 +21,7 @@ async function loadNeedsManagement(organisationId) {
 
 /** Organisation publishes/edits its own "we currently need" list. */
 export function NeedsManagement() {
-  const { role, identity, requireLogin } = useSession();
+  const { role, isLoggedIn, identity, requireLogin } = useSession();
   const { locale } = useLocale();
   const t = useTranslate();
   const organisationId = identity?.organisationId;
@@ -30,8 +31,28 @@ export function NeedsManagement() {
   const [tagOptions, setTagOptions] = useState([]);
   const [tag, setTag] = useState("");
   const [priority, setPriority] = useState(false);
+  const [quantity, setQuantity] = useState("");
+  const [unit, setUnit] = useState(UNITS[0]);
   // Raw error object, not a pre-translated string — see D-017.
   const [formError, setFormError] = useState(null);
+
+  if (!isLoggedIn) {
+    return (
+      <EmptyState
+        title={t("screens.guestBrowsingTitle")}
+        hint={t("demo.notSecure")}
+        action={
+          <button
+            type="button"
+            onClick={() => requireLogin(() => {})}
+            className="rounded-full bg-accent-500 px-4 py-2 text-sm font-semibold text-white hover:bg-accent-600"
+          >
+            {t("demo.loginAsOrganisation")}
+          </button>
+        }
+      />
+    );
+  }
 
   if (role !== "organisation") {
     return (
@@ -53,12 +74,21 @@ export function NeedsManagement() {
   const onAdd = (e) => {
     e.preventDefault();
     setFormError(null);
-    requireLogin(async () => {
+    requireLogin(async (loggedInIdentity) => {
       try {
-        await createNeed({ organisationId: identity.organisationId, category, tag, priority });
+        await createNeed({
+          organisationId: loggedInIdentity.organisationId,
+          category,
+          tag,
+          priority,
+          quantity: parseQuantity(quantity),
+          unit,
+        });
         setCategory("");
         setTag("");
         setPriority(false);
+        setQuantity("");
+        setUnit(UNITS[0]);
         setTagOptions([]);
         reload();
       } catch (err) {
@@ -100,7 +130,12 @@ export function NeedsManagement() {
             <div key={need.id} className="flex items-center justify-between gap-2 rounded-card border border-ink-600/10 bg-white p-3">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-xs font-semibold text-ink-600">{categoryLabel(need.category)}</span>
-                <NeedChip label={tagLabel(need.category, need.tag)} priority={need.priority} onRemove={() => onRemove(need.id)} />
+                <NeedChip
+                  label={tagLabel(need.category, need.tag)}
+                  quantityLabel={formatQuantity(need.quantity, need.unit, t)}
+                  priority={need.priority}
+                  onRemove={() => onRemove(need.id)}
+                />
               </div>
               <button type="button" onClick={() => onTogglePriority(need)} className="text-xs font-medium text-accent-600 hover:underline">
                 {need.priority ? t("actions.unmarkPriority") : t("actions.markPriority")}
@@ -144,6 +179,36 @@ export function NeedsManagement() {
               </option>
             ))}
           </select>
+        </div>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <label className="flex flex-1 flex-col gap-1.5">
+            <span className="text-xs font-semibold text-ink-700">{t("fields.quantityOptional")}</span>
+            <input
+              type="number"
+              inputMode="numeric"
+              min="1"
+              step="1"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              placeholder={t("fields.quantityPlaceholder")}
+              className="rounded-lg border border-ink-600/20 px-3 py-2 text-sm"
+            />
+          </label>
+          <label className="flex flex-1 flex-col gap-1.5">
+            <span className="text-xs font-semibold text-ink-700">{t("fields.unit")}</span>
+            <select
+              value={unit}
+              onChange={(e) => setUnit(e.target.value)}
+              disabled={quantity === ""}
+              className="rounded-lg border border-ink-600/20 px-3 py-2 text-sm disabled:opacity-50"
+            >
+              {UNITS.map((u) => (
+                <option key={u} value={u}>
+                  {t(`units.${u}`)}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
         <label className="flex items-center gap-2 text-sm text-ink-700">
           <input type="checkbox" checked={priority} onChange={(e) => setPriority(e.target.checked)} />

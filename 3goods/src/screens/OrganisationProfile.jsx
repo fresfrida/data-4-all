@@ -12,6 +12,7 @@ import { EmptyState } from "../components/feedback/EmptyState.jsx";
 import { NeedChip } from "../components/needs/NeedChip.jsx";
 import { Avatar } from "../components/common/Avatar.jsx";
 import { ROUTES } from "../lib/constants.js";
+import { formatQuantity } from "../lib/quantity.js";
 
 async function loadOrganisationProfile(orgId) {
   const organisation = await getOrganisationById(orgId);
@@ -76,7 +77,12 @@ export function OrganisationProfile() {
         ) : (
           <div className="flex flex-wrap gap-1.5">
             {needs.map((need) => (
-              <NeedChip key={need.id} label={tagLabel(need.category, need.tag)} priority={need.priority} />
+              <NeedChip
+                key={need.id}
+                label={tagLabel(need.category, need.tag)}
+                quantityLabel={formatQuantity(need.quantity, need.unit, t)}
+                priority={need.priority}
+              />
             ))}
           </div>
         )}

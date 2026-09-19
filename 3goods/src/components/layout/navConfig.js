@@ -11,7 +11,8 @@ export function getNavItems(session, t) {
 
   if (!isLoggedIn) {
     return [
-      { to: ROUTES.discoverNeeds, label: t("nav.discover"), Icon: SearchIcon },
+      { to: ROUTES.discoverNeeds, label: t("nav.organisations"), Icon: BuildingIcon },
+      { to: ROUTES.discoverItems, label: t("nav.itemsDonated"), Icon: SearchIcon },
       { to: ROUTES.map, label: t("nav.map"), Icon: MapPinIcon },
     ];
   }
@@ -20,7 +21,7 @@ export function getNavItems(session, t) {
     return [
       { to: ROUTES.updates, label: t("nav.updates"), Icon: BellIcon },
       { to: ROUTES.map, label: t("nav.map"), Icon: MapPinIcon },
-      { to: ROUTES.discoverItems, label: t("nav.discover"), Icon: SearchIcon },
+      { to: ROUTES.discoverItems, label: t("nav.itemsDonated"), Icon: SearchIcon },
       { to: ROUTES.chatList, label: t("nav.chat"), Icon: ChatIcon },
       { to: ROUTES.myOrganisation, label: t("nav.myOrganisation"), Icon: BuildingIcon },
     ];

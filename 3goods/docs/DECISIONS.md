@@ -558,6 +558,43 @@ page; `DonationForm`'s collection-windows section reads "Collection time windows
   two-sentence gates, parentheses for the "(fictional, not a real charity)" aside. Placeholders like
   `{sizeKb}` untouched.
 
+## D-052 — Pre-demo bug fixes: request actions, blank-message investigation, quantity/unit
+- **Accept feedback.** `useRequestActions(refresh)` sets `busy` the moment the button is tapped (inside the
+  login-gated action, so a dismissed login prompt can't strand it) and clears it only after the action *and* the
+  screen's refetch are done, so the button can't flash back to "Accept" on stale data and a double tap can't post
+  the "request accepted" chat message twice. `useAsync` keeps the previous `data` during a reload and gained
+  `refresh()` (a promise). Me/ItemDetail show the full-page spinner only for a first load or a different
+  donor/item (`data.donorId` / `data.itemId` guard against showing another user's stale data), otherwise a small
+  "Updating…" hint. `acceptRequest`'s independent writes (request status + item reserved; system message +
+  notification) now run in parallel; the conversation still has to exist before its message.
+- **Donor acts from the item page.** `RequestRow` (extracted from Me.jsx) is shared by Me and ItemDetail; ItemDetail
+  loads organisations + conversations only for the owning donor. Me's previously hardcoded English request labels
+  now use locale keys. The Accept button shows for any `requested` row, same as before (D-009: several requests can
+  be accepted).
+- **"Every new chat creates a blank message row" — not reproduced.** Only three call sites write to `messages`:
+  `sendMessage` (rejects empty text), `postSystemMessage` (only called by `acceptRequest`), and the seed script.
+  `ensureConversationForRequest` writes only `conversations`. Live check: two fresh accepts produced two conversations
+  with exactly one message each, `sender_id` null, `body` null, `system_code = request_accepted` (per D-016/D-042 a
+  system message stores its code, never text), and the whole table has 0 rows with neither `body` nor `system_code`.
+  The row that looks empty is that system message viewed in the table editor. It renders as "Request accepted. You
+  can arrange collection here." in both chat list and thread. No live cleanup was needed. Added an invariant guard
+  (`postSystemMessage` throws `systemCodeRequired` without a code). Deliberately did **not** add a text `body` to
+  system rows (D-016).
+- **Organisation confirmation update.** `createRequest` pushes `request_submitted` to the requesting organisation
+  (target = organisation id, as for other organisation notifications) alongside the donor's `item_requested`.
+- **Quantity + unit.** `needs.quantity`/`unit` already existed; `items.quantity`/`unit` do not (confirmed by probing
+  the live table). `unit` is a code from a fixed list (`kg, pieces, boxes, bags, sets, packs`, `lib/quantity.js`),
+  labelled from `units.*` with a `_one` form for a quantity of 1; unknown legacy text is shown as typed. Quantity is
+  optional, a whole number ≥ 1 (`quantityInvalid`); unit is only stored with a quantity. On the organisations board a
+  category pill shows the *sum* of its needs' quantities only when every quantified need shares a unit, otherwise
+  nothing (no kg + boxes). Seeded needs have no quantities (none invented).
+- **Item migration (run by the user; the anon key can't do DDL):**
+  `alter table items add column if not exists quantity integer;`
+  `alter table items add column if not exists unit text;`
+  `itemsService` only writes those two columns when a quantity is entered, so listings without one keep working
+  before the SQL is applied; a listing *with* one fails with the generic error until it is. Display paths were
+  verified against an injected API response, not real stored data.
+
 ---
 
 ## Deferred questions (not blocking Phase 1)

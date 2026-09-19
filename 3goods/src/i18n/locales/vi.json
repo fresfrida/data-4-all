@@ -43,6 +43,8 @@
   "actions": {
     "request": "Yêu cầu vật phẩm",
     "accept": "Chấp nhận",
+    "accepting": "Đang chấp nhận…",
+    "updating": "Đang cập nhật…",
     "decline": "Từ chối",
     "save": "Lưu",
     "cancel": "Hủy",
@@ -77,6 +79,10 @@
     "secondaryCategory": "Cũng thuộc danh mục (tùy chọn)",
     "secondaryCategoryNone": "Không có",
     "condition": "Tình trạng",
+    "quantity": "Số lượng",
+    "quantityOptional": "Số lượng (không bắt buộc)",
+    "quantityPlaceholder": "VD: 10",
+    "unit": "Đơn vị",
     "conditionPlaceholder": "ví dụ: Như mới, chưa mở",
     "description": "Mô tả",
     "area": "Khu vực",
@@ -125,6 +131,8 @@
     "deliveryOptionRequired": "Vui lòng chọn hình thức giao nhận.",
     "organisationIdRequired": "Cần có tổ chức.",
     "needTagRequired": "Vui lòng chọn một nhãn nhu cầu.",
+    "quantityInvalid": "Số lượng phải là số nguyên từ 1 trở lên.",
+    "systemCodeRequired": "Tin nhắn hệ thống cần có mã tin nhắn.",
     "messageTextRequired": "Vui lòng nhập nội dung tin nhắn.",
     "itemNotFound": "Vật phẩm này không còn tồn tại.",
     "itemNotAvailable": "Vật phẩm này không còn có thể yêu cầu.",
@@ -137,7 +145,22 @@
     "item_requested": "Một tổ chức đã yêu cầu vật phẩm của bạn: {itemTitle}",
     "request_accepted": "Yêu cầu của bạn cho \"{itemTitle}\" đã được chấp nhận",
     "new_item_matching_needs": "Có vật phẩm mới phù hợp với nhu cầu của bạn: {itemTitle}",
-    "donation_completed": "Đã hoàn tất việc nhận: {itemTitle}"
+    "donation_completed": "Đã hoàn tất việc nhận: {itemTitle}",
+    "request_submitted": "Bạn đã yêu cầu: {itemTitle}"
+  },
+  "units": {
+    "kg": "kg",
+    "kg_one": "kg",
+    "pieces": "cái",
+    "pieces_one": "cái",
+    "boxes": "hộp",
+    "boxes_one": "hộp",
+    "bags": "túi",
+    "bags_one": "túi",
+    "sets": "bộ",
+    "sets_one": "bộ",
+    "packs": "gói",
+    "packs_one": "gói"
   },
   "systemMessages": {
     "request_accepted": "Yêu cầu đã được chấp nhận. Bạn có thể sắp xếp việc nhận tại đây."
@@ -173,6 +196,9 @@
     "matchesNeedNote": "Vật phẩm này có thể phù hợp với một nhu cầu đã đăng của tổ chức bạn. Đây chỉ là gợi ý, không phải xác nhận.",
     "donatedByLabel": "Quyên góp bởi {name}",
     "itemNoLongerExists": "Vật phẩm này không còn tồn tại.",
+    "orgRequestsHeading": "Yêu cầu từ tổ chức ({count})",
+    "requestedOn": "Đã yêu cầu: {date}",
+    "noOrgRequests": "Chưa có tổ chức nào yêu cầu vật phẩm này.",
     "conversationNoLongerExists": "Cuộc trò chuyện này không còn tồn tại.",
     "chatPartnerDonor": "Người quyên góp",
     "itemsNeeded": "{count} vật phẩm cần thiết",

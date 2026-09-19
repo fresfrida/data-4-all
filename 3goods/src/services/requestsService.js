@@ -74,13 +74,25 @@ export async function createRequest({ itemId, organisationId }) {
   );
   const request = fromRow(row);
 
-  await pushUpdate({
-    userId: item.donorId,
-    type: "item_requested",
-    params: { itemTitle: item.title },
-    linkItemId: item.id,
-    linkRequestId: request.id,
-  });
+  // The donor hears about the request; the requesting organisation gets its
+  // own confirmation entry in its Updates feed (organisations are their own
+  // notification target — see updatesService.js).
+  await Promise.all([
+    pushUpdate({
+      userId: item.donorId,
+      type: "item_requested",
+      params: { itemTitle: item.title },
+      linkItemId: item.id,
+      linkRequestId: request.id,
+    }),
+    pushUpdate({
+      userId: organisationId,
+      type: "request_submitted",
+      params: { itemTitle: item.title },
+      linkItemId: item.id,
+      linkRequestId: request.id,
+    }),
+  ]);
 
   return request;
 }
@@ -98,8 +110,13 @@ export async function acceptRequest(requestId) {
   const item = await getItemById(request.itemId);
   if (!item) throw new AppError("itemForRequestNotFound");
 
-  const updatedRow = await dbUpdate("requests", requestId, { status: "accepted" });
-  await _markItemReserved(item.id, requestId);
+  // Independent writes go out together; the system message has to wait for
+  // the conversation to exist. Fewer sequential round-trips = shorter wait
+  // after the donor taps Accept.
+  const [updatedRow] = await Promise.all([
+    dbUpdate("requests", requestId, { status: "accepted" }),
+    _markItemReserved(item.id, requestId),
+  ]);
 
   const conversation = await ensureConversationForRequest({
     requestId,
@@ -107,15 +124,16 @@ export async function acceptRequest(requestId) {
     donorId: item.donorId,
     organisationId: request.organisationId,
   });
-  await postSystemMessage(conversation.id, "request_accepted");
-
-  await pushUpdate({
-    userId: request.organisationId,
-    type: "request_accepted",
-    params: { itemTitle: item.title },
-    linkItemId: item.id,
-    linkRequestId: requestId,
-  });
+  await Promise.all([
+    postSystemMessage(conversation.id, "request_accepted"),
+    pushUpdate({
+      userId: request.organisationId,
+      type: "request_accepted",
+      params: { itemTitle: item.title },
+      linkItemId: item.id,
+      linkRequestId: requestId,
+    }),
+  ]);
 
   return fromRow(updatedRow);
 }

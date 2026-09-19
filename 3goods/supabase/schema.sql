@@ -114,6 +114,14 @@ alter table items add column if not exists secondary_category_id uuid references
 
 alter table needs add column if not exists tag text;
 
+-- Quantity + unit on items (DECISIONS.md D-052). `needs` already had both
+-- columns in the original live schema; `items` did not. Apply in the
+-- Supabase SQL Editor (the anon key cannot run DDL). The app only writes
+-- these two columns when a donor actually enters a quantity, so listings
+-- without one keep working before this has been run.
+alter table items add column if not exists quantity integer;
+alter table items add column if not exists unit text;
+
 alter table conversations add column if not exists request_id uuid references requests (id);
 
 alter table messages add column if not exists system_code text;

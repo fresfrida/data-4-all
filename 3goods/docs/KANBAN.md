@@ -38,6 +38,26 @@ session; see each Done entry's evidence)
 
 ## Done
 
+- **3G-050** — Pre-demo bug fixes: Accept feedback, donor accepts from the item page, "blank message" investigation,
+  org "you requested" update, need quantity/unit, item quantity/unit (see DECISIONS.md D-052)
+  - Deliverable: (1) `useAsync.refresh()` + `useRequestActions` + shared `RequestRow`: the tapped button shows a
+    spinner and "Accepting…" immediately and all buttons lock; Me/ItemDetail keep their content on screen during
+    the refetch (inline "Updating…") instead of the full-page spinner; `acceptRequest` sends independent writes in
+    parallel. (2) `ItemDetail` shows the owning donor the item's requests with Accept/Undo/Chat. (3) Investigated:
+    no code path writes a blank message; added a guard in `postSystemMessage`. (4) `createRequest` also pushes a
+    `request_submitted` update to the requesting organisation. (5) Needs: quantity + unit (form, service, chips on
+    profile/board/management). (6) Items: quantity + unit in `DonationForm`, `itemsService`, `ItemDetail`,
+    `ItemCard`. **Needs the SQL in D-052 run in the Supabase SQL Editor** before a donor can save a quantity.
+  - Deps: none. Acceptance: `npm run i18n:check`, `npm run build`, 375px + 1280px checks in EN + VI.
+  - Evidence: `npm run i18n:check` → 208/208 keys in sync; `npm run build` succeeds. Live browser (headless
+    Chrome + CDP) against the live DB with a labelled QA item (all test rows deleted afterwards): 33ms after tapping
+    Accept the button reads "Đang chấp nhận…" (disabled); 0 blank-page samples over 4.8s; final state correct.
+    ItemDetail shows both organisations' requests to the owner; Accept works there. Two accepts → two conversations,
+    each with exactly one message (`request_accepted`, body null); 0 rows in `messages` lack both body and
+    system_code. Org Updates shows "You requested: …" / "Bạn đã yêu cầu: …". Need "50 kg" shows on the profile
+    and the board. Item quantity display checked via an injected API response ("1 box", "3 boxes", "3 hộp"), because
+    the column doesn't exist yet. Zero console errors.
+
 - **3G-049** — Tab title is just "3goods"; demo login picks a specific seeded donor/organisation; em dashes
   removed from user-facing copy (see DECISIONS.md D-051)
   - Deliverable: `index.html` `<title>` → `3goods` (nothing sets `document.title` per route). Login is now

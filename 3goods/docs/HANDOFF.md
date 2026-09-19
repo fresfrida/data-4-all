@@ -1,6 +1,7 @@
 # 3goods Handoff
 
-Last updated: session 6, seventh checkpoint: 3G-049 / D-051 (tab title "3goods", demo login picks any seeded
+Last updated: session 6, eighth checkpoint: 3G-050 / D-052 (pre-demo bug fixes; **item quantity SQL still to be run
+by the user**). Previous: seventh checkpoint: 3G-049 / D-051 (tab title "3goods", demo login picks any seeded
 donor/organisation, em dashes out of locale copy). Previous: sixth checkpoint — 3G-048 punch-list pass (D-050): footer/nav rename, real
 scored map heatmap + priority key bar, live hero stats with count-up, Organisations search, `/` = hero +
 Organisations board again, stale live rows deleted. Previous checkpoint (same session): fifth checkpoint — split the landing page into
@@ -20,9 +21,25 @@ after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_AN
 Production env vars on this project (`vercel env ls production` to confirm) — set in session 5.
 
 ## Current task
-**3G-043 through 3G-049 done. No loose ends.**
+**3G-043 through 3G-050 done. One open action for the user: run the two-line `alter table items` SQL from D-052 in
+the Supabase SQL Editor (until then, a donor entering a quantity gets a generic error; listings without one work).**
 
 ## Completed this session (session 6)
+- **3G-050 — pre-demo bug fixes** (DECISIONS.md D-052 has the reasoning).
+  1. Accept feedback: tapped button → spinner + "Accepting…" at once, buttons locked, no full-page spinner on
+     refetch (`useAsync.refresh`, `useRequestActions`, `RequestRow`). Accept also does fewer sequential round trips.
+  2. `ItemDetail` now shows the owning donor the item's requests with Accept/Undo/Chat, so notification links land
+     somewhere actionable.
+  3. "Blank message row": could not reproduce, and no code path can write one. The row that looks blank in the
+     table editor is the `request_accepted` system message (body null, `system_code` set, by design, D-016).
+     Zero rows lack both. Added a guard in `postSystemMessage`. Nothing to clean up.
+  4. Requesting organisation gets a `request_submitted` update ("You requested: …").
+  5. Needs have quantity + unit (form, service, chips). 6. Items have quantity + unit in the form/service/detail/
+     card, **pending the SQL below**.
+  - SQL to run (Supabase SQL Editor): `alter table items add column if not exists quantity integer;` and
+    `alter table items add column if not exists unit text;` (also added to `supabase/schema.sql`).
+  - Left alone: two "UAT TEST MESSAGE … safe to delete" messages and their conversation/request from earlier
+    manual testing are still in the live DB (not created by this work).
 - **3G-049 — tab title, per-account demo login, em dashes** (DECISIONS.md D-051).
   - `<title>` is `3goods`. Login prompt: role, then pick a specific seeded account (all 5 donors, all 5
     organisations) from `usersService.getLoginIdentities()`. `loginAs(identity)` / `resolveLoginPrompt(identity)`.

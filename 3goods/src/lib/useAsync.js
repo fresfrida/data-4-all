@@ -8,6 +8,12 @@ import { useCallback, useEffect, useState } from "react";
  *
  * `deps` works like useEffect's dependency array — refetches when it
  * changes. `reload()` lets a screen refetch after a mutation.
+ *
+ * On a refetch the previous `data` stays available while `status` is
+ * "loading" (a screen can keep showing it with a light inline indicator).
+ * `refresh()` does the same refetch but returns a promise that settles when
+ * it's done, so a caller can keep a button disabled until the new data has
+ * actually arrived.
  */
 export function useAsync(asyncFn, deps = []) {
   const [state, setState] = useState({ status: "loading", data: null, error: null });
@@ -33,5 +39,17 @@ export function useAsync(asyncFn, deps = []) {
 
   useEffect(() => run(), [run]);
 
-  return { ...state, reload: run };
+  const refresh = useCallback(async () => {
+    setState((prev) => ({ ...prev, status: "loading" }));
+    try {
+      const data = await asyncFn();
+      setState({ status: "success", data, error: null });
+    } catch (error) {
+      console.error("[3goods] useAsync error:", error);
+      setState({ status: "error", data: null, error });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
+
+  return { ...state, reload: run, refresh };
 }

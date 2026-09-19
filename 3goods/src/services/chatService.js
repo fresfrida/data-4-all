@@ -104,6 +104,9 @@ export async function sendMessage(payload) {
  * under `systemMessages.*` in both locale files.
  */
 export async function postSystemMessage(conversationId, systemCode, params = {}, systemRole = "organisation") {
+  // A system message's only content is its code (`body` is null by design),
+  // so a row without one would be genuinely blank — refuse to write it.
+  if (!systemCode) throw new AppError("systemCodeRequired");
   const row = await insert(
     "messages",
     {

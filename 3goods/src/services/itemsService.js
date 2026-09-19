@@ -12,6 +12,7 @@
 
 import { getAll, getById, insert, update } from "../lib/db.js";
 import { AppError } from "../lib/errors.js";
+import { isValidQuantity } from "../lib/quantity.js";
 import { getCategoryDbId, getCategorySlugFromDbId } from "./referenceDataService.js";
 
 /** Multiple collection windows are joined into the single `collection_windows` text column. */
@@ -34,6 +35,8 @@ async function fromRow(row, usersById) {
     deliveryOption: row.delivery_option,
     collectionWindows: row.collection_windows ? row.collection_windows.split(WINDOW_SEP).filter(Boolean) : [],
     notes: row.notes ?? "",
+    quantity: row.quantity ?? null,
+    unit: row.unit ?? null,
     photoPaths: row.image_base64 ? [row.image_base64] : [],
     status: row.status,
     acceptedRequestId: row.accepted_request_id ?? undefined,
@@ -42,7 +45,12 @@ async function fromRow(row, usersById) {
 }
 
 async function toInsertRow(payload) {
+  const quantity = payload.quantity ?? null;
   return {
+    // Only written when given: `items.quantity`/`unit` come from an additive SQL
+    // migration (D-052), and a listing with no quantity must keep working
+    // even against a database that hasn't had it applied yet.
+    ...(quantity !== null && { quantity, unit: payload.unit || null }),
     title: payload.title.trim(),
     title_vi: payload.titleVi || null,
     category_id: await getCategoryDbId(payload.category),
@@ -123,6 +131,7 @@ export async function createDonation(payload) {
   if (!payload.category) throw new AppError("categoryRequired");
   if (!payload.areaId) throw new AppError("areaRequired");
   if (!payload.deliveryOption) throw new AppError("deliveryOptionRequired");
+  if (!isValidQuantity(payload.quantity ?? null)) throw new AppError("quantityInvalid");
 
   const row = await insert("items", await toInsertRow(payload), "item");
   const usersById = await loadUsersById();

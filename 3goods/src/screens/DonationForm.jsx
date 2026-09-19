@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAsync } from "../lib/useAsync.js";
 import { getAreas, getCategories, getTagsForCategory } from "../services/referenceDataService.js";
+import { UNITS, parseQuantity } from "../lib/quantity.js";
 import { createDonation } from "../services/itemsService.js";
 import { uploadItemPhotos } from "../services/storageService.js";
 import { translateError } from "../lib/errors.js";
@@ -38,6 +39,8 @@ export function DonationForm() {
   const [windowInput, setWindowInput] = useState("");
   const [collectionWindows, setCollectionWindows] = useState([]);
   const [notes, setNotes] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [unit, setUnit] = useState(UNITS[0]);
   const [photoFiles, setPhotoFiles] = useState([]);
   const [photoPreviews, setPhotoPreviews] = useState([]);
   const [uploadingPhotos, setUploadingPhotos] = useState(false);
@@ -115,6 +118,8 @@ export function DonationForm() {
         secondaryCategory: secondaryCategory || undefined,
         needTags: tags,
         condition,
+        quantity: parseQuantity(quantity),
+        unit,
         areaId,
         description,
         deliveryOption,
@@ -244,6 +249,37 @@ export function DonationForm() {
           placeholder={t("fields.conditionPlaceholder")}
         />
       </label>
+
+      <div className="flex gap-3">
+        <label className="flex flex-1 flex-col gap-1.5">
+          <span className="text-xs font-semibold text-ink-700">{t("fields.quantityOptional")}</span>
+          <input
+            type="number"
+            inputMode="numeric"
+            min="1"
+            step="1"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+            placeholder={t("fields.quantityPlaceholder")}
+            className="rounded-lg border border-ink-600/20 px-3 py-2 text-sm"
+          />
+        </label>
+        <label className="flex flex-1 flex-col gap-1.5">
+          <span className="text-xs font-semibold text-ink-700">{t("fields.unit")}</span>
+          <select
+            value={unit}
+            onChange={(e) => setUnit(e.target.value)}
+            disabled={quantity === ""}
+            className="rounded-lg border border-ink-600/20 px-3 py-2 text-sm disabled:opacity-50"
+          >
+            {UNITS.map((u) => (
+              <option key={u} value={u}>
+                {t(`units.${u}`)}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
 
       <label className="flex flex-col gap-1.5">
         <span className="text-xs font-semibold text-ink-700">{t("fields.description")}</span>

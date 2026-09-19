@@ -9,6 +9,7 @@
 
 import { getAll, insert, update as dbUpdate, remove as dbRemove } from "../lib/db.js";
 import { AppError } from "../lib/errors.js";
+import { isValidQuantity } from "../lib/quantity.js";
 import { getCategoryDbId, getCategorySlugFromDbId } from "./referenceDataService.js";
 
 async function fromRow(row) {
@@ -18,6 +19,8 @@ async function fromRow(row) {
     category: await getCategorySlugFromDbId(row.category_id),
     tag: row.tag ?? "",
     priority: row.priority === "high",
+    quantity: row.quantity ?? null,
+    unit: row.unit ?? null,
     createdAt: row.created_at,
   };
 }
@@ -41,13 +44,15 @@ export async function getNeeds(filters = {}) {
 }
 
 /**
- * @param {{organisationId: string, category: string, tag: string, priority?: boolean}} payload
+ * @param {{organisationId: string, category: string, tag: string, priority?: boolean, quantity?: number|null, unit?: string|null}} payload
  * @returns {Promise<import('../data/types.js').Need>}
  */
 export async function createNeed(payload) {
   if (!payload.organisationId) throw new AppError("organisationIdRequired");
   if (!payload.category) throw new AppError("categoryRequired");
   if (!payload.tag) throw new AppError("needTagRequired");
+  const quantity = payload.quantity ?? null;
+  if (!isValidQuantity(quantity)) throw new AppError("quantityInvalid");
 
   const row = await insert(
     "needs",
@@ -56,6 +61,8 @@ export async function createNeed(payload) {
       category_id: await getCategoryDbId(payload.category),
       tag: payload.tag,
       priority: payload.priority ? "high" : "medium",
+      quantity,
+      unit: quantity === null ? null : payload.unit || null,
       status: "open",
       created_at: new Date().toISOString(),
     },

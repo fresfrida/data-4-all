@@ -3,6 +3,8 @@ import { CategoryIcon } from "./CategoryIcon.jsx";
 import { StatusBadge } from "../status/StatusBadge.jsx";
 import { Avatar } from "../common/Avatar.jsx";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
+import { useTranslate } from "../../i18n/useTranslate.js";
+import { formatQuantity } from "../../lib/quantity.js";
 import { ROUTES } from "../../lib/constants.js";
 
 /**
@@ -10,6 +12,8 @@ import { ROUTES } from "../../lib/constants.js";
  */
 export function ItemCard({ item, categoryLabel, secondaryCategoryLabel, areaLabel, showStatus = false }) {
   const { locale } = useLocale();
+  const t = useTranslate();
+  const quantityLabel = formatQuantity(item.quantity, item.unit, t);
   const photo = item.photoPaths?.[0];
   const displayTitle = locale === "vi" ? (item.titleVi ?? item.title) : item.title;
 
@@ -36,6 +40,11 @@ export function ItemCard({ item, categoryLabel, secondaryCategoryLabel, areaLabe
             <span className="inline-block rounded-full bg-cream-100 px-2.5 py-0.5 text-[10px] text-ink-600 border border-ink-600/10 font-medium">
               {categoryLabel}
             </span>
+            {quantityLabel && (
+              <span className="inline-block rounded-full bg-accent-50 px-2.5 py-0.5 text-[10px] text-accent-700 border border-accent-200/60 font-semibold">
+                {quantityLabel}
+              </span>
+            )}
             {secondaryCategoryLabel && (
               <span className="inline-block rounded-full bg-cream-100 px-2.5 py-0.5 text-[10px] text-ink-600 border border-ink-600/10 font-medium">
                 {secondaryCategoryLabel}

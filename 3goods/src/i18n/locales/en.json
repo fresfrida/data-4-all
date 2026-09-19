@@ -43,6 +43,8 @@
   "actions": {
     "request": "Request item",
     "accept": "Accept",
+    "accepting": "Accepting…",
+    "updating": "Updating…",
     "decline": "Decline",
     "save": "Save",
     "cancel": "Cancel",
@@ -77,6 +79,10 @@
     "secondaryCategory": "Also list under (optional)",
     "secondaryCategoryNone": "None",
     "condition": "Condition",
+    "quantity": "Quantity",
+    "quantityOptional": "Quantity (optional)",
+    "quantityPlaceholder": "e.g. 10",
+    "unit": "Unit",
     "conditionPlaceholder": "e.g. Like new, unopened",
     "description": "Description",
     "area": "Area / location",
@@ -125,6 +131,8 @@
     "deliveryOptionRequired": "Delivery option is required.",
     "organisationIdRequired": "Organisation is required.",
     "needTagRequired": "A need tag is required.",
+    "quantityInvalid": "Quantity must be a whole number, 1 or more.",
+    "systemCodeRequired": "A system message needs a message code.",
     "messageTextRequired": "Message text is required.",
     "itemNotFound": "This item no longer exists.",
     "itemNotAvailable": "This item is no longer available to request.",
@@ -137,7 +145,22 @@
     "item_requested": "An organisation requested your item: {itemTitle}",
     "request_accepted": "Your request for \"{itemTitle}\" was accepted",
     "new_item_matching_needs": "New item matching your needs: {itemTitle}",
-    "donation_completed": "Collection completed: {itemTitle}"
+    "donation_completed": "Collection completed: {itemTitle}",
+    "request_submitted": "You requested: {itemTitle}"
+  },
+  "units": {
+    "kg": "kg",
+    "kg_one": "kg",
+    "pieces": "pieces",
+    "pieces_one": "piece",
+    "boxes": "boxes",
+    "boxes_one": "box",
+    "bags": "bags",
+    "bags_one": "bag",
+    "sets": "sets",
+    "sets_one": "set",
+    "packs": "packs",
+    "packs_one": "pack"
   },
   "systemMessages": {
     "request_accepted": "Request accepted. You can arrange collection here."
@@ -173,6 +196,9 @@
     "matchesNeedNote": "This looks like it may match one of your organisation's listed needs. It's a suggestion only, not a guarantee.",
     "donatedByLabel": "Donated by {name}",
     "itemNoLongerExists": "This item no longer exists.",
+    "orgRequestsHeading": "Organisation requests ({count})",
+    "requestedOn": "Requested: {date}",
+    "noOrgRequests": "No organisation requests yet for this item.",
     "conversationNoLongerExists": "This conversation no longer exists.",
     "chatPartnerDonor": "Donor",
     "itemsNeeded": "{count} items needed",

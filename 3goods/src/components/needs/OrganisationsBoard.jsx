@@ -11,6 +11,7 @@ import { ErrorState } from "../feedback/ErrorState.jsx";
 import { EmptyState } from "../feedback/EmptyState.jsx";
 import { NeedChip } from "./NeedChip.jsx";
 import { ROUTES } from "../../lib/constants.js";
+import { summariseNeedQuantities } from "../../lib/quantity.js";
 import { Avatar } from "../common/Avatar.jsx";
 
 async function loadNeedsBoard() {
@@ -149,13 +150,17 @@ export function OrganisationsBoard({ headingLevel = "h1" }) {
                   </div>
 
                   <div className="flex flex-wrap gap-1.5">
-                    {[...new Map(needs.map((need) => [need.category, need])).values()].map((need) => (
-                      <NeedChip
-                        key={need.category}
-                        label={categoryLabel(need.category)}
-                        priority={needs.some((n) => n.category === need.category && n.priority)}
-                      />
-                    ))}
+                    {[...new Map(needs.map((need) => [need.category, need])).values()].map((need) => {
+                      const categoryNeeds = needs.filter((n) => n.category === need.category);
+                      return (
+                        <NeedChip
+                          key={need.category}
+                          label={categoryLabel(need.category)}
+                          quantityLabel={summariseNeedQuantities(categoryNeeds, t)}
+                          priority={categoryNeeds.some((n) => n.priority)}
+                        />
+                      );
+                    })}
                   </div>
                 </div>
 

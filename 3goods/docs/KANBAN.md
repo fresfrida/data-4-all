@@ -38,6 +38,23 @@ session; see each Done entry's evidence)
 
 ## Done
 
+- **3G-051** — One accepted organisation per item enforced (D-009 bug), UAT cleanup, seed need quantities, full
+  live walkthrough (see DECISIONS.md D-053)
+  - Deliverable: `acceptRequest` throws `itemAlreadyReserved` when another request holds the item (and no-ops for a
+    request already accepted/arranging/completed); `deriveDisplayStatus` returns "unavailable" for a pending sibling
+    of an accepted request; `RequestRow` and `ItemDetail` go through it (no Accept button on unavailable rows);
+    Undo/Re-open of the accepted request releases the item. `need001`–`need010` carry quantity + unit in
+    `src/data/needs.js`, the seed script and the live rows; new units "cans" and "books". Deleted the UAT test
+    chain (item, request, conversation, messages, notifications) and the one UAT message inside the seeded rice chat.
+  - Deps: none. Acceptance: `npm run i18n:check`, `npm run build`, live walkthrough in EN + VI.
+  - Evidence: `npm run i18n:check` → 212/212; `npm run build` succeeds. Walkthrough on production (headless
+    Chrome + CDP; EN 375px, VI 1280px, roles swapped): both organisations request → own "You requested" update →
+    donor accepts (button "Accepting…" mid-flight) → sibling row "No longer available" with no button, and sibling's
+    own item page says the same → donor/org chat both ways → arranging → completed → donor Re-open → sibling
+    acceptable again, item Available. Service-level: accepting the sibling throws `itemAlreadyReserved`; re-accepting
+    the accepted request leaves exactly one system message. Zero console errors. All QA rows deleted, org
+    "past received" lists restored.
+
 - **3G-050** — Pre-demo bug fixes: Accept feedback, donor accepts from the item page, "blank message" investigation,
   org "you requested" update, need quantity/unit, item quantity/unit (see DECISIONS.md D-052)
   - Deliverable: (1) `useAsync.refresh()` + `useRequestActions` + shared `RequestRow`: the tapped button shows a

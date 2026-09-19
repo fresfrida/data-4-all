@@ -595,6 +595,28 @@ page; `DonationForm`'s collection-windows section reads "Collection time windows
   before the SQL is applied; a listing *with* one fails with the generic error until it is. Display paths were
   verified against an injected API response, not real stored data.
 
+## D-053 — Enforce D-009 in acceptRequest / deriveDisplayStatus; Undo releases the item; seed need quantities
+- **Bug, not a product choice.** D-009 says one accepted organisation per listing, but `acceptRequest` never checked
+  (its comment claimed it did), `deriveDisplayStatus` returned `request.status` unchanged, and the Accept button gated
+  on the raw status. Fix: `acceptRequest` throws the existing `itemAlreadyReserved` when the item's
+  `acceptedRequestId` is a *different* request (or the item is reserved with no accepted id); it returns the request
+  unchanged if it is already accepted/arranging/completed (no duplicate system message, no status regression).
+  `deriveDisplayStatus` returns "unavailable" for a `requested` request whose item is held by another request; the
+  sibling's stored row is never mutated (D-009's derived-status rule). `RequestRow` (Me + ItemDetail) and the
+  organisation's own item-page pill use it; an "unavailable" row shows no button.
+- **Undo/Re-open must release the item.** `revertRequestToPending` previously only reset the request, leaving the item
+  reserved to a request that was no longer accepted. With the new rule that would have left every sibling stuck on
+  "no longer available". It now calls `reopenItemAvailability` when the item's accepted request is the one being
+  reverted. (Side effect: the item is browsable again after Undo, which is the intent.)
+- **Seed quantities** (user-supplied): need001 200 kg, 002 100 cans, 003 300 kg, 004 50 pieces, 005 100 books, 006 80
+  sets, 007 40 pieces, 008 60 pieces, 009 100 packs, 010 120 pieces. Applied to `src/data/needs.js`, the seed script
+  mapping, and the live rows (targeted update by fixed id). Added units `cans` ("lon") and `books` ("cuốn").
+- **UAT cleanup.** One "UAT TEST MESSAGE" lived *inside the seeded rice conversation*, so only that message was
+  deleted (deleting "its conversation and request" would have removed the seeded in-progress collection). The other
+  belonged to a separate test chain (item "UAT TEST - Rice Pack 20260919" → request → conversation → notifications),
+  deleted in full including the test item, which the request could not be removed without.
+- Not done: removing an item from an organisation's `past_received_item_ids` on Re-open (see HANDOFF).
+
 ---
 
 ## Deferred questions (not blocking Phase 1)

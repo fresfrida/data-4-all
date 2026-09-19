@@ -21,8 +21,8 @@ after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_AN
 Production env vars on this project (`vercel env ls production` to confirm) — set in session 5.
 
 ## Current task
-**3G-043 through 3G-050 done. One open action for the user: run the two-line `alter table items` SQL from D-052 in
-the Supabase SQL Editor (until then, a donor entering a quantity gets a generic error; listings without one work).**
+**3G-043 through 3G-050 done. The `items.quantity`/`unit` SQL from D-052 has been run and verified live (posted a
+"12 boxes" item on production; detail + card display it; test row deleted). No open actions.**
 
 ## Completed this session (session 6)
 - **3G-050 — pre-demo bug fixes** (DECISIONS.md D-052 has the reasoning).

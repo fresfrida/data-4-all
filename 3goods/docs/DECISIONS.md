@@ -955,6 +955,52 @@ page; `DonationForm`'s collection-windows section reads "Collection time windows
   (with its "saved copy" notice) in the gap. **Lesson:** do not run a formatter over `3goods-map/data/*.js`; smoke-test all five
   `/api/*` endpoints after any deploy of that folder.
 
+## D-073 — OSM facility pins are clickable and linked to registered organisations (matched / unmatched popups)
+- **Problem:** the 89 OpenStreetMap facility pins did nothing when clicked. Rather than remove them, they now connect to the app's
+  own organisation directory.
+- **Is matching feasible? Yes, by position, and only by position.** The organisations are fictional: no shared names, ids or
+  addresses with the real facilities, so name matching is meaningless. A province alone is far too coarse (Hà Nội has 25 pins and 9
+  organisations). So organisations get an optional exact `location` (`organisations.lat` / `lng`, both nullable) and a pin matches an
+  organisation when they are **within 150 m**. Organisations with no `location` never match, so missing data cannot produce a false
+  match. **One-to-one:** candidate pairs are claimed nearest-first, so an organisation links only its nearest pin and a pin only its nearest
+  organisation (the closest two distinct pins are 120 m apart; two OSM entries for one building sit at 0 m). Logic:
+  `features/map/facilityMatching.js` (`matchFacilitiesToOrganisations`, haversine). The removal fallback in the request was
+  therefore not needed. **Honest limit:** the matches exist because the demo data was seeded that way (below); real organisations would need
+  to supply coordinates. Today 10 of 31 organisations have one, so 10 of 89 pins are matched and 79 are not.
+- **Seeding (requested: a guaranteed handful of matches):** 10 of the 23 coverage organisations (D-070) sit on real pin coordinates,
+  exactly on the pin or about 30 m from it (`location` in `src/data/coverage.js`): Hà Nội 3, Hồ Chí Minh 2, and one each in Bà Rịa-Vũng
+  Tàu, Cần Thơ, Đồng Nai, Bắc Ninh, Thanh Hóa (RRD, South East, Mekong, Central Coast). Others keep no coordinates, distributed by
+  province as D-070 planned. Pins were chosen for generic names and a loosely fitting theme (an elders group at a nursing home, a kitchen
+  partner at a social-protection centre); **children's villages, drug-rehabilitation and mental-health centres were avoided on purpose**, because
+  pairing a fictional organisation with a real, sensitive institution would be wrong. The matched popup says so explicitly ("this fictional
+  organisation is placed here for the demo. It is not the facility itself").
+- **Data separation rule kept (CLAUDE.md):** the OSM record and the 3goods organisation stay separate records. The only bridge is the
+  computed match, shown as a link. The popup labels the OSM facility as such ("OpenStreetMap facility") and the organisation as
+  "Registered on 3goods". The map disclaimer and legend were reworded: grey pin = an OSM facility not on 3goods yet, blue pin = a registered
+  3goods organisation at that location.
+- **Popup (`FacilityPopup`):** an overlay card inside the map frame (bottom, full-width on phones), not anchored to the pin (pins move
+  with pan and zoom). It opens on a click, tap or Enter/Space on the pin, toggles on the same pin, closes with ✕ or Escape, and closes when
+  the facilities layer is turned off. **Matched:** facility name and type, "Registered on 3goods" tag, organisation name, verified /
+  "not yet verified", a two-line mission, a "View organisation profile" link to `/organisation/<id>`, and the demonstration note.
+  **Unmatched:** "This facility hasn't joined 3goods yet" and a call to action.
+- **Call to action, chosen: a short interest form, not a `mailto:`.** A `mailto:` needs a real inbox address this project does not have
+  (and would put a fictional prototype's contact details on public pages); the form needs only what already exists (Supabase). Name + email-or-phone
+  (both required, translated validation, no other fields) writes one row to the new **`facility_interests`** table: osm type/id, facility
+  name and coordinates, contact name, contact, the visitor's language, timestamp. **It is not registration and creates no account.** Nothing
+  in the app reads it. **Privacy:** the table's only policy is insert-only for the public key, so contact details can be written but not read back
+  with it (read them in the Supabase dashboard); a short line under the form says what they are used for. `services/facilityInterestService.js`,
+  `db.insertBlind` (an insert that does not read the row back, which an insert-only policy would refuse).
+- **Pins (wrapper only, vendor untouched):** the vendored `mapView.js` draws pins as plain SVG with no click handling and is read-only (D-061), so
+  `features/map/pinLayer.js` decorates them after each MapView render (matched / selected classes, `role="button"`, `tabindex`, an
+  accessible name, a larger transparent hit disc so a fingertip can hit a ~13 px pin) and attaches one delegated listener that survives
+  the re-renders. It checks the pin count and each pin's name against the facility list before touching anything, and a drag that starts on a
+  pin (panning) is not a click. No root-site change or redeploy was needed.
+- **Schema (SQL for the user, folded into the pending coverage SQL):** `organisations.lat/lng`, the `facility_interests` table with its
+  insert-only policy. `supabase/seed-coverage.sql` (generated) carries them together with the 23 organisations; `supabase/schema.sql`
+  documents them. The app tolerates the columns not existing yet (no location = no matches; the form shows a translated error if the table is missing).
+- **Not done:** matches are not shown anywhere except the map (no "location" on the organisation profile); one-to-one means a second
+  organisation placed within 150 m of the same pin would show no pin of its own.
+
 ---
 
 ## Deferred questions (not blocking Phase 1)

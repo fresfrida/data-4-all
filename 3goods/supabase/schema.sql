@@ -114,6 +114,26 @@ alter table items add column if not exists secondary_category_id uuid references
 
 alter table needs add column if not exists tag text;
 
+-- Optional exact position of an organisation (DECISIONS.md D-073), used to match OpenStreetMap facility pins on the
+-- map to registered organisations by distance. NULL = only the province (`city`) is known. Added by supabase/seed-coverage.sql.
+alter table organisations add column if not exists lat double precision;
+alter table organisations add column if not exists lng double precision;
+
+-- "This facility hasn't joined 3goods yet" interest form on the map (D-073). Insert-only for the public key: contact details
+-- are written but cannot be read back with it (read them in the Supabase dashboard). Created by supabase/seed-coverage.sql.
+create table if not exists facility_interests (
+  id uuid primary key default gen_random_uuid(),
+  osm_type text,
+  osm_id text,
+  facility_name text not null,
+  facility_lat double precision,
+  facility_lon double precision,
+  contact_name text not null,
+  contact text not null,
+  locale text,
+  created_at timestamptz not null default now()
+);
+
 -- Provinces (DECISIONS.md D-062): the 63 real provinces, replacing the old hard-coded 8-area list. `slug` is the
 -- area id stored in organisations.city / items.area. The rows, the remap of the old 8 area ids and the
 -- one-need-per-organisation-per-category index (D-064) are in supabase/migration-provinces.sql (run it in the

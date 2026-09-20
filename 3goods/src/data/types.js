@@ -47,6 +47,8 @@
  * @property {{en: string, vi: string}} name
  * @property {{en: string, vi: string}} mission
  * @property {string} areaId
+ * @property {{lat: number, lng: number}|null} [location]  exact position where one is known (D-073), else null; the
+ *   province in `areaId` is the general location. Used only to match map facility pins to this organisation.
  * @property {boolean} verified  demo trust indicator, not a real verification
  * @property {boolean} isDemo   always true in this prototype — surfaced in UI
  * @property {string[]} pastReceivedItemIds

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useAsync } from "../../../lib/useAsync.js";
 import { loadFullMapData } from "../api/mapApiClient.js";
@@ -6,6 +6,8 @@ import { getOrganisations } from "../../../services/organisationsService.js";
 import { getNeeds } from "../../../services/needsService.js";
 import { getAreas } from "../../../services/referenceDataService.js";
 import { VietnamMapView } from "./VietnamMapView.jsx";
+import { FacilityPopup } from "./FacilityPopup.jsx";
+import { matchFacilitiesToOrganisations } from "../facilityMatching.js";
 import { LoadingState } from "../../../components/feedback/LoadingState.jsx";
 import { ErrorState } from "../../../components/feedback/ErrorState.jsx";
 import { NeedChip } from "../../../components/needs/NeedChip.jsx";
@@ -21,6 +23,16 @@ const DISASTER_TYPE_MAP = {
   Drought: { en: "Drought", vi: "Hạn hán" },
   Wildfire: { en: "Wildfire", vi: "Cháy rừng" },
 };
+
+/** A small pin in the same shape and colours as the map's facility pins, for the legend. */
+function PinSwatch({ color }) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" className="mt-px h-4 w-4 shrink-0">
+      <path d="M12 2C7.58 2 4 5.58 4 10c0 5.25 8 14 8 14s8-8.75 8-14c0-4.42-3.58-8-8-8z" fill={color} stroke="#f8fafc" strokeWidth="1.6" />
+      <circle cx="12" cy="10" r="3.2" fill="#f8fafc" />
+    </svg>
+  );
+}
 
 const PRIORITY_RANK = { high: 3, medium: 2, low: 1 };
 
@@ -47,6 +59,7 @@ export function MapScreenShell() {
   const [showFacilities, setShowFacilities] = useState(true);
   const [showMetroHubs, setShowMetroHubs] = useState(true);
   const [selectedProvince, setSelectedProvince] = useState("HàTĩnh");
+  const [selectedFacilityIndex, setSelectedFacilityIndex] = useState(null);
 
   const selectedFeature = useMemo(() => {
     if (!data?.mapData?.features) return null;
@@ -67,6 +80,14 @@ export function MapScreenShell() {
     const verified = inProvince.filter((org) => org.verified).length;
     return { verified, unverified: inProvince.length - verified };
   }, [data, selectedArea]);
+
+  // Which OSM pins have a registered 3goods organisation at (or right next to) them: pin index -> {organisation, distanceM} (D-073).
+  const facilityMatches = useMemo(
+    () => matchFacilitiesToOrganisations(data?.mapData?.facilities ?? [], data?.organisations ?? []),
+    [data],
+  );
+  const closeFacility = useCallback(() => setSelectedFacilityIndex(null), []);
+  const toggleFacility = useCallback((index) => setSelectedFacilityIndex((current) => (current === index ? null : index)), []);
 
   const recommendedCategories = useMemo(() => {
     const { itemNeeds } = data?.mapData ?? {};
@@ -168,7 +189,10 @@ export function MapScreenShell() {
           {/* OSM Pins Toggle Pill */}
           <button
             type="button"
-            onClick={() => setShowFacilities(!showFacilities)}
+            onClick={() => {
+              setShowFacilities(!showFacilities);
+              closeFacility();
+            }}
             className={`flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all whitespace-nowrap shrink-0 ${
               showFacilities
                 ? "bg-accent-50 text-accent-700 border-accent-300 shadow-2xs"
@@ -261,10 +285,25 @@ export function MapScreenShell() {
             touchHint={t("map.touchHint")}
             selectedProvince={selectedProvince}
             onSelectProvince={(name) => setSelectedProvince(name)}
+            facilityMatches={facilityMatches}
+            selectedFacilityIndex={showFacilities ? selectedFacilityIndex : null}
+            onSelectFacility={toggleFacility}
+            facilityLabel={(facility, match) =>
+              match ? t("map.facilityPinMatched", { name: facility.name, organisation: match.organisation.name[locale] ?? match.organisation.name.en }) : t("map.facilityPin", { name: facility.name })
+            }
+            overlay={
+              showFacilities && selectedFacilityIndex !== null && data.mapData.facilities[selectedFacilityIndex] ? (
+                <FacilityPopup
+                  facility={data.mapData.facilities[selectedFacilityIndex]}
+                  match={facilityMatches.get(selectedFacilityIndex)}
+                  onClose={closeFacility}
+                />
+              ) : null
+            }
           />
-          <div className="text-[11px] text-ink-600 flex justify-between items-center px-1">
+          <div className="text-[11px] text-ink-600 flex justify-between items-start gap-3 px-1">
             <span>{t("map.clickHint")}</span>
-            <span className="font-semibold">{provinceName || t("map.allVietnam")}</span>
+            <span className="shrink-0 whitespace-nowrap font-semibold">{provinceName || t("map.allVietnam")}</span>
           </div>
           {/* Legend for the two overlay layers (the score layers are explained under "About this data") */}
           {((showMetroHubs && data.mapData.metroHubs.length > 0) || (showFacilities && data.mapData.facilities.length > 0)) && (
@@ -276,10 +315,18 @@ export function MapScreenShell() {
                 </li>
               )}
               {showFacilities && data.mapData.facilities.length > 0 && (
-                <li className="flex items-start gap-2">
-                  <span aria-hidden="true" className="mt-0.5 shrink-0">📍</span>
-                  <span>{t("map.legendFacility", { count: data.mapData.facilities.length })}</span>
-                </li>
+                <>
+                  <li className="flex items-start gap-2">
+                    <PinSwatch color="#94a3b8" />
+                    <span>{t("map.legendFacility", { count: data.mapData.facilities.length - facilityMatches.size })}</span>
+                  </li>
+                  {facilityMatches.size > 0 && (
+                    <li className="flex items-start gap-2">
+                      <PinSwatch color="#2563eb" />
+                      <span>{t("map.legendFacilityMatched", { count: facilityMatches.size })}</span>
+                    </li>
+                  )}
+                </>
               )}
             </ul>
           )}

@@ -104,8 +104,26 @@
   fill: #f8fafc;
 }
 
-.facility-pin-group:hover .facility-pin {
+.facility-pin-group:hover .facility-pin,
+.facility-pin-group:focus-visible .facility-pin {
+  fill: #475569;
+}
+
+/* A registered 3goods organisation is at this pin (D-073). */
+.facility-pin-group.matched .facility-pin {
   fill: #2563eb;
+}
+.facility-pin-group.matched:hover .facility-pin {
+  fill: #1d4ed8;
+}
+
+/* The pin whose popup is open. */
+.facility-pin-group.selected .facility-pin {
+  stroke: #f59e0b;
+  stroke-width: 2.6;
+}
+.facility-pin-group:focus {
+  outline: none;
 }
 
 #facilityTip {

@@ -54,6 +54,15 @@ export async function insert(table, record, idPrefix) {
   return data;
 }
 
+/**
+ * Insert without reading the row back. For insert-only tables (e.g. `facility_interests`) whose policy lets the public key
+ * write but not read: `insert()` above asks for the row back and would be refused there.
+ */
+export async function insertBlind(table, record) {
+  const { error } = await supabase.from(table).insert(record);
+  if (error) throw error;
+}
+
 /** @returns the updated record, or null if no row matched `id`. */
 export async function update(table, id, patch) {
   const { data, error } = await supabase.from(table).update(patch).eq("id", id).select().maybeSingle();

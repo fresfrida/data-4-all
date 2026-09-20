@@ -16,6 +16,8 @@ function fromRow(row) {
     name: { en: row.name, vi: row.name_vi || row.name },
     mission: { en: row.description ?? "", vi: row.description_vi || row.description || "" },
     areaId: row.city ?? "",
+    // Optional exact position (D-073); the columns may not exist yet on a database that hasn't had the migration.
+    location: row.lat != null && row.lng != null ? { lat: Number(row.lat), lng: Number(row.lng) } : null,
     verified: row.verified ?? false,
     isDemo: row.is_demo ?? false,
     pastReceivedItemIds: row.past_received_item_ids ?? [],

@@ -101,7 +101,9 @@ file's comment for why.
   The vendored `mapView.js`/`geo.js` are verbatim copies of the root site's `web/` files (compare with `cmp`); the
   base-map land around Vietnam is `neighbour_land.json`, built by `3goods-map/src/build_neighbour_land.mjs` (D-061). A facility pin from OpenStreetMap is
   never presented as a registered 3goods organisation, and no score is invented where the map API
-  returns `null`.
+  returns `null`. The one bridge is a *computed match*: a pin within 150 m of an organisation's optional exact `location` gets a popup
+  that links to that organisation (`features/map/facilityMatching.js`, D-073); the two records stay separate and the popup labels each
+  for what it is. Unmatched pins offer an interest form (`facility_interests`), not registration.
 
 ## Verification requirement
 

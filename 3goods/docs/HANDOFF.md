@@ -1,6 +1,7 @@
 # 3goods Handoff
 
-Last updated: session 6, thirteenth checkpoint: 3G-055 / D-067 to D-072 (items stay listed with status banners, Discover Items pagination, shared unread-chat badge,
+Last updated: session 6, fourteenth checkpoint: 3G-056 / D-073 (clickable OSM pins linked to organisations; the coverage SQL now also carries the
+`lat/lng` columns + `facility_interests` table; **still not run by the user**). Previous: thirteenth checkpoint: 3G-055 / D-067 to D-072 (items stay listed with status banners, Discover Items pagination, shared unread-chat badge,
 tab title, coverage reseed as SQL, root map site redeployed; **coverage SQL not yet run by the user**). Previous: twelfth checkpoint: 3G-054 / D-062 to D-066 (provinces table, optional + generic need quantity, one need per
 category, nearby-organisations count, touch map; **SQL run by the user, pushed, deployed, verified live**).
 Previous: eleventh checkpoint: 3G-053 / D-058 to D-061 (chat at request time, tags removed, base map +
@@ -27,13 +28,20 @@ after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_AN
 Production env vars on this project (`vercel env ls production` to confirm) — set in session 5.
 
 ## Current task
-**3G-055 (Verify): all code deployed (3goods + the root map site). Open: the user must run `supabase/seed-coverage.sql` (23 fictional organisations
-in 12 provinces, 23 login users, 53 needs); then read-only verify (31 organisations, 16 provinces, hero stats 31/24/16, map counts per
-province, login picker), move 3G-055 to Done. Still open for a human: iOS Safari real-device touch check (D-066).**
+**3G-055 + 3G-056 (Verify): all code is deployed. One open action for the user: run `supabase/seed-coverage.sql` in the Supabase SQL Editor (23 fictional
+organisations, 10 of them on real OSM facility coordinates; 23 login users; 53 needs; PLUS `organisations.lat/lng` and the insert-only
+`facility_interests` table). Nothing from the coverage reseed is live before that, and the pins show no matches until then (all 89 look
+"not on 3goods yet"). After it runs: read-only check (31 organisations, 10 with coordinates, 16 provinces, map shows 10 blue pins, a blue-pin popup links to a real
+profile), then move both tasks to Done. Still open for a human: iOS Safari real-device touch check (D-066).**
 Earlier: 3G-043 through 3G-053 done. The `items.quantity`/`unit` SQL from D-052 has been run and verified live (posted a
 "12 boxes" item on production; detail + card display it; test row deleted). No open actions.**
 
 ## Completed this session (session 6)
+- **3G-056** (D-073). Pins on the Relief Map are clickable. `features/map/facilityMatching.js` (150 m, one-to-one, needs organisation `location`),
+  `pinLayer.js` (decorates the vendored pins, delegated click), `components/FacilityPopup.jsx` (matched: link to the organisation profile;
+  unmatched: "hasn't joined 3goods yet" + interest form), `services/facilityInterestService.js` -> `facility_interests` (insert-only; read it in the
+  Supabase dashboard). `organisations.lat/lng` optional; `coverage.js` puts 10 organisations on real pin coordinates (generic-named facilities only).
+  Vendor `mapView.js` untouched, so no root-site redeploy. Test harness note: chrome CDP + `Fetch` mock as in earlier checkpoints.
 - **3G-055** (DECISIONS.md D-067 to D-072).
   - Items: `getItems()` returns every status; `displayStatus` = available / reserved / donated (accepted request completed) /
     unavailable; browse order available first; banner + muted photo on non-available cards; item page badge uses it (D-067). Pagination:

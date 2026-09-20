@@ -18,6 +18,16 @@ suggested next task)
 
 ## Verify
 
+- **3G-056** — Clickable OSM facility pins: matched popup links to the organisation, unmatched popup offers an interest form (D-073). **Code
+  deployed; the pins only show matches once the user runs the (updated) `supabase/seed-coverage.sql`**, which now also adds `organisations.lat/lng`
+  and the `facility_interests` table, so this task and 3G-055 close together after that run.
+  - Verified (headless Chrome + CDP, real mouse clicks at 1280px EN and real touch taps at 375px VI; live rows read-only with the 23 coverage
+    organisations layered in as the SQL will create them; every write answered locally): 89 pins, 10 matched (79 unmatched); legend
+    counts; pins are focusable buttons with names; matched popup (facility, tag, organisation, verified badge, profile link, demo
+    note) and the link lands on that organisation's profile page (name matches); unmatched popup and the form: empty submit not sent, a
+    rejected save shows a translated error and keeps the form, a good save writes one `facility_interests` row (osm id, facility name +
+    coordinates, contact, locale) and shows the thank-you; ✕, Escape, same-pin toggle, layer-off all close it; a drag from a pin does not open
+    it. SQL files parse with Postgres's own parser (pglast). Zero app console errors.
 - **3G-055** — Coverage reseed (D-070), root map redeploy (D-072), Discover Items pagination + status banners (D-067/D-068),
   tab title (D-071), shared unread-chat badge (D-069). **Everything is deployed except the coverage data: waiting on the user to run
   `supabase/seed-coverage.sql`.** After that: read-only live check (31 organisations, 16 provinces, map counts, hero stats).

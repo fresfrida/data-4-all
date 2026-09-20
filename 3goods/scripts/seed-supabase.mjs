@@ -137,6 +137,8 @@ async function main() {
       description: org.mission.en,
       description_vi: org.mission.vi,
       city: org.areaId,
+      lat: org.location?.lat ?? null,
+      lng: org.location?.lng ?? null,
       verified: org.verified,
       is_demo: org.isDemo,
       past_received_item_ids: org.pastReceivedItemIds,

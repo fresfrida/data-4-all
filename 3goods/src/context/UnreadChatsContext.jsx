@@ -53,6 +53,9 @@ export function UnreadChatsProvider({ children }) {
   const markSeen = useCallback(
     (conversationId, upToIso) => {
       markChatSeen(identityId, conversationId, upToIso);
+      // A check already in flight was computed from the old "seen" state and would put this conversation back:
+      // invalidate it (the next poll uses the new state).
+      latest.current += 1;
       setUnreadIds((current) => {
         if (!current.has(conversationId)) return current;
         const next = new Set(current);

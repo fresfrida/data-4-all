@@ -1028,3 +1028,6 @@ page; `DonationForm`'s collection-windows section reads "Collection time windows
 - **Knock-on layout fix (not in the request):** "Available donations" did not fit the fixed 152px desktop nav pill (truncated as "Available dona…").
   `DesktopTopNav` pills are now `min-w-[152px]` with no truncation and the two side columns are 180px instead of 220px (the org nav still fits 1280px).
 - **/video:** `vercel.json` `redirects` (temporary, 307) to the YouTube video, beside the SPA rewrite; footer link is a plain `<a target="_blank">`.
+- **Follow-ups (user-requested, same day):** hero title/subline reworded; footer restructured (site links top, video + About Us bottom; Privacy and
+  Contact removed); About Us is a `download` link to `public/3goods-proposal.pdf`; a photo for the "5kg rice sacks" item follows D-046 (static path
+  in `public/demo-items/`, stored in `items.image_base64`), set on the live row only. `/video` stays a 307 on purpose (see HANDOFF).

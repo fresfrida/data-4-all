@@ -62,6 +62,9 @@ suggested next task)
   primary CTA ("See verified needs", scrolls to the board on the same page), catalogue renamed (nav "Available donations", heading "Goods offered by
   donors", free-donation line above the grid), display-only need-match badge on item cards, `/video` redirect + footer link. Verified live on
   `3goods.vercel.app` (Chrome CDP, 1280px and 390px, EN + VI, zero console errors); see HANDOFF.md.
+  Follow-ups on the same task, all deployed and verified live: hero title/subline reworded (no "no buying or selling" clause); footer restructured
+  (two-line copyright; top line Organisations / Available donations / Map; bottom line intro video + About Us, Privacy and Contact removed);
+  About Us downloads `/3goods-proposal.pdf`; photo added for the "5kg rice sacks" item.
 
 - **3G-055** — see the Verify entry above until the coverage SQL has been run (then move here).
   - Verified (headless Chrome + CDP, 375px VI and 1280px EN; live rows read-only, every write answered locally): Discover Items

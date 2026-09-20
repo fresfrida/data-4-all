@@ -49,6 +49,14 @@ Earlier: 3G-043 through 3G-053 done. The `items.quantity`/`unit` SQL from D-052 
   `ItemCard.jsx`), `vercel.json` `redirects` (`/video` -> YouTube, 307) + footer link (plain `<a>`, not `<Link>`, since it is a server redirect).
   Verified live at 1280 and 390, EN + VI: hero text, CTA scroll, renamed nav/heading, badge on "5kg of rice" -> Vietnam Food Share (its profile
   lists Rice), footer link, `/video` 307 -> youtube.com. Note: `/video` only redirects on Vercel, not under `npm run dev`/`preview`.
+  Follow-ups (same session, all live): hero title now "Donation Item Coordination & Disaster Relief in Vietnam" and the subline ends at
+  "...delivery or pickup." (VI subline likewise; VI title unchanged). Footer: copyright on two lines (`footer.copyrightLine1/2` replace
+  `footer.copyright`); site links on the top line, then "Watch our intro video" (`/video`, plain `<a>`, new tab) and "About Us"
+  (`/3goods-proposal.pdf` with `download`, file in `public/`, the user's updated proposal deck, 10 pages) on the bottom line; "Privacy & Data
+  Use" and "Contact Us" removed (keys deleted). "5kg rice sacks" (Da Nang, reserved) got `public/demo-items/rice-sack-5kg.jpg`; its live
+  `items.image_base64` was set to that path by a single-row SQL update (the row was created through the app, so it is not in `src/data/items.js`
+  and a re-seed would not restore it). The `/video` redirect is deliberately a temporary 307 (the target may change; a 301 would be cached by browsers).
+  The deck (`public/3goods-proposal.pdf`) contains screenshots of this UI; re-export and replace the file if the hero/nav copy changes again.
 - **3G-056** (D-073). Pins on the Relief Map are clickable. `features/map/facilityMatching.js` (150 m, one-to-one, needs organisation `location`),
   `pinLayer.js` (decorates the vendored pins, delegated click), `components/FacilityPopup.jsx` (matched: link to the organisation profile;
   unmatched: "hasn't joined 3goods yet" + interest form), `services/facilityInterestService.js` -> `facility_interests` (insert-only; read it in the

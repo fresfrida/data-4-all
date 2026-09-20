@@ -3,7 +3,7 @@ import { MapView } from "../vendor/mapView.js";
 import { applyGreyBaseHeat } from "../heatColors.js";
 import "../../../styles/map.css";
 
-export function VietnamMapView({ data, field = "disaster_score", showFacilities = true, selectedProvince, onSelectProvince }) {
+export function VietnamMapView({ data, field = "disaster_score", showFacilities = true, showMetroHubs = true, selectedProvince, onSelectProvince }) {
   const containerRef = useRef(null);
   const mapViewRef = useRef(null);
 
@@ -41,6 +41,10 @@ export function VietnamMapView({ data, field = "disaster_score", showFacilities 
       applyGreyBaseHeat(containerRef.current, data.features, field);
     }
   }, [field]);
+
+  useEffect(() => {
+    containerRef.current?.classList.toggle("hide-metro-hubs", !showMetroHubs);
+  }, [showMetroHubs]);
 
   useEffect(() => {
     if (mapViewRef.current) {

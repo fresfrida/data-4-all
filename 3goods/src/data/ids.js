@@ -16,6 +16,9 @@ export const ORG_IDS = {
   booksChildren: "26133f3c-72e9-454c-bd62-854d7c0e3f3c",
   warmHomes: "12caed3c-ef9c-49fe-9bad-af4c8beb3944",
   careBridge: "5fa82684-2192-4c8b-aef8-55216d654233",
+  haiphongRelief: "5cb92636-9bfb-4587-b836-be8e87eea513",
+  nhatrangAid: "c5379361-db56-436c-b70d-e5a1ae3d88af",
+  mekongNeighbours: "eb237e61-48bd-4ba0-a38f-5f285a5d93e7",
 };
 
 export const USER_IDS = {
@@ -29,6 +32,24 @@ export const USER_IDS = {
   orgBooksChildren: "2a952f0e-981c-43e1-909a-7dcec7c49d44",
   orgWarmHomes: "8319b0fb-c339-49da-b022-e340c7ea7fdf",
   orgCareBridge: "a689ec08-005e-4035-ad32-27da28eeefb1",
+  orgHaiphongRelief: "93709bd6-103f-429a-87d3-e04b88306702",
+  orgNhatrangAid: "d3b6e854-c818-493f-8f17-e0b96b5f3485",
+  orgMekongNeighbours: "d498fb5d-3461-464f-a059-203a0d3c5e61",
+  donor006: "aef03c64-9ad7-4222-aa82-1f1114780605",
+  donor007: "64b1a8fb-9951-4590-9de9-d3c6dce1ef64",
+  donor008: "af695b74-df4c-4883-9776-2bd2f713ed65",
+  donor009: "f9a7d8ea-7b1e-400c-a96e-bc3ab7c2f8de",
+  donor010: "e9e4dcf4-6192-4c54-b4e5-d188784d6af5",
+  donor011: "726a25f3-29fe-4224-b887-95a028ad0225",
+  donor012: "750668e6-786c-46e9-974f-e36c5ecbf67f",
+  donor013: "2afc47da-fd9c-4f19-aa01-92d73934688c",
+  donor014: "80688f62-e85b-4ab8-a60e-e70c27522f0f",
+  donor015: "c6f20225-038d-4850-a96f-9b457048d36d",
+  donor016: "dbb19657-dff5-425b-b7b7-7503ed4f3860",
+  donor017: "12a4efd4-8f3a-42d8-9d9f-f5202c8fa76d",
+  donor018: "b8d25d0c-5be8-4c4d-9575-9ddbfe16d049",
+  donor019: "2252e5fb-7c68-41fc-a636-22dc79e26d55",
+  donor020: "8a838fbc-f5fd-4eb2-97c2-7dc4857365b9",
 };
 
 export const ITEM_IDS = {
@@ -68,6 +89,18 @@ export const NEED_IDS = {
   need013: "a28d044f-cf61-4bc0-81fd-5fdf2a4ee55a",
   need014: "819b49f5-5b7a-4150-ba7f-bd8905ef2c89",
   need015: "fb9c5510-2e33-42ec-82bb-6e01f114fd11",
+  // need016/need017 already existed in the live table (added by hand during testing); adopted here with their live ids so a re-seed updates them instead of duplicating.
+  need016: "c74050ae-2a37-4062-85ea-758f49021fa8",
+  need017: "c310ec9e-1770-46fd-95ea-50e34bd85721",
+  need018: "851e64cf-77fe-4c51-b47e-3f9ca73b5f6c",
+  need019: "cc8e8ce4-d352-4bb1-a46f-72050e4285e3",
+  need020: "75ee33b3-7d61-4d47-9f7a-53a741b213fd",
+  need021: "164faba8-e9d0-4411-bfb8-8d8f4c9e1534",
+  need022: "3f4892e5-fd68-48ee-bee2-4d87f976e7d7",
+  need023: "1b2aa61a-4806-489b-b3b1-378a2552a57c",
+  need024: "776c805f-486c-4726-938e-5967d3018072",
+  need025: "dd4d2bf2-f54b-43a6-bda9-b7701e791239",
+  need026: "657ddaa0-b784-48e7-9265-0c0075ee9806",
 };
 
 export const REQUEST_IDS = {

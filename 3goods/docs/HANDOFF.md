@@ -1,6 +1,7 @@
 # 3goods Handoff
 
-Last updated: session 6, ninth checkpoint: 3G-051 / D-053 (accept lock, need quantities, walkthrough, UAT cleanup).
+Last updated: session 6, tenth checkpoint: 3G-052 / D-056, D-057 (seed scaled to 8 orgs / 20 donors, board pills
+category-only, map wired to all 5 API endpoints). Previous: ninth checkpoint: 3G-051 / D-053 (accept lock, need quantities, walkthrough, UAT cleanup).
 Previous: eighth checkpoint: 3G-050 / D-052 (pre-demo bug fixes; **item quantity SQL still to be run
 by the user**). Previous: seventh checkpoint: 3G-049 / D-051 (tab title "3goods", demo login picks any seeded
 donor/organisation, em dashes out of locale copy). Previous: sixth checkpoint — 3G-048 punch-list pass (D-050): footer/nav rename, real
@@ -22,10 +23,22 @@ after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_AN
 Production env vars on this project (`vercel env ls production` to confirm) — set in session 5.
 
 ## Current task
-**3G-043 through 3G-051 done. The `items.quantity`/`unit` SQL from D-052 has been run and verified live (posted a
+**3G-043 through 3G-052 done. The `items.quantity`/`unit` SQL from D-052 has been run and verified live (posted a
 "12 boxes" item on production; detail + card display it; test row deleted). No open actions.**
 
 ## Completed this session (session 6)
+- **3G-052** (DECISIONS.md D-056, D-057).
+  - Part A: board pills = category name only; need quantities set (Clothes needs + the two hand-added live needs, now
+    `need016`/`need017` in the seed); seed + live now **8 organisations, 20 donors, 8 organisation logins, 26 needs**
+    (all with quantities). Live was updated with a targeted upsert of `organisations`/`users`/`needs`, not a full
+    `db:seed` (which would also reset items/requests to seed state).
+  - Part B: **the map client did not call the API at all** before this; it read static copies in `public/data/`.
+    It now calls the deployed map site (`https://002-data-4-life.vercel.app`, project `002-data-4-life`, all five
+    endpoints 200 + CORS `*`). `public/data/` stays as the fallback snapshot; keep it in sync if the map site's data
+    changes. Nothing needed deploying: the map site was already live.
+  - Not fixed / worth knowing: `meta` and the API's `poverty_rate` note that poverty is a *regional* estimate (6
+    distinct colours on the Poverty layer, by design). `/api/meta` still describes item-needs categories as the old 4
+    (Food/Household/Clothes/Books) although the file has 8.
 - **3G-051** (DECISIONS.md D-053): one accepted organisation per item is now enforced in `acceptRequest`
   (`itemAlreadyReserved`) and displayed via `deriveDisplayStatus` ("No longer available", no Accept button); Undo/
   Re-open of the accepted request releases the item. Seed + live `need001`–`need010` have quantities (units incl. new

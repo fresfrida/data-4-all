@@ -27,9 +27,24 @@ export const NEEDS = [
   { id: NEED_IDS.need010, organisationId: ORG_IDS.careBridge, category: "Hygiene Products", tag: "hygiene_products", priority: true, quantity: 120, unit: "pieces", createdAt: "2026-08-09T02:00:00.000Z" },
 
   // Every organisation also needs Clothes — added so donors always have a Clothes-category match.
-  { id: NEED_IDS.need011, organisationId: ORG_IDS.foodShare, category: "Clothes", tag: "adult_clothes", priority: false, createdAt: "2026-08-11T02:00:00.000Z" },
-  { id: NEED_IDS.need012, organisationId: ORG_IDS.hanoiPantry, category: "Clothes", tag: "adult_clothes", priority: false, createdAt: "2026-08-11T02:00:00.000Z" },
-  { id: NEED_IDS.need013, organisationId: ORG_IDS.booksChildren, category: "Clothes", tag: "childrens_clothes", priority: false, createdAt: "2026-08-11T02:00:00.000Z" },
-  { id: NEED_IDS.need014, organisationId: ORG_IDS.warmHomes, category: "Clothes", tag: "adult_clothes", priority: true, createdAt: "2026-08-11T02:00:00.000Z" },
-  { id: NEED_IDS.need015, organisationId: ORG_IDS.careBridge, category: "Clothes", tag: "childrens_clothes", priority: false, createdAt: "2026-08-11T02:00:00.000Z" },
+  { id: NEED_IDS.need011, organisationId: ORG_IDS.foodShare, category: "Clothes", tag: "adult_clothes", priority: false, quantity: 80, unit: "pieces", createdAt: "2026-08-11T02:00:00.000Z" },
+  { id: NEED_IDS.need012, organisationId: ORG_IDS.hanoiPantry, category: "Clothes", tag: "adult_clothes", priority: false, quantity: 60, unit: "pieces", createdAt: "2026-08-11T02:00:00.000Z" },
+  { id: NEED_IDS.need013, organisationId: ORG_IDS.booksChildren, category: "Clothes", tag: "childrens_clothes", priority: false, quantity: 50, unit: "pieces", createdAt: "2026-08-11T02:00:00.000Z" },
+  { id: NEED_IDS.need014, organisationId: ORG_IDS.warmHomes, category: "Clothes", tag: "adult_clothes", priority: true, quantity: 100, unit: "pieces", createdAt: "2026-08-11T02:00:00.000Z" },
+  { id: NEED_IDS.need015, organisationId: ORG_IDS.careBridge, category: "Clothes", tag: "childrens_clothes", priority: false, quantity: 70, unit: "pieces", createdAt: "2026-08-11T02:00:00.000Z" },
+
+  // Two needs that were added by hand to the live table during testing; now part of the seed (same ids).
+  { id: NEED_IDS.need016, organisationId: ORG_IDS.hanoiPantry, category: "Books", tag: "textbooks_stationery", priority: true, quantity: 90, unit: "sets", createdAt: "2026-09-19T00:26:53.739Z" },
+  { id: NEED_IDS.need017, organisationId: ORG_IDS.careBridge, category: "Household Items", tag: "blankets_mats", priority: false, quantity: 45, unit: "pieces", createdAt: "2026-09-19T02:08:14.241Z" },
+
+  // Hai Phong Harbour Relief, Nha Trang Seaside Aid, Mekong Delta Neighbours (each also needs Clothes, as every organisation does).
+  { id: NEED_IDS.need018, organisationId: ORG_IDS.haiphongRelief, category: "Rice", tag: "rice", priority: true, quantity: 150, unit: "kg", createdAt: "2026-09-20T02:00:00.000Z" },
+  { id: NEED_IDS.need019, organisationId: ORG_IDS.haiphongRelief, category: "Non-Perishable Food", tag: "dry_provisions", priority: false, quantity: 80, unit: "boxes", createdAt: "2026-09-20T02:00:00.000Z" },
+  { id: NEED_IDS.need020, organisationId: ORG_IDS.haiphongRelief, category: "Clothes", tag: "adult_clothes", priority: false, quantity: 60, unit: "pieces", createdAt: "2026-09-20T02:00:00.000Z" },
+  { id: NEED_IDS.need021, organisationId: ORG_IDS.nhatrangAid, category: "Hygiene Products", tag: "hygiene_products", priority: true, quantity: 200, unit: "pieces", createdAt: "2026-09-20T02:05:00.000Z" },
+  { id: NEED_IDS.need022, organisationId: ORG_IDS.nhatrangAid, category: "Books", tag: "textbooks_stationery", priority: false, quantity: 70, unit: "sets", createdAt: "2026-09-20T02:05:00.000Z" },
+  { id: NEED_IDS.need023, organisationId: ORG_IDS.nhatrangAid, category: "Clothes", tag: "childrens_clothes", priority: false, quantity: 90, unit: "pieces", createdAt: "2026-09-20T02:05:00.000Z" },
+  { id: NEED_IDS.need024, organisationId: ORG_IDS.mekongNeighbours, category: "Household Items", tag: "blankets_mats", priority: true, quantity: 120, unit: "pieces", createdAt: "2026-09-20T02:10:00.000Z" },
+  { id: NEED_IDS.need025, organisationId: ORG_IDS.mekongNeighbours, category: "Hygiene Products", tag: "water_tablets", priority: false, quantity: 300, unit: "packs", createdAt: "2026-09-20T02:10:00.000Z" },
+  { id: NEED_IDS.need026, organisationId: ORG_IDS.mekongNeighbours, category: "Clothes", tag: "adult_clothes", priority: false, quantity: 50, unit: "pieces", createdAt: "2026-09-20T02:10:00.000Z" },
 ];

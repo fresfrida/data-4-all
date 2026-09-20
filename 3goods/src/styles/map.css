@@ -121,3 +121,11 @@
   z-index: 20;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
+
+/* Wrapper-controlled toggle for the vendored MapView's big-city circles (see VietnamMapView). */
+.hide-metro-hubs .metro-hub,
+.hide-metro-hubs .metro-hub-ring,
+.hide-metro-hubs .metro-hub-ring-dark,
+.hide-metro-hubs .metro-hub-pulse {
+  display: none;
+}

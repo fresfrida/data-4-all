@@ -11,7 +11,6 @@ import { ErrorState } from "../feedback/ErrorState.jsx";
 import { EmptyState } from "../feedback/EmptyState.jsx";
 import { NeedChip } from "./NeedChip.jsx";
 import { ROUTES } from "../../lib/constants.js";
-import { summariseNeedQuantities } from "../../lib/quantity.js";
 import { Avatar } from "../common/Avatar.jsx";
 
 async function loadNeedsBoard() {
@@ -151,13 +150,12 @@ export function OrganisationsBoard({ headingLevel = "h1" }) {
 
                   <div className="flex flex-wrap gap-1.5">
                     {[...new Map(needs.map((need) => [need.category, need])).values()].map((need) => {
-                      const categoryNeeds = needs.filter((n) => n.category === need.category);
+                      // Compact pill: category name only (quantities live on the organisation's own profile page).
                       return (
                         <NeedChip
                           key={need.category}
                           label={categoryLabel(need.category)}
-                          quantityLabel={summariseNeedQuantities(categoryNeeds, t)}
-                          priority={categoryNeeds.some((n) => n.priority)}
+                          priority={needs.some((n) => n.category === need.category && n.priority)}
                         />
                       );
                     })}

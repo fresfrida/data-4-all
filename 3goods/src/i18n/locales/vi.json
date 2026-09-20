@@ -247,6 +247,16 @@
     "priorityHigh": "Cao",
     "priorityMedium": "Trung bình",
     "priorityLow": "Thấp",
-    "priorityKeyTitle": "Mức ưu tiên"
+    "priorityKeyTitle": "Mức ưu tiên",
+    "showMetroHubs": "Hiện thành phố lớn",
+    "legendMetro": "Vòng tròn xanh: các thành phố lớn nhất Việt Nam, nơi quyên góp thường xuất phát ({cities})",
+    "legendFacility": "Ghim xám: {count} cơ sở cộng đồng từ OpenStreetMap (không phải tổ chức 3goods)",
+    "dataFallbackNotice": "Không kết nối được dịch vụ dữ liệu bản đồ trực tuyến, nên một phần dữ liệu bản đồ bên dưới là bản đã lưu.",
+    "dataUnavailableNotice": "Hiện một số dữ liệu bản đồ không khả dụng, nên một phần bản đồ có thể trống.",
+    "aboutDataTitle": "Về dữ liệu này",
+    "aboutDataNote": "Do dịch vụ dữ liệu bản đồ cung cấp, bằng tiếng Anh.",
+    "aboutScores": "Cách tính điểm",
+    "aboutCaveats": "Lưu ý",
+    "aboutSources": "Nguồn"
   }
 }

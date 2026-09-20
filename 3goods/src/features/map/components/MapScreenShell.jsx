@@ -56,6 +56,7 @@ export function MapScreenShell() {
 
   const [activeLayer, setActiveLayer] = useState("disaster_score");
   const [showFacilities, setShowFacilities] = useState(true);
+  const [showMetroHubs, setShowMetroHubs] = useState(true);
   const [selectedProvince, setSelectedProvince] = useState("HàTĩnh");
 
   const selectedFeature = useMemo(() => {
@@ -95,6 +96,18 @@ export function MapScreenShell() {
   if (status === "error") return <ErrorState message={t("errors.generic")} onRetry={reload} />;
 
   // Show the real value or a dash — never a made-up fallback score.
+  const { sources, meta } = data.mapData;
+  // `meta` only feeds the optional "About this data" panel, so a missing one just hides the panel — it never triggers the warning.
+  const { meta: _metaSource, ...mapDataSources } = sources;
+  const mapNotice = Object.values(mapDataSources).includes("unavailable")
+    ? t("map.dataUnavailableNotice")
+    : Object.values(mapDataSources).includes("snapshot")
+      ? t("map.dataFallbackNotice")
+      : null;
+  const aboutData = meta
+    ? { scores: Object.entries(meta.scores ?? {}), caveats: meta.caveats ?? [], sources: meta.sources ?? "" }
+    : null;
+
   const pProps = selectedFeature?.properties || {};
   const provinceName = formatProvince(pProps.province);
   const disasterScoreDisplay = typeof pProps.disaster_score === "number" ? pProps.disaster_score.toFixed(2) : "—";
@@ -169,6 +182,21 @@ export function MapScreenShell() {
             <span>📍</span>
             <span>{t("map.showOsmPins")}</span>
           </button>
+
+          {/* Big-city (metro hub) circles Toggle Pill */}
+          <button
+            type="button"
+            onClick={() => setShowMetroHubs(!showMetroHubs)}
+            aria-pressed={showMetroHubs}
+            className={`flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all whitespace-nowrap shrink-0 ${
+              showMetroHubs
+                ? "bg-accent-50 text-accent-700 border-accent-300 shadow-2xs"
+                : "bg-white text-ink-600 border-ink-600/15 hover:border-ink-600/30"
+            }`}
+          >
+            <span>🏙️</span>
+            <span>{t("map.showMetroHubs")}</span>
+          </button>
         </div>
       </div>
 
@@ -180,6 +208,50 @@ export function MapScreenShell() {
         </p>
       </div>
 
+      {mapNotice && (
+        <div role="status" className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-amber-50 border border-amber-200 text-[11px] text-amber-900 font-medium">
+          <span className="text-sm shrink-0">⚠️</span>
+          <p className="flex-1 leading-tight">{mapNotice}</p>
+        </div>
+      )}
+
+      {/* About this data: sources, caveats and score definitions straight from /api/meta */}
+      {aboutData && (
+        <details className="rounded-xl bg-white border border-ink-600/10 px-3.5 py-2.5 text-[11px] text-ink-700">
+          <summary className="cursor-pointer font-bold text-ink-800">{t("map.aboutDataTitle")}</summary>
+          <div className="mt-2 flex flex-col gap-2 leading-snug">
+            <p className="italic text-ink-600">{t("map.aboutDataNote")}</p>
+            {aboutData.scores.length > 0 && (
+              <div>
+                <p className="font-bold text-ink-800">{t("map.aboutScores")}</p>
+                <ul className="list-disc pl-4">
+                  {aboutData.scores.map(([key, text]) => (
+                    <li key={key}>
+                      <b>{key}</b>: {text}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {aboutData.caveats.length > 0 && (
+              <div>
+                <p className="font-bold text-ink-800">{t("map.aboutCaveats")}</p>
+                <ul className="list-disc pl-4">
+                  {aboutData.caveats.map((text) => (
+                    <li key={text}>{text}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {aboutData.sources && (
+              <p>
+                <b className="text-ink-800">{t("map.aboutSources")}:</b> {aboutData.sources}
+              </p>
+            )}
+          </div>
+        </details>
+      )}
+
       {/* Main Map + Side Panel Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Map Column */}
@@ -188,6 +260,7 @@ export function MapScreenShell() {
             data={data.mapData}
             field={activeLayer}
             showFacilities={showFacilities}
+            showMetroHubs={showMetroHubs}
             selectedProvince={selectedProvince}
             onSelectProvince={(name) => setSelectedProvince(name)}
           />
@@ -195,6 +268,23 @@ export function MapScreenShell() {
             <span>{t("map.clickHint")}</span>
             <span className="font-semibold">{provinceName || t("map.allVietnam")}</span>
           </div>
+          {/* Legend for the two overlay layers (the score layers are explained under "About this data") */}
+          {((showMetroHubs && data.mapData.metroHubs.length > 0) || (showFacilities && data.mapData.facilities.length > 0)) && (
+            <ul className="flex flex-col gap-1 rounded-xl bg-white border border-ink-600/10 px-3 py-2 text-[11px] text-ink-700">
+              {showMetroHubs && data.mapData.metroHubs.length > 0 && (
+                <li className="flex items-start gap-2">
+                  <span aria-hidden="true" className="mt-0.5 h-3 w-3 shrink-0 rounded-full border-2 border-white bg-blue-500 ring-2 ring-blue-300" />
+                  <span>{t("map.legendMetro", { cities: data.mapData.metroHubs.map((hub) => hub.name).join(", ") })}</span>
+                </li>
+              )}
+              {showFacilities && data.mapData.facilities.length > 0 && (
+                <li className="flex items-start gap-2">
+                  <span aria-hidden="true" className="mt-0.5 shrink-0">📍</span>
+                  <span>{t("map.legendFacility", { count: data.mapData.facilities.length })}</span>
+                </li>
+              )}
+            </ul>
+          )}
         </div>
 
         {/* Region Detail & Recommended Items Panel */}

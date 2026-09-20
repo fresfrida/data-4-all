@@ -38,6 +38,23 @@ session; see each Done entry's evidence)
 
 ## Done
 
+- **3G-052** — Cleanup + scale-up (Part A) and the map now really uses all 5 map-site API endpoints (Part B) (see
+  DECISIONS.md D-056, D-057)
+  - Deliverable: Organisations board pills show the category name only (quantities stay on the profile page). Quantities
+    for the 5 Clothes needs and the 2 hand-added live needs (adopted into the seed with their live ids as
+    `need016`/`need017`). Seed + live scaled to 8 organisations (3 new, 8 areas) and 20 donors (15 new), 3 new
+    organisation logins, 9 new needs. `mapApiClient.js` now calls `/api/provinces|facilities|metro-hubs|item-needs|meta`
+    on https://002-data-4-life.vercel.app with a bundled-snapshot fallback + notice; new "Show big cities" toggle and
+    legend (metro-hubs), "About this data" panel (meta).
+  - Deps: none. Acceptance: `npm run i18n:check`, `npm run build`, 375px + 1280px checks in EN + VI, each map layer
+    verified rendering.
+  - Evidence: `npm run i18n:check` → 222/222; `npm run build` succeeds. Board: no digit in any pill (EN + VI). Hero stats
+    20/6/8; login picker lists 8 organisations / 20 donors. Map (headless Chrome + CDP, network log): all five requests go
+    to `002-data-4-life.vercel.app/api/*`, none to `/data/*`; rendered elements per layer: hazard 43 distinct province
+    fills, poverty 6 (regional estimate, per the API's own caveat), coverage gap 48, 89 OSM pins, 5 big-city circles;
+    toggles remove them (0/0). Failure paths: API blocked → snapshot renders + notice; only `meta` blocked → no
+    notice, About panel hidden; API + province snapshot blocked → ErrorState. Zero console errors.
+
 - **3G-051** — One accepted organisation per item enforced (D-009 bug), UAT cleanup, seed need quantities, full
   live walkthrough (see DECISIONS.md D-053)
   - Deliverable: `acceptRequest` throws `itemAlreadyReserved` when another request holds the item (and no-ops for a

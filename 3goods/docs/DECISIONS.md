@@ -644,6 +644,48 @@ page; `DonationForm`'s collection-windows section reads "Collection time windows
   exactly one `request_accepted` system message. The UI already locks buttons during an action (D-052), so this is
   the service-level backstop.
 
+## D-056 — Board pills are category-only; seed scaled to 8 organisations / 20 donors
+- **Pills.** The compact pills on the Organisations board show the category name (plus the priority star) and nothing
+  else, reversing D-052's quantity suffix at the user's request. Quantities remain on the organisation's own profile
+  page and in Needs Management. The category itself comes from the live table: `needs.category_id` → live
+  `categories.name` (`getCategorySlugFromDbId`) → bilingual label from `data/categories.js` (the live table holds only
+  the English `name`, so labels can't come from it). The board-only helper `summariseNeedQuantities` was deleted.
+- **Quantities set** (user-supplied): Clothes needs 80/60/50/100/70 pieces (Food Share, Hanoi Pantry, Books for
+  Children, Warm Homes, Care Bridge); Hanoi `textbooks_stationery` 90 sets; Care Bridge `blankets_mats` 45 pieces. The last
+  two rows existed only in the live table (added by hand during testing), so they were adopted into `needs.js` with
+  their live ids (`need016`, `need017`) and original timestamps; a re-seed updates them instead of duplicating.
+- **Scale-up.** 3 new fictional organisations (Hai Phong Harbour Relief, Nha Trang Seaside Aid, Mekong Delta
+  Neighbours; areas haiphong / nhatrang / mekong, so all 8 areas are now represented; the Mekong one is unverified, giving
+  6 verified of 8), 3 matching organisation logins (`OTHER_ORG_USERS`, needed for chat, see D-051), 9 new needs (2
+  themed + Clothes each, with quantities), and **15** new donors. The request said 14 new donors for "20 donors", but
+  the live table had 5 donors (not 6), so 15 were added to reach 20; trimming one is a one-line delete.
+  Generated quantities on the new organisations' needs are plausible placeholders, like the rest of the fictional data.
+- **Live update** was a targeted upsert of the three affected tables from the seed files (same column mapping as
+  `scripts/seed-supabase.mjs`), leaving items/requests/conversations in their current state.
+
+## D-057 — The map client now uses all five map-site API endpoints (with a labelled snapshot fallback)
+- **Audit (before this change):** `mapApiClient.js`'s header said it called the root site's API, but its base path was
+  `/data` and it fetched four static JSON copies from `3goods/public/data/`. Zero API calls; `/api/meta` unused. The
+  data in those copies was verified byte-identical to what the live API serves (provinces incl. geometry, facilities
+  89, metro hubs 5, item-needs), so behaviour was right but the architecture rule in CLAUDE.md was not being followed.
+- **Reachability:** the root map site is deployed as the `002-data-4-life` Vercel project at
+  `https://002-data-4-life.vercel.app` (not `3goods-map.vercel.app`, which 404s). All five endpoints return 200 JSON
+  with `Access-Control-Allow-Origin: *`, so browser calls from `3goods.vercel.app` work with no proxy.
+- **Client:** `VITE_MAP_API_BASE_URL` (default the URL above) + `/api/provinces|facilities|metro-hubs|item-needs|meta`,
+  8s timeout each, all in parallel. On failure a dataset falls back to the bundled snapshot in `public/data/` and the
+  result records `sources[name] = "api" | "snapshot" | "unavailable"`. Only the province scores are fatal (ErrorState);
+  nothing is ever invented (missing → empty, reported).
+- **UI connections.** provinces → the 3 heatmap layers (unchanged, now via the API). facilities → "Show OSM Pins" +
+  a legend line with the live count. item-needs → Suggested Relief Item Categories (unchanged). **metro-hubs**: the
+  vendored MapView already drew them as always-on blue rings with no explanation, so added a "Show big cities" toggle
+  (wrapper CSS class hides the vendor circles; vendor code untouched) and a legend line naming the cities from the
+  API. **meta** had no UI, but it has a natural one: an "About this data" disclosure showing the API's own score
+  definitions, caveats and sources (shown in English as provided, with a translated note saying so), which also gives
+  the OpenStreetMap attribution. Notice banner: "saved copy" when any dataset came from the snapshot, "unavailable"
+  when one is missing entirely; a missing `meta` only hides the About panel (it does not raise the banner).
+- **Snapshot upkeep:** `public/data/` must be re-copied from `3goods-map/data/` if the map site's data changes (it is
+  only a fallback, so drift shows up as a mismatch only when the API is down).
+
 ---
 
 ## Deferred questions (not blocking Phase 1)

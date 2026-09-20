@@ -23,17 +23,3 @@ export function formatQuantity(quantity, unit, t) {
   const label = UNITS.includes(unit) ? t(quantity === 1 ? `units.${unit}_one` : `units.${unit}`) : unit;
   return `${quantity} ${label}`;
 }
-
-/**
- * One label for a group of needs (e.g. all of an organisation's Rice needs):
- * the summed quantity when every quantified need shares a unit, otherwise
- * nothing rather than adding kg to boxes.
- */
-export function summariseNeedQuantities(needs, t) {
-  const quantified = needs.filter((need) => need.quantity !== null && need.quantity !== undefined);
-  if (quantified.length === 0) return "";
-  const units = new Set(quantified.map((need) => need.unit ?? ""));
-  if (units.size !== 1) return "";
-  const total = quantified.reduce((sum, need) => sum + need.quantity, 0);
-  return formatQuantity(total, quantified[0].unit, t);
-}

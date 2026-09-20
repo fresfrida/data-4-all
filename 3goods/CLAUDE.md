@@ -92,7 +92,10 @@ file's comment for why.
 - **Map vs organisation data stay separate records, never merged.** Disaster-context data (province
   scores, OSM facility pins) comes only from the map API client
   (`src/features/map/api/mapApiClient.js`) hitting the root site's deployed `/api/*` endpoints.
-  3goods organisations come only from `organisationsService`. A facility pin from OpenStreetMap is
+  3goods organisations come only from `organisationsService`. The client calls all five endpoints (`provinces`,
+  `facilities`, `metro-hubs`, `item-needs`, `meta`) on the deployed root map site (base URL
+  `VITE_MAP_API_BASE_URL`, default `https://002-data-4-life.vercel.app`). If the API is unreachable it falls back to
+  the bundled `public/data/` snapshot (a copy of what the API serves) and the map shows a notice — see D-057. A facility pin from OpenStreetMap is
   never presented as a registered 3goods organisation, and no score is invented where the map API
   returns `null`.
 

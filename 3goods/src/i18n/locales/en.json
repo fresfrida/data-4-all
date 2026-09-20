@@ -247,6 +247,16 @@
     "priorityHigh": "High",
     "priorityMedium": "Medium",
     "priorityLow": "Low",
-    "priorityKeyTitle": "Priority"
+    "priorityKeyTitle": "Priority",
+    "showMetroHubs": "Show big cities",
+    "legendMetro": "Blue circles: Vietnam's largest cities, likely where donations come from ({cities})",
+    "legendFacility": "Grey pins: {count} OpenStreetMap community facilities (not 3goods organisations)",
+    "dataFallbackNotice": "The live map data service could not be reached, so some map data below is a saved copy.",
+    "dataUnavailableNotice": "Some map data is unavailable right now, so parts of the map may be empty.",
+    "aboutDataTitle": "About this data",
+    "aboutDataNote": "Provided by the map data service, in English.",
+    "aboutScores": "How scores work",
+    "aboutCaveats": "Caveats",
+    "aboutSources": "Sources"
   }
 }

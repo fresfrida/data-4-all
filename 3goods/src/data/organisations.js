@@ -74,6 +74,42 @@ export const ORGANISATIONS = [
     isDemo: true,
     pastReceivedItemIds: [],
   },
+  {
+    id: ORG_IDS.haiphongRelief,
+    name: { en: "Hai Phong Harbour Relief", vi: "Cứu Trợ Cảng Hải Phòng" },
+    mission: {
+      en: "Delivering food and essentials to coastal families after storms.",
+      vi: "Chuyển thực phẩm và nhu yếu phẩm đến các gia đình ven biển sau bão.",
+    },
+    areaId: "haiphong",
+    verified: true,
+    isDemo: true,
+    pastReceivedItemIds: [],
+  },
+  {
+    id: ORG_IDS.nhatrangAid,
+    name: { en: "Nha Trang Seaside Aid", vi: "Hỗ Trợ Biển Nha Trang" },
+    mission: {
+      en: "Supporting fishing families with hygiene items, clothing and school supplies.",
+      vi: "Hỗ trợ các gia đình làm nghề biển với đồ vệ sinh, quần áo và dụng cụ học tập.",
+    },
+    areaId: "nhatrang",
+    verified: true,
+    isDemo: true,
+    pastReceivedItemIds: [],
+  },
+  {
+    id: ORG_IDS.mekongNeighbours,
+    name: { en: "Mekong Delta Neighbours", vi: "Láng Giềng Đồng Bằng Sông Cửu Long" },
+    mission: {
+      en: "Helping flood-prone Mekong households with blankets, clean water and clothing.",
+      vi: "Giúp các hộ dân vùng ngập lũ miền Tây với chăn mền, nước sạch và quần áo.",
+    },
+    areaId: "mekong",
+    verified: false,
+    isDemo: true,
+    pastReceivedItemIds: [],
+  },
 ];
 
 export function getOrganisationById(id) {

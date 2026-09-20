@@ -599,15 +599,11 @@ page; `DonationForm`'s collection-windows section reads "Collection time windows
 - **Bug, not a product choice.** D-009 says one accepted organisation per listing, but `acceptRequest` never checked
   (its comment claimed it did), `deriveDisplayStatus` returned `request.status` unchanged, and the Accept button gated
   on the raw status. Fix: `acceptRequest` throws the existing `itemAlreadyReserved` when the item's
-  `acceptedRequestId` is a *different* request (or the item is reserved with no accepted id); it returns the request
-  unchanged if it is already accepted/arranging/completed (no duplicate system message, no status regression).
-  `deriveDisplayStatus` returns "unavailable" for a `requested` request whose item is held by another request; the
+  `acceptedRequestId` is a *different* request (or the item is reserved with no accepted id); accepting a request
+  that is already past "requested" is a no-op (see D-055). `deriveDisplayStatus` returns "unavailable" for a `requested` request whose item is held by another request; the
   sibling's stored row is never mutated (D-009's derived-status rule). `RequestRow` (Me + ItemDetail) and the
   organisation's own item-page pill use it; an "unavailable" row shows no button.
-- **Undo/Re-open must release the item.** `revertRequestToPending` previously only reset the request, leaving the item
-  reserved to a request that was no longer accepted. With the new rule that would have left every sibling stuck on
-  "no longer available". It now calls `reopenItemAvailability` when the item's accepted request is the one being
-  reverted. (Side effect: the item is browsable again after Undo, which is the intent.)
+- **Undo/Re-open now releases the item** — its own behaviour change, recorded as D-054.
 - **Seed quantities** (user-supplied): need001 200 kg, 002 100 cans, 003 300 kg, 004 50 pieces, 005 100 books, 006 80
   sets, 007 40 pieces, 008 60 pieces, 009 100 packs, 010 120 pieces. Applied to `src/data/needs.js`, the seed script
   mapping, and the live rows (targeted update by fixed id). Added units `cans` ("lon") and `books` ("cuốn").
@@ -616,6 +612,37 @@ page; `DonationForm`'s collection-windows section reads "Collection time windows
   belonged to a separate test chain (item "UAT TEST - Rice Pack 20260919" → request → conversation → notifications),
   deleted in full including the test item, which the request could not be removed without.
 - Not done: removing an item from an organisation's `past_received_item_ids` on Re-open (see HANDOFF).
+
+## D-054 — Undo / Re-open of the accepted request releases the item (behaviour change; user-approved)
+- **Before:** `revertRequestToPending` (the donor's "Undo" on an accepted/arranging request and "Re-open" on a
+  completed one) only set that request back to `requested`. The item stayed `reserved` with `accepted_request_id`
+  still pointing at it.
+- **Why that had to change:** once D-053 made a pending sibling display as "no longer available" whenever the item is
+  held by a *different* request, the leftover reservation would have stranded every sibling: nobody accepted, item
+  still reserved, all other organisations locked out with no way for the donor to pick one.
+- **Now:** if the reverted request is the one the item is held by (`item.acceptedRequestId === requestId`), the item
+  is released via `reopenItemAvailability` (status `available`, `accepted_request_id` cleared). Reverting a request
+  that does *not* hold the item (e.g. a declined one) leaves the item alone.
+- **Consequences to know:** the item is browsable in Discover Items again after Undo; siblings return from "No
+  longer available" to plain "Requested" and can be accepted. The existing conversation and its "request accepted"
+  system message are kept. Known gap, unchanged: Re-open of a *completed* request does not remove the item from the
+  organisation's `past_received_item_ids` (HANDOFF).
+- **Verified live** (production, EN + VI): accept → sibling locked → chat → completed → Re-open → item "Available",
+  both requests "Requested" with Accept.
+
+## D-055 — Accepting a request that is already accepted / arranging / completed is a no-op (behaviour change; user-approved)
+- **Before:** `acceptRequest` had no state check. A stale or repeated call (second browser tab, delayed double tap)
+  wrote `status: "accepted"` again — which would push a request already at `arranging_collection` or `completed`
+  back to `accepted` — and posted a second "Request accepted" system message into the chat.
+- **Now:** after the D-053 reserved-by-another check, `acceptRequest` returns the request unchanged, with no writes, if
+  its status is `accepted`, `arranging_collection` or `completed`. Only a `requested` request (including one that
+  was undone back to `requested`, D-054) is actually accepted.
+- **Why silent, not an error:** the caller's intent ("this organisation should be the accepted one") is already true,
+  so nothing is wrong and there is nothing to show. A *different* request holding the item is still an error
+  (`itemAlreadyReserved`), because there the intent cannot be satisfied.
+- **Verified live:** accepting the accepted request a second time returned status `accepted` and the thread still had
+  exactly one `request_accepted` system message. The UI already locks buttons during an action (D-052), so this is
+  the service-level backstop.
 
 ---
 

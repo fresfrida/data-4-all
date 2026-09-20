@@ -899,6 +899,9 @@ page; `DonationForm`'s collection-windows section reads "Collection time windows
   not drift apart. The Chat list marks unread rows (bold preview + "New"). Opening a conversation marks what is on screen as
   seen (`ChatDetail`), clearing the row and the badge.
 - **Freshness:** no push channel exists, so it is re-checked on every route change, when the tab regains focus, and every 15 s.
+  `markSeen` also invalidates any check already in flight (it was computed from the old "seen" state and could put the
+  conversation's badge back). One production run showed the badge not clearing within a fixed 1.8 s wait; the cause was probably
+  just the slower production chat page, the race could not be reproduced, but the guard is correct either way.
 - **Not done:** the Updates (bell) item has no unread indicator either. Updates have a read flag but are keyed by a different id
   for organisations, so it needs its own look; it can reuse `UnreadBadge`.
 

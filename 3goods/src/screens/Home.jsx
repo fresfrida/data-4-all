@@ -10,6 +10,9 @@ import { ROUTES } from "../lib/constants.js";
 import { useCountUp } from "../lib/useCountUp.js";
 import { OrganisationsBoard } from "../components/needs/OrganisationsBoard.jsx";
 
+/** Anchor for the hero's "See verified needs" button. */
+const NEEDS_BOARD_ID = "verified-needs";
+
 /**
  * Hero stats — live counts, nothing hardcoded or approximated:
  * - donors: `users` rows with role = 'donor' (see usersService.getDonorCount)
@@ -84,12 +87,17 @@ export function Home() {
 
             {/* Action Buttons: the same for guest, donor and organisation (a donor posts via the "Donate" nav item, D-060) */}
             <div className="flex flex-wrap items-center gap-3 pt-2">
-              <Link
-                to={ROUTES.discoverItems}
+              {/* The board is right below the hero on this page, so this scrolls to it rather than navigating away. */}
+              <a
+                href={`#${NEEDS_BOARD_ID}`}
+                onClick={(event) => {
+                  event.preventDefault();
+                  document.getElementById(NEEDS_BOARD_ID)?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
                 className="inline-flex items-center justify-center rounded-full bg-accent-500 px-6 py-3 text-sm font-bold text-white shadow-lg hover:bg-accent-600 transition-all active:scale-95 min-w-[160px]"
               >
-                📦 {t("hero.ctaBrowse")}
-              </Link>
+                📋 {t("hero.ctaBrowse")}
+              </a>
               <Link
                 to={ROUTES.map}
                 className="inline-flex items-center justify-center rounded-full bg-white/95 px-6 py-3 text-sm font-bold text-ink-900 backdrop-blur-md border border-white hover:bg-white transition-all active:scale-95 min-w-[160px] shadow-md"
@@ -107,7 +115,9 @@ export function Home() {
           </div>
         </div>
       </section>
-      <OrganisationsBoard headingLevel="h2" />
+      <div id={NEEDS_BOARD_ID}>
+        <OrganisationsBoard headingLevel="h2" />
+      </div>
     </>
   );
 }

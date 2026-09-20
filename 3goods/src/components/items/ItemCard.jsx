@@ -8,9 +8,13 @@ import { formatQuantity } from "../../lib/quantity.js";
 import { ROUTES } from "../../lib/constants.js";
 
 /**
- * @param {{item: import('../../data/types.js').Item, categoryLabel: string, secondaryCategoryLabel?: string, areaLabel: string, showStatus?: boolean}} props
+ * `match` (optional, display-only): open needs in the item's category, `{count, org, urgent}` where `org` is the first
+ * matching organisation. The whole card stays clickable through the title link's stretched ::after, so the
+ * organisation link can sit inside the card without nesting one <a> in another.
+ *
+ * @param {{item: import('../../data/types.js').Item, categoryLabel: string, secondaryCategoryLabel?: string, areaLabel: string, showStatus?: boolean, match?: {count: number, org?: {id: string, name: string}, urgent?: boolean}}} props
  */
-export function ItemCard({ item, categoryLabel, secondaryCategoryLabel, areaLabel, showStatus = false }) {
+export function ItemCard({ item, categoryLabel, secondaryCategoryLabel, areaLabel, showStatus = false, match }) {
   const { locale } = useLocale();
   const t = useTranslate();
   const quantityLabel = formatQuantity(item.quantity, item.unit, t);
@@ -21,10 +25,7 @@ export function ItemCard({ item, categoryLabel, secondaryCategoryLabel, areaLabe
   const displayTitle = locale === "vi" ? (item.titleVi ?? item.title) : item.title;
 
   return (
-    <Link
-      to={ROUTES.item(item.id)}
-      className="group flex flex-col overflow-hidden rounded-card border border-ink-600/10 bg-white shadow-xs transition hover:border-accent-400 hover:shadow-sm"
-    >
+    <div className="group relative flex flex-col overflow-hidden rounded-card border border-ink-600/10 bg-white shadow-xs transition hover:border-accent-400 hover:shadow-sm">
       <div className="relative aspect-square w-full overflow-hidden bg-cream-100">
         <div className={`h-full w-full ${unavailable ? "opacity-60 grayscale-[50%]" : ""}`}>
           {photo ? (
@@ -46,7 +47,12 @@ export function ItemCard({ item, categoryLabel, secondaryCategoryLabel, areaLabe
       </div>
       <div className="flex flex-1 flex-col gap-2 p-4">
         <div className="flex items-start justify-between gap-2">
-          <p className="line-clamp-2 text-sm font-bold text-ink-800 group-hover:text-accent-600 transition-colors">{displayTitle}</p>
+          <Link
+            to={ROUTES.item(item.id)}
+            className="line-clamp-2 text-sm font-bold text-ink-800 group-hover:text-accent-600 transition-colors after:absolute after:inset-0 after:content-['']"
+          >
+            {displayTitle}
+          </Link>
           {showStatus && <StatusBadge status={displayStatus} kind="item" />}
         </div>
         <div className="flex flex-col items-start gap-1 text-xs text-ink-600 font-medium">
@@ -67,11 +73,27 @@ export function ItemCard({ item, categoryLabel, secondaryCategoryLabel, areaLabe
             )}
           </span>
         </div>
+        {match && !unavailable && (
+          <div data-testid="item-need-match" className="flex flex-col gap-0.5 text-[11px] font-medium text-ink-600">
+            <span>
+              {t("itemMatch.offered")}
+              {match.count > 0 && <> • {match.count === 1 ? t("itemMatch.matchesOne") : t("itemMatch.matchesMany", { count: match.count })}</>}
+            </span>
+            {match.org && (
+              <Link
+                to={ROUTES.organisation(match.org.id)}
+                className="relative z-10 w-fit max-w-full line-clamp-2 font-bold text-accent-600 hover:underline"
+              >
+                {t(match.urgent ? "itemMatch.orgUrgentNeed" : "itemMatch.orgNeed", { org: match.org.name })}
+              </Link>
+            )}
+          </div>
+        )}
         <div className="mt-auto pt-2 border-t border-ink-600/5 flex items-center gap-2">
           <Avatar name={item.donorName || "Donor"} type="donor" size="xs" />
           <span className="text-[11px] text-ink-600 font-medium truncate">{item.donorName || "Donor"}</span>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }

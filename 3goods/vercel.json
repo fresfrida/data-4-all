@@ -1,3 +1,4 @@
 {
+  "redirects": [{ "source": "/video", "destination": "https://youtu.be/d5GxkMstZ1k", "permanent": false }],
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }

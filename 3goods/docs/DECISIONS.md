@@ -1011,3 +1011,20 @@ page; `DonationForm`'s collection-windows section reads "Collection time windows
   the same one — defaulting to always the same one (simpler, consistent test data) unless told
   otherwise.
 - Filter/Sort full behaviour (3G-035) — stubbed in Phase 1, detailed decisions deferred to that task.
+
+## D-074 — Copy pass: needs-first hero, "Available donations" catalogue, need-match badge, /video redirect (user-requested)
+- **Where the hero lives:** `Home.jsx` (the request named `DiscoverNeeds.jsx`, which only renders the board). The board sits directly under the
+  hero on `/`, so the primary CTA ("See verified needs", key `hero.ctaBrowse`, emoji 📦 -> 📋) is an in-page anchor that smooth-scrolls to it
+  rather than navigating; the map button is unchanged.
+- **Rename:** nav label (`nav.itemsDonated`, key kept), page heading, and a one-line free-donation notice above the grid. No "buy/sell" wording
+  beyond the requested negations.
+- **Need-match badge (display-only, no schema change):** `DiscoverItems` loads `getNeeds()` + `getOrganisations()`; a need matches an item on
+  **primary `category` equality only** (not `secondaryCategory`). Only needs of **verified** organisations count (the copy says "verified need").
+  Needs have no status in the app model (the column exists in the table but `needsService` does not read it; a need lives until removed), so every
+  need counts as open. The named organisation is the first match; `getNeeds()` sorts priority first, so it is an "urgent" one whenever any exists.
+  The badge is hidden on items that are not available (they already carry a status banner; "Offered for donation" would be wrong).
+- **ItemCard structure change:** the card is no longer one big `<Link>` (an organisation link cannot nest in an `<a>`); the title is the link and
+  its `::after` stretches over the card, the organisation link sits above it (`z-10`). Whole-card click behaviour is unchanged.
+- **Knock-on layout fix (not in the request):** "Available donations" did not fit the fixed 152px desktop nav pill (truncated as "Available dona…").
+  `DesktopTopNav` pills are now `min-w-[152px]` with no truncation and the two side columns are 180px instead of 220px (the org nav still fits 1280px).
+- **/video:** `vercel.json` `redirects` (temporary, 307) to the YouTube video, beside the SPA rewrite; footer link is a plain `<a target="_blank">`.

@@ -18,8 +18,8 @@
   },
   "hero": {
     "title": "Điều phối Quyên góp & Cứu trợ Thiên tai tại Việt Nam",
-    "subtitle": "Kết nối trực tiếp nhà hảo tâm với các tổ chức cứu trợ địa phương được xác minh để chuyển nhu yếu phẩm đến đúng nơi cần.",
-    "ctaBrowse": "Xem đồ quyên góp",
+    "subtitle": "Các tổ chức đã được xác minh đăng những gì cộng đồng đang cần. Người quyên góp đề xuất hàng hóa phù hợp, rồi phối hợp giao hoặc nhận hàng - không mua bán.",
+    "ctaBrowse": "Xem nhu cầu đã xác minh",
     "ctaMap": "Bản đồ cứu trợ",
     "statDonors": "Người quyên góp đã đăng ký",
     "statOrgs": "Tổ chức xác minh",
@@ -33,7 +33,7 @@
     "me": "Tôi",
     "myOrganisation": "Tổ chức",
     "organisations": "Các tổ chức",
-    "itemsDonated": "Đồ quyên góp"
+    "itemsDonated": "Quyên góp sẵn có"
   },
   "role": {
     "donor": "Người quyên góp",
@@ -96,6 +96,13 @@
     "photos": "Hình ảnh",
     "markAsPriority": "Đánh dấu ưu tiên",
     "messagePlaceholder": "Nhập tin nhắn…"
+  },
+  "itemMatch": {
+    "offered": "Đang được quyên góp",
+    "matchesOne": "Phù hợp với 1 nhu cầu đã xác minh",
+    "matchesMany": "Phù hợp với {count} nhu cầu đã xác minh",
+    "orgNeed": "Phù hợp với nhu cầu của {org}",
+    "orgUrgentNeed": "Phù hợp với nhu cầu cấp thiết của {org}"
   },
   "itemStatus": {
     "available": "Còn nhận quyên góp",
@@ -177,10 +184,11 @@
     "discoverNeedsIntroPrefix": "Xem những gì các tổ chức trên khắp Việt Nam đang cần, sau đó",
     "discoverNeedsByOrgTitle": "Nhu cầu cứu trợ theo Tổ chức",
     "discoverNeedsIntro": "Xem các tổ chức cứu trợ địa phương hiện đang cần gì và nên quyên góp cho ai.",
-    "discoverAvailableGoodsTitle": "Khám phá vật phẩm sẵn có được quyên góp",
+    "discoverAvailableGoodsTitle": "Hàng hóa do người quyên góp cung cấp",
     "discoverNeedsCta": "đăng một khoản quyên góp",
     "notFoundTitle": "Không tìm thấy trang",
     "chatUnread": "Mới",
+    "discoverItemsDisclaimer": "Đây là những món quyên góp miễn phí dành cho các tổ chức đã được xác minh - không phải sản phẩm để bán.",
     "discoverItemsIntro": "Duyệt các vật phẩm mà người quyên góp đã đăng và yêu cầu những gì tổ chức bạn cần.",
     "searchItems": "Tìm vật phẩm…",
     "searchOrganisations": "Tìm tổ chức…",
@@ -220,6 +228,7 @@
     "aboutUs": "Về chúng tôi",
     "contactUs": "Liên hệ",
     "privacy": "Quyền riêng tư & Sử dụng dữ liệu",
+    "watchVideo": "Xem video giới thiệu",
     "copyright": "© 2026 Nền tảng 3goods. Tất cả quyền được bảo lưu."
   },
   "a11y": {

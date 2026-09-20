@@ -58,6 +58,11 @@ suggested next task)
 
 ## Done
 
+- **3G-058** — Messaging/copy pass + need-match badges + intro-video link (D-074, requested by the user during the demo freeze). Hero subline and
+  primary CTA ("See verified needs", scrolls to the board on the same page), catalogue renamed (nav "Available donations", heading "Goods offered by
+  donors", free-donation line above the grid), display-only need-match badge on item cards, `/video` redirect + footer link. Verified live on
+  `3goods.vercel.app` (Chrome CDP, 1280px and 390px, EN + VI, zero console errors); see HANDOFF.md.
+
 - **3G-055** — see the Verify entry above until the coverage SQL has been run (then move here).
   - Verified (headless Chrome + CDP, 375px VI and 1280px EN; live rows read-only, every write answered locally): Discover Items
     (live 19 available + 3 reserved): page 1 = 12 available, no banners; "Showing 1–12 of 22" / VI "Hiển thị 1–12 trên 22"; page 2 =

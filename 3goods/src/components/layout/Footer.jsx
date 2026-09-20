@@ -24,6 +24,8 @@ export function Footer() {
           <Link to={ROUTES.discoverNeeds} className="hover:text-accent-600 transition-colors">{t("nav.organisations")}</Link>
           <Link to={ROUTES.discoverItems} className="hover:text-accent-600 transition-colors">{t("nav.itemsDonated")}</Link>
           <Link to={ROUTES.map} className="hover:text-accent-600 transition-colors">🗺️ {t("nav.map")}</Link>
+          {/* Plain <a>, not <Link>: /video is a Vercel redirect (vercel.json), not a client-side route. */}
+          <a href="/video" target="_blank" rel="noopener noreferrer" className="hover:text-accent-600 transition-colors">▶ {t("footer.watchVideo")}</a>
           <span className="text-ink-300">•</span>
           <span className="hover:underline cursor-pointer">{t("footer.privacy")}</span>
           <span className="hover:underline cursor-pointer">{t("footer.aboutUs")}</span>

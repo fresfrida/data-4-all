@@ -18,8 +18,8 @@
   },
   "hero": {
     "title": "Direct Disaster Relief & Item Coordination in Vietnam",
-    "subtitle": "Connecting donors directly with verified local relief organisations to deliver essential goods during disaster response.",
-    "ctaBrowse": "Browse Items Donated",
+    "subtitle": "Verified organisations post what communities need. Donors offer matching goods, then coordinate delivery or pickup - no buying or selling.",
+    "ctaBrowse": "See verified needs",
     "ctaMap": "Relief Map",
     "statDonors": "Registered Donors",
     "statOrgs": "Verified Organisations",
@@ -33,7 +33,7 @@
     "me": "Me",
     "myOrganisation": "Us",
     "organisations": "Organisations",
-    "itemsDonated": "Items Donated"
+    "itemsDonated": "Available donations"
   },
   "role": {
     "donor": "Donor",
@@ -96,6 +96,13 @@
     "photos": "Photos",
     "markAsPriority": "Mark as priority",
     "messagePlaceholder": "Type a message…"
+  },
+  "itemMatch": {
+    "offered": "Offered for donation",
+    "matchesOne": "Matches 1 verified need",
+    "matchesMany": "Matches {count} verified needs",
+    "orgNeed": "Matches {org}'s need",
+    "orgUrgentNeed": "Matches {org}'s urgent need"
   },
   "itemStatus": {
     "available": "Available",
@@ -177,10 +184,11 @@
     "discoverNeedsIntroPrefix": "See what organisations across Vietnam currently need, then",
     "discoverNeedsByOrgTitle": "Discover needs by Organisation",
     "discoverNeedsIntro": "Browse what local relief organisations currently need and see who to donate to.",
-    "discoverAvailableGoodsTitle": "Discover Available Goods to be Donated",
+    "discoverAvailableGoodsTitle": "Goods offered by donors",
     "discoverNeedsCta": "post a donation",
     "notFoundTitle": "Page not found",
     "chatUnread": "New",
+    "discoverItemsDisclaimer": "These items are free donations for verified organisations - not products for sale.",
     "discoverItemsIntro": "Browse items donors have listed and request what your organisation needs.",
     "searchItems": "Search items…",
     "searchOrganisations": "Search organisations…",
@@ -220,6 +228,7 @@
     "aboutUs": "About Us",
     "contactUs": "Contact Us",
     "privacy": "Privacy & Data Use",
+    "watchVideo": "Watch our intro video",
     "copyright": "© 2026 3goods Platform. All Rights Reserved."
   },
   "a11y": {

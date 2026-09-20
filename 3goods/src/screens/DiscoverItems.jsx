@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAsync } from "../lib/useAsync.js";
 import { getItems } from "../services/itemsService.js";
+import { getNeeds } from "../services/needsService.js";
+import { getOrganisations } from "../services/organisationsService.js";
 import { getAreas, getCategories } from "../services/referenceDataService.js";
 import { useLocale } from "../i18n/LocaleContext.jsx";
 import { useTranslate } from "../i18n/useTranslate.js";
@@ -16,8 +18,33 @@ import { Pagination } from "../components/controls/Pagination.jsx";
 const PAGE_SIZE = 12;
 
 async function loadDiscoverItems() {
-  const [items, areas, categories] = await Promise.all([getItems(), getAreas(), getCategories()]);
-  return { items, areas, categories };
+  const [items, areas, categories, needs, organisations] = await Promise.all([
+    getItems(),
+    getAreas(),
+    getCategories(),
+    getNeeds(),
+    getOrganisations(),
+  ]);
+  return { items, areas, categories, needsByCategory: groupNeedsByCategory(needs, organisations) };
+}
+
+/**
+ * category id -> {count, org, urgent} for the need-match badge on item cards: category equality only, and only needs
+ * published by verified organisations. Needs have no status of their own in the app model (a need exists until its
+ * organisation removes it), so every need counts as open. `getNeeds()` sorts priority needs first, so `org` is an
+ * organisation with an urgent need in that category whenever one exists.
+ */
+function groupNeedsByCategory(needs, organisations) {
+  const orgById = new Map(organisations.filter((org) => org.verified).map((org) => [org.id, org]));
+  const grouped = new Map();
+  for (const need of needs) {
+    const org = orgById.get(need.organisationId);
+    if (!org) continue;
+    const entry = grouped.get(need.category) ?? { count: 0, org: { id: org.id, name: org.name }, urgent: need.priority };
+    entry.count += 1;
+    grouped.set(need.category, entry);
+  }
+  return grouped;
 }
 
 /** "/discover" — every listed item, available ones first, with the accepted/donated ones below carrying a status banner (D-067). Paginated (D-068). */
@@ -58,6 +85,11 @@ export function DiscoverItems() {
   const areaLabel = (areaId) => {
     const area = data.areas.find((a) => a.id === areaId);
     return area?.[locale] ?? area?.en ?? areaId;
+  };
+  const matchFor = (item) => {
+    const entry = data.needsByCategory.get(item.category);
+    if (!entry) return { count: 0 };
+    return { count: entry.count, org: { id: entry.org.id, name: entry.org.name[locale] ?? entry.org.name.en }, urgent: entry.urgent };
   };
   const categoryLabel = (categoryId) => {
     const category = data.categories.find((c) => c.id === categoryId);
@@ -111,6 +143,8 @@ export function DiscoverItems() {
         ))}
       </div>
 
+      <p className="text-sm font-medium text-ink-700">{t("screens.discoverItemsDisclaimer")}</p>
+
       {filtered.length === 0 ? (
         <EmptyState title={t("emptyStates.noItems")} />
       ) : (
@@ -122,6 +156,7 @@ export function DiscoverItems() {
               categoryLabel={categoryLabel(item.category)}
               secondaryCategoryLabel={item.secondaryCategory ? categoryLabel(item.secondaryCategory) : undefined}
               areaLabel={areaLabel(item.areaId)}
+              match={matchFor(item)}
             />
           ))}
         </ItemGrid>

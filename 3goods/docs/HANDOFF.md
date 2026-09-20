@@ -43,6 +43,12 @@ Earlier: 3G-043 through 3G-053 done. The `items.quantity`/`unit` SQL from D-052 
 "12 boxes" item on production; detail + card display it; test row deleted). No open actions.**
 
 ## Completed this session (session 6)
+- **3G-058** (D-074), user-requested copy pass during the demo freeze; deployed to `3goods.vercel.app`. Hero subline + "See verified needs" CTA
+  (`Home.jsx`; smooth-scrolls to `#verified-needs`, the board already under the hero), nav/heading/disclaimer renames (`nav.itemsDonated`,
+  `screens.discoverAvailableGoodsTitle`, new `screens.discoverItemsDisclaimer`), need-match badge (`itemMatch.*`, `DiscoverItems.jsx` +
+  `ItemCard.jsx`), `vercel.json` `redirects` (`/video` -> YouTube, 307) + footer link (plain `<a>`, not `<Link>`, since it is a server redirect).
+  Verified live at 1280 and 390, EN + VI: hero text, CTA scroll, renamed nav/heading, badge on "5kg of rice" -> Vietnam Food Share (its profile
+  lists Rice), footer link, `/video` 307 -> youtube.com. Note: `/video` only redirects on Vercel, not under `npm run dev`/`preview`.
 - **3G-056** (D-073). Pins on the Relief Map are clickable. `features/map/facilityMatching.js` (150 m, one-to-one, needs organisation `location`),
   `pinLayer.js` (decorates the vendored pins, delegated click), `components/FacilityPopup.jsx` (matched: link to the organisation profile;
   unmatched: "hasn't joined 3goods yet" + interest form), `services/facilityInterestService.js` -> `facility_interests` (insert-only; read it in the

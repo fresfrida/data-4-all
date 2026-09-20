@@ -18,6 +18,15 @@ suggested next task)
 
 ## Verify
 
+- **3G-057** — Two QA polish fixes (no new features, demo freeze): (1) the 404 screen showed the raw key `screens.notFoundTitle`; added it
+  to EN/VI ("Page not found" / "Không tìm thấy trang"). (2) On the Vietnamese map the region badge ("North Central and Central Coast", 6
+  regions) and the big-city legend (Ho Chi Minh City, Hanoi, Hai Phong, Can Tho, Da Nang) were English, coming straight from the map API data:
+  regions now translate via `map.regions.*`, city names via the provinces table's Vietnamese name. i18n check 276/276, build OK, checked at
+  375 and 1280 in EN and VI (no English region/city name left on the VI map page). **Still English on purpose:** the "About this data" panel
+  (the API's own text, labelled as such) and the hover tooltip on the big-city circles (vendored map code, "…big city, likely where donations come
+  from"). **Known debt, deliberately NOT touched (QA, D-058 area):** every new chat conversation still gets a first `messages` row with `body = NULL`;
+  it is the `request_accepted` system message (`system_code` set, body null by design, D-016), the UI renders it correctly, so users never see it.
+  Later fix options: stop writing a placeholder, or store an explicit type + real body instead of NULL. UAT test rows in the live DB were left as they are.
 - **3G-056** — Clickable OSM facility pins: matched popup links to the organisation, unmatched popup offers an interest form (D-073). **Code
   deployed; the pins only show matches once the user runs the (updated) `supabase/seed-coverage.sql`**, which now also adds `organisations.lat/lng`
   and the `facility_interests` table, so this task and 3G-055 close together after that run.

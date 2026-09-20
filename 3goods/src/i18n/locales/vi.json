@@ -179,6 +179,7 @@
     "discoverNeedsIntro": "Xem các tổ chức cứu trợ địa phương hiện đang cần gì và nên quyên góp cho ai.",
     "discoverAvailableGoodsTitle": "Khám phá vật phẩm sẵn có được quyên góp",
     "discoverNeedsCta": "đăng một khoản quyên góp",
+    "notFoundTitle": "Không tìm thấy trang",
     "chatUnread": "Mới",
     "discoverItemsIntro": "Duyệt các vật phẩm mà người quyên góp đã đăng và yêu cầu những gì tổ chức bạn cần.",
     "searchItems": "Tìm vật phẩm…",
@@ -271,6 +272,14 @@
     "showMetroHubs": "Hiện thành phố lớn",
     "zoomHint": "Giữ {key} và cuộn để thu phóng",
     "touchHint": "Dùng hai ngón tay để di chuyển bản đồ",
+    "regions": {
+      "mekong_delta": "Đồng bằng sông Cửu Long",
+      "south_east": "Đông Nam Bộ",
+      "northern_midlands": "Trung du và miền núi phía Bắc",
+      "red_river_delta": "Đồng bằng sông Hồng",
+      "north_central_coast": "Bắc Trung Bộ và Duyên hải miền Trung",
+      "central_highlands": "Tây Nguyên"
+    },
     "facilitySource": "Cơ sở từ OpenStreetMap",
     "facilityMatchedTag": "Đã đăng ký trên 3goods",
     "facilityUnverified": "Chưa xác minh",

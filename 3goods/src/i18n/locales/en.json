@@ -179,6 +179,7 @@
     "discoverNeedsIntro": "Browse what local relief organisations currently need and see who to donate to.",
     "discoverAvailableGoodsTitle": "Discover Available Goods to be Donated",
     "discoverNeedsCta": "post a donation",
+    "notFoundTitle": "Page not found",
     "chatUnread": "New",
     "discoverItemsIntro": "Browse items donors have listed and request what your organisation needs.",
     "searchItems": "Search items…",
@@ -271,6 +272,14 @@
     "showMetroHubs": "Show big cities",
     "zoomHint": "Hold {key} and scroll to zoom",
     "touchHint": "Use two fingers to move the map",
+    "regions": {
+      "mekong_delta": "Mekong River Delta",
+      "south_east": "South East",
+      "northern_midlands": "Northern Midlands and Mountains",
+      "red_river_delta": "Red River Delta",
+      "north_central_coast": "North Central and Central Coast",
+      "central_highlands": "Central Highlands"
+    },
     "facilitySource": "OpenStreetMap facility",
     "facilityMatchedTag": "Registered on 3goods",
     "facilityUnverified": "Not yet verified",

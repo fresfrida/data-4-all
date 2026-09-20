@@ -34,6 +34,16 @@ function PinSwatch({ color }) {
   );
 }
 
+// The map data names its regions in English; these keys point at the translated names under map.regions.*.
+const REGION_KEYS = {
+  "Mekong River Delta": "mekong_delta",
+  "South East": "south_east",
+  "Northern Midlands and Mountains": "northern_midlands",
+  "Red River Delta": "red_river_delta",
+  "North Central and Central Coast": "north_central_coast",
+  "Central Highlands": "central_highlands",
+};
+
 const PRIORITY_RANK = { high: 3, medium: 2, low: 1 };
 
 // The GADM province names have their spaces stripped ("HàTĩnh") — put them back for display.
@@ -123,6 +133,8 @@ export function MapScreenShell() {
     ? { scores: Object.entries(meta.scores ?? {}), caveats: meta.caveats ?? [], sources: meta.sources ?? "" }
     : null;
 
+  // Big-city names come from the map API in English; the same cities are provinces in the provinces table, which has the Vietnamese name.
+  const cityName = (hub) => data.areas.find((area) => area.en.toLowerCase() === hub.name.toLowerCase())?.[locale] ?? hub.name;
   const pProps = selectedFeature?.properties || {};
   // Carry the clicked province into the donation form as its area (works for all 63 provinces).
   const donateHref = selectedArea ? `${ROUTES.donateNew}?area=${selectedArea.id}` : ROUTES.donateNew;
@@ -311,7 +323,7 @@ export function MapScreenShell() {
               {showMetroHubs && data.mapData.metroHubs.length > 0 && (
                 <li className="flex items-start gap-2">
                   <span aria-hidden="true" className="mt-0.5 h-3 w-3 shrink-0 rounded-full border-2 border-white bg-blue-500 ring-2 ring-blue-300" />
-                  <span>{t("map.legendMetro", { cities: data.mapData.metroHubs.map((hub) => hub.name).join(", ") })}</span>
+                  <span>{t("map.legendMetro", { cities: data.mapData.metroHubs.map(cityName).join(", ") })}</span>
                 </li>
               )}
               {showFacilities && data.mapData.facilities.length > 0 && (
@@ -342,7 +354,7 @@ export function MapScreenShell() {
               </div>
               {pProps.poverty_region && (
                 <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-cream-200 text-ink-800">
-                  {pProps.poverty_region}
+                  {REGION_KEYS[pProps.poverty_region] ? t(`map.regions.${REGION_KEYS[pProps.poverty_region]}`) : pProps.poverty_region}
                 </span>
               )}
             </div>

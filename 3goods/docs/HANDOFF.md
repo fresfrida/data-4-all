@@ -1,6 +1,7 @@
 # 3goods Handoff
 
-Last updated: session 6, fourteenth checkpoint: 3G-056 / D-073 (clickable OSM pins linked to organisations; the coverage SQL now also carries the
+Last updated: session 6, fifteenth checkpoint: 3G-057 (two QA polish fixes: 404 text key, VI map region/city names; demo freeze, no new features).
+Previous: fourteenth checkpoint: 3G-056 / D-073 (clickable OSM pins linked to organisations; the coverage SQL now also carries the
 `lat/lng` columns + `facility_interests` table; **still not run by the user**). Previous: thirteenth checkpoint: 3G-055 / D-067 to D-072 (items stay listed with status banners, Discover Items pagination, shared unread-chat badge,
 tab title, coverage reseed as SQL, root map site redeployed; **coverage SQL not yet run by the user**). Previous: twelfth checkpoint: 3G-054 / D-062 to D-066 (provinces table, optional + generic need quantity, one need per
 category, nearby-organisations count, touch map; **SQL run by the user, pushed, deployed, verified live**).
@@ -28,6 +29,11 @@ after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_AN
 Production env vars on this project (`vercel env ls production` to confirm) — set in session 5.
 
 ## Current task
+**Demo freeze: the testing agent runs the full demo path. Only bug fixes from QA until then.** Fixed this checkpoint (3G-057): missing `screens.notFoundTitle`
+(404 page), English region/city names on the Vietnamese map. **Open debt, not to be touched before the demo:** the blank first chat message row
+(`body = NULL`, the `request_accepted` system message, invisible in the UI). Also left alone: UAT test rows in the live DB.
+Still open below: the coverage SQL (`supabase/seed-coverage.sql`) if the user has not run it yet, and the iOS Safari touch check.
+
 **3G-055 + 3G-056 (Verify): all code is deployed. One open action for the user: run `supabase/seed-coverage.sql` in the Supabase SQL Editor (23 fictional
 organisations, 10 of them on real OSM facility coordinates; 23 login users; 53 needs; PLUS `organisations.lat/lng` and the insert-only
 `facility_interests` table). Nothing from the coverage reseed is live before that, and the pins show no matches until then (all 89 look

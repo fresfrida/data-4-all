@@ -737,8 +737,8 @@ page; `DonationForm`'s collection-windows section reads "Collection time windows
   (only if it is one of the 8 known areas; anything else is ignored). One `PROVINCE_TO_AREA` table replaces the old
   area→province one: 7 named provinces (Hà Nội, Hồ Chí Minh, Đà Nẵng, Thừa Thiên Huế, Cần Thơ, Hải Phòng, Khánh Hòa —
   the last stands in for Nha Trang) plus the 12 other Mekong Delta provinces → `mekong`. **A province outside these has no
-  matching area** (e.g. Hà Tĩnh, the map's default), so its link opens the form blank; that is the limit of the 8-area
-  list, not a bug. The same table now drives "Verified 3goods Organisations Nearby", which additionally lists only
+  matching area** (e.g. Hà Tĩnh, the map's default), so its link opens the form blank; that was the limit of the 8-area
+  list, not a bug (superseded by D-062: all 63 provinces now map to an area, and the panel is now a count, D-065). The same table now drives "Verified 3goods Organisations Nearby", which additionally lists only
   *verified* organisations (the panel heading says so; an unverified one used to get a "Verified Org" badge).
 
 ## D-061 — Map base map, zoom behaviour, and the root-first vendor change
@@ -763,8 +763,96 @@ page; `DonationForm`'s collection-windows section reads "Collection time windows
   change is confined to `fullView`: zoom-out stops exactly on the default view (verified: 60 notches out from a corner lands
   on it), and panning can never reveal more than that view (an earlier version clamped to the whole drawn world and let
   you drag to featureless land). `.map-container`'s fallback background is now the sea blue.
-- **Not changed, worth deciding:** on touch devices a finger on the map pans it and cannot scroll the page, and pinch zoom
+- **Not changed, worth deciding (resolved by D-066):** on touch devices a finger on the map pans it and cannot scroll the page, and pinch zoom
   does not exist. That is the same "accidental interaction" problem for phones; it was out of the wheel-zoom scope.
+
+## D-062 — Areas come from a real `provinces` table (63 provinces), not a hard-coded list of 8 (user-requested; supersedes the area list in D-060)
+- **Why:** `src/data/areas.js` had 8 hand-picked areas (Hanoi, HCMC, ..., "Mekong Delta"), so a map click on any other province
+  (e.g. Hà Tĩnh, the map's default) had no area and the donation form opened blank. The map data already carries the canonical
+  63 provinces.
+- **Table:** `provinces(id uuid, slug unique, map_key unique, name, name_vi, region, created_at)`, same permissive RLS as the other
+  tables. `slug` is the **area id**: it is what `organisations.city` and `items.area` store (both stay plain text, so no column
+  changes) and what `?area=` carries. `map_key` is the map data's own spelling ("HàTĩnh"), so the map joins by an exact
+  match instead of a translation table. `region` is the map data's poverty region.
+- **Names:** the map data only has Vietnamese names, with spaces stripped. `name_vi` = that name with spaces restored (one fix by
+  hand: GADM's "Hoà Bình" → "Hòa Bình"); `name` = the same without diacritics ("Ha Tinh"), except **Hanoi** and **Ho Chi
+  Minh City**, which have common English names. The English form of the other 61 is unaccented Vietnamese, matching how the old
+  list wrote "Da Nang"/"Can Tho". These are generated, not sourced from an authority; edit the rows if a nicer English name is
+  wanted. Consequence: the map's "Selected Region" title and the "Post a Donation for …" button now use the locale name, so EN
+  shows "Ha Tinh" where it used to show "Hà Tĩnh" in both languages.
+- **App:** `referenceDataService.getAreas()/getAreaById()` read the table (cached per page load, retried after a failure);
+  new `getAreaByMapKey()`. Shape unchanged (`{id, en, vi}` plus `mapKey`, `region`), so screens changed only where they had to.
+  `MapScreenShell`'s `PROVINCE_TO_AREA` is gone: the clicked province's area is looked up by `mapKey`, so the donate link
+  (`?area=<slug>`) and the donation form's pre-selection work for **all 63**. The area `<select>` lists all 63, sorted by the
+  current language.
+- **Remap of existing data** (`supabase/migration-provinces.sql`, also `LEGACY_AREA_TO_PROVINCE` in `src/data/provinces.js`):
+  hanoi→hanoi (same slug), hcmc→ho-chi-minh-city, danang→da-nang, hue→thua-thien-hue (the old "Hue" was the city; the province
+  is Thừa Thiên Huế), cantho→can-tho, haiphong→hai-phong, **nhatrang→khanh-hoa** (Nha Trang is a city inside Khánh Hòa),
+  **mekong→an-giang** (a region cannot be one province; An Giang is a Mekong Delta province, chosen because Mekong Delta
+  Neighbours and the one Mekong item just need *a* Mekong province; change it if another suits the demo better). The seed data
+  (`organisations.js`, `users.js`, `items.js`) uses the new slugs.
+- **No foreign key** from `organisations.city`/`items.area` to `provinces.slug`: the columns are plain text written by the seed
+  and the donation form, and a stray legacy value in live data would make the migration fail as a whole. The service layer only
+  ever offers real slugs.
+- **Who runs the SQL.** The anon key cannot run DDL (D-047), so the SQL is run by the user in the
+  Supabase SQL Editor; `npm run db:seed` also upserts the 63 rows (keyed on `slug`) once the table exists.
+
+## D-063 — A need's quantity is optional, and a blank quantity means "ongoing", not "missing" (user-requested design point)
+- **Reconsidered:** D-052/D-053 pushed quantities onto needs. An organisation may want an open-ended need ("always happy to
+  receive rice"), and forcing a target number would create upkeep (keeping a fixed number current) for no benefit.
+- **Meaning:** a need **with** a quantity says "this specific amount"; a need **with no** quantity says "ongoing / open-ended".
+  These are two deliberate states, so `null` is stored as null, never defaulted to 0 or 1, and it is **displayed**, not left
+  blank: Needs Management shows the label "Ongoing" (VI "Thường xuyên") where a quantity would be.
+- **What changed in code:** the field was already technically optional (blank saved as null); what was missing was the meaning.
+  The label is now "Quantity (optional)" with a hint that blank = ongoing, the unit selector is gone (D-064), and the ongoing
+  label exists. `createNeed` still rejects a non-whole or non-positive number (`quantityInvalid`); 0 is not "ongoing", blank is.
+- **Not changed:** pills stay category + priority star with no quantity (D-059). Mekong Delta Neighbours' single live need
+  (Non-Perishable Food, no quantity) is exactly this case and is left as it is (it was the user's own testing).
+
+## D-064 — Needs use one generic unit ("items") and at most one need per organisation per category
+- **Units:** the per-need unit choice (kg/pieces/boxes/sets/cans/books/...) is removed for **needs**. A need with a quantity is
+  always counted in "items" (`NEED_UNIT`, `units.items` / `units.items_one`; VI "món"); `needsService` writes `unit = 'items'`
+  when there is a quantity and `null` when there is not, and ignores any unit passed in. `Need` no longer has a `unit` field in
+  the app. **Item listings (donations) keep their unit choice**: a donor describing "12 boxes" is describing a thing, not
+  setting a target, so the confusion the change removes does not apply. If that should also be generic, it is a small change in
+  `DonationForm`/`lib/quantity.js` (the item form and card still use `UNITS`).
+- **One need per (organisation, category):** with tags gone (D-059) two needs in a category are indistinguishable, so
+  `createNeed` throws `needCategoryExists` when the organisation already has one, `NeedsManagement` disables categories already
+  on the list ("Books (already listed)"), and the SQL adds a unique index `needs_one_per_org_category (org_id, category_id)`.
+  To change an existing need, remove it and add it again (there is still no in-place edit).
+- **Merge:** Books for Children Vietnam's two Books needs (100 books, 80 sets) become one: **180 items**, priority kept (the
+  100 need was the priority one). Adding the two is a judgement call, since the old units differed ("sets" of books are not one
+  item each); the total is easy to edit. The merge and the "all existing quantified needs → items" update are in the migration
+  SQL (the app could not be allowed to write them itself). Seed: `need006` removed, `need005` = 180, all `unit` values removed.
+- **Live check before writing the SQL:** the only duplicate (organisation, category) pair in live data was the Books one.
+
+## D-065 — "Organisations nearby" is a live count, not a list
+- **Before:** a list of named organisations for the clicked province, restricted to verified ones (D-060) so an unverified
+  organisation never wore a "Verified" badge.
+- **Now:** the panel is headed "Organisations nearby" and shows one line, e.g. "**1 verified, 1 unverified**" (VI "1 đã xác
+  minh, 1 chưa xác minh"), counted from the live `organisations` table for the clicked province (`org.areaId === province slug`).
+  No names, no badges, so the verified/unverified mix-up cannot recur. A province with none shows the existing "No 3goods
+  organisation is registered in {province} yet" text instead of "0 verified, 0 unverified".
+- **"Nearby" means the same province.** With areas now real provinces (D-062) that is exact; an organisation in a neighbouring
+  province is not counted (no distance model exists).
+
+## D-066 — Touch: one finger scrolls the page, two fingers move and pinch-zoom the map
+- **Problem (D-061):** on a phone a one-finger drag panned the map and could not scroll the page past it (the map sits in a scrolling
+  page), and there was no pinch zoom.
+- **Decision (Google Maps' "cooperative" pattern):** one finger is left to the browser, so the page scrolls past the map; a brief
+  translated hint, "Use two fingers to move the map" (VI "Dùng hai ngón tay để di chuyển bản đồ"), appears at the bottom of the
+  map when a finger drags on it. Two fingers pan and pinch-zoom the map (the point between the fingers follows them; zoom is
+  clamped to the same limits as the buttons and wheel). It matches the desktop rule ("Ctrl/Cmd + scroll to zoom") and needs no
+  extra button. A tap still selects a province.
+- **Implementation (root first, D-061 process):** `MapView` gains an opt-in `cooperativeTouch` option in
+  `3goods-map/web/mapView.js`, copied verbatim into `src/features/map/vendor/mapView.js` (`cmp` identical). With it the
+  container gets `touch-action: pan-y`; without it (the default, so the root map site's full-screen map behaves as before) the
+  container is `touch-action: none` and one finger still pans. **Two-finger pinch/pan works in both modes.** 3goods passes
+  `cooperativeTouch: true` and the translated hint. The old `touch-action: none` rule in `map.css` was removed (MapView sets it).
+  The hint element moved to the bottom of the map so it never covers the +/−/Reset buttons. The root site itself has **not**
+  been redeployed (as in D-061); its behaviour is unchanged apart from gaining pinch zoom.
+- **Not tested on a physical device:** verified with Chrome DevTools synthetic touches (real input pipeline, real
+  `touch-action` handling), not a phone. Worth a quick check on a real iPhone/Android, mainly for iOS Safari's own gestures.
 
 ---
 

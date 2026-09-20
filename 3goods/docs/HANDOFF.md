@@ -1,6 +1,8 @@
 # 3goods Handoff
 
-Last updated: session 6, eleventh checkpoint: 3G-053 / D-058 to D-061 (chat at request time, tags removed, base map +
+Last updated: session 6, twelfth checkpoint: 3G-054 / D-062 to D-066 (provinces table, optional + generic need quantity, one need per
+category, nearby-organisations count, touch map; **code committed, waiting on the user to run `supabase/migration-provinces.sql`**).
+Previous: eleventh checkpoint: 3G-053 / D-058 to D-061 (chat at request time, tags removed, base map +
 zoom fixes; **root map site files changed but not redeployed**). Previous: tenth checkpoint: 3G-052 / D-056, D-057 (seed scaled to 8 orgs / 20 donors, board pills
 category-only, map wired to all 5 API endpoints). Previous: ninth checkpoint: 3G-051 / D-053 (accept lock, need quantities, walkthrough, UAT cleanup).
 Previous: eighth checkpoint: 3G-050 / D-052 (pre-demo bug fixes; **item quantity SQL still to be run
@@ -24,10 +26,39 @@ after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_AN
 Production env vars on this project (`vercel env ls production` to confirm) — set in session 5.
 
 ## Current task
-**3G-043 through 3G-053 done. The `items.quantity`/`unit` SQL from D-052 has been run and verified live (posted a
+**3G-054 (Verify): code is done; the app now READS the `provinces` table, so it must not be deployed until the user has run
+`supabase/migration-provinces.sql` in the Supabase SQL Editor** (production would show no areas and the map screen would error). Next actions,
+in order: (1) user runs the SQL; (2) verify live (63 rows, organisations/items remapped, needs merged), run the provinces
+check queries at the bottom of the SQL file; (3) `git push`, `vercel deploy --prod --yes`, re-check on `3goods.vercel.app`;
+(4) ask the user what granularity to reseed organisations at (not one per province) — do NOT default to 63.
+Earlier: 3G-043 through 3G-053 done. The `items.quantity`/`unit` SQL from D-052 has been run and verified live (posted a
 "12 boxes" item on production; detail + card display it; test row deleted). No open actions.**
 
 ## Completed this session (session 6)
+- **3G-054** (DECISIONS.md D-062 to D-066). **Not yet run by anyone: `supabase/migration-provinces.sql`.**
+  - Provinces table: `src/data/areas.js` is deleted; `src/data/provinces.js` holds the 63 provinces (seed source + the old-8→province
+    map). `referenceDataService` reads the `provinces` table. `organisations.city` / `items.area` now hold province slugs
+    (`ho-chi-minh-city`, `khanh-hoa`, ...). Old ids remapped: hcmc, danang, hue→thua-thien-hue, cantho, haiphong, nhatrang→khanh-hoa,
+    mekong→an-giang (judgement calls, see D-062). Seed data uses the new slugs. `npm run db:seed` also upserts provinces (after the
+    table exists) and no longer writes need units other than "items".
+  - The SQL file does, in one transaction: create `provinces` + RLS, insert 63 rows, remap organisations/items, merge the Books
+    for Children Books needs into one (180, id `ff019210…`, delete `f64f4d09…`), set `unit='items'` on every quantified need, add
+    unique index `needs_one_per_org_category`. Idempotent. `supabase/schema.sql` documents the table.
+  - Needs: quantity optional with an "Ongoing" label (D-063); no unit choice, always "items"; one need per category (D-064).
+    Seed: `need006` removed, `need005` = 180. Item listings (donations) keep their unit choice (deliberate, see D-064).
+  - Map: nearby panel = live count "N verified, M unverified" (D-065); donate link/prefill works for all 63 provinces; province
+    names in the map panel are now locale names (EN unaccented, e.g. "Ha Tinh"). Touch: cooperative one-finger-scrolls /
+    two-finger-pans + pinch, translated hint, `cooperativeTouch` option in root `3goods-map/web/mapView.js` copied to vendor (D-066);
+    **root map site still not redeployed**; not tested on a physical phone.
+  - **The sandbox refused a script that would have edited/deleted live `needs` rows** (shared production DB), which is why those
+    changes are in the SQL instead of being applied by me. Nothing in the live database was changed this checkpoint.
+  - Live state observed before the SQL (still current): 8 organisations (Warm Homes Collective and Mekong Delta Neighbours are
+    unverified), 22 items (areas: hanoi 6, hcmc 5, hue 3, cantho 3, danang 3, mekong 1, haiphong 1), 23 needs; Mekong's single need
+    (Non-Perishable Food, no quantity) is the user's own testing and is untouched. A re-seed would add the 3 seeded Mekong needs
+    next to it (no category clash).
+  - Verification harness (not committed, recreate if needed): headless Chrome + a small CDP client, with `Fetch` interception so
+    the app sees the post-SQL data without any write reaching Supabase. It caught two of my own test mistakes (the app scrolls
+    inside `<main>`, not the window), not app bugs.
 - **3G-053** (DECISIONS.md D-058 to D-061).
   - **Root map site changed, NOT redeployed:** `3goods-map/web/{mapView,geo,main,dataService}.js`, `index.html`,
     `data/neighbour_land.json`, `src/build_neighbour_land.mjs`. The 3goods copies in `src/features/map/vendor/` are

@@ -49,6 +49,8 @@ file's comment for why.
   `.env.local` needs `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` (see `.env.example`); `npm run
   db:seed` pushes `src/data/*.js` into the real tables (idempotent via the fixed uuids in
   `src/data/ids.js`, safe to re-run).
+  - **Areas are rows of the live `provinces` table** (all 63 provinces, D-062), read through `referenceDataService.getAreas()`;
+    an "area id" is a province `slug`, stored as text in `organisations.city` / `items.area`. There is no static area list.
   - **The live database's column names/shapes don't match this app's camelCase model 1:1**
     (uuid `category_id`/`org_id`/`donor_id` foreign keys instead of plain-text fields, a single
     `image_base64` instead of a `photoPaths` array, `organisations.name`/`description` as plain

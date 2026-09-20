@@ -6,7 +6,7 @@
   background: #82bfe9; /* sea blue, same as the map's ocean */
   border-radius: 1rem;
   overflow: hidden;
-  touch-action: none;
+  /* touch-action is set by MapView (pan-y: one finger scrolls the page, two fingers move/zoom the map) */
 }
 
 #svgRoot {
@@ -130,12 +130,15 @@
   display: none;
 }
 
-/* Shown by the vendored MapView when the wheel is used without Ctrl/Cmd (text is set from the translated locale string). */
+/* Shown by the vendored MapView when the wheel is used without Ctrl/Cmd, or a finger drags the map on a touch screen
+   (text is set from the translated locale strings). At the bottom so it never covers the zoom buttons. */
 #zoomHint {
   position: absolute;
   left: 50%;
-  top: 12px;
+  bottom: 12px;
   transform: translateX(-50%);
+  max-width: calc(100% - 24px);
+  text-align: center;
   background: rgba(15, 23, 42, 0.88);
   color: #fff;
   font-size: 12px;
@@ -146,7 +149,6 @@
   opacity: 0;
   transition: opacity 0.2s ease;
   z-index: 10;
-  white-space: nowrap;
 }
 #zoomHint.visible {
   opacity: 1;

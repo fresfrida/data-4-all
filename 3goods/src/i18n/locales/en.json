@@ -129,6 +129,7 @@
     "deliveryOptionRequired": "Delivery option is required.",
     "organisationIdRequired": "Organisation is required.",
     "quantityInvalid": "Quantity must be a whole number, 1 or more.",
+    "needCategoryExists": "You already have a need in this category. Remove it first if you want to change it.",
     "systemCodeRequired": "A system message needs a message code.",
     "messageTextRequired": "Message text is required.",
     "itemNotFound": "This item no longer exists.",
@@ -161,7 +162,9 @@
     "cans": "cans",
     "cans_one": "can",
     "books": "books",
-    "books_one": "book"
+    "books_one": "book",
+    "items": "items",
+    "items_one": "item"
   },
   "systemMessages": {
     "request_accepted": "Request accepted. You can arrange collection here."
@@ -220,6 +223,13 @@
     "loading": "Loading…",
     "primaryNav": "Primary navigation"
   },
+  "needs": {
+    "ongoing": "Ongoing",
+    "categoryListed": "{category} (already listed)",
+    "quantityLabel": "Quantity (optional)",
+    "quantityPlaceholder": "e.g. 50",
+    "quantityHint": "Leave blank if you are always happy to receive this. It shows as an ongoing need. Quantities are counted in items."
+  },
   "map": {
     "title": "Relief Map",
     "subtitle": "Interactive heatmap layer displaying regional disaster severity, poverty context, and community facilities across Vietnam.",
@@ -236,11 +246,11 @@
     "povertyRateProxy": "Poverty Rate Proxy:",
     "suggestedCategories": "Suggested Relief Item Categories",
     "noRecommendations": "No specific recommendations for this area.",
-    "nearbyOrgsTitle": "Verified 3goods Organisations Nearby",
-    "noOrgsNearby": "No 3goods organisation currently headquartered in {province}. Donors can still deliver items to nationwide relief teams.",
+    "nearbyOrgsTitle": "Organisations nearby",
+    "orgCount": "{verified} verified, {unverified} unverified",
+    "noOrgsNearby": "No 3goods organisation is registered in {province} yet. Donors can still deliver items to nationwide relief teams.",
     "postDonationFor": "+ Post a Donation for {province}",
     "allVietnam": "All Vietnam",
-    "verifiedOrg": "Verified Org",
     "regionalContext": "Regional Risk Context",
     "priorityHigh": "High",
     "priorityMedium": "Medium",
@@ -248,6 +258,7 @@
     "priorityKeyTitle": "Priority",
     "showMetroHubs": "Show big cities",
     "zoomHint": "Hold {key} and scroll to zoom",
+    "touchHint": "Use two fingers to move the map",
     "legendMetro": "Blue circles: Vietnam's largest cities, likely where donations come from ({cities})",
     "legendFacility": "Grey pins: {count} OpenStreetMap community facilities (not 3goods organisations)",
     "dataFallbackNotice": "The live map data service could not be reached, so some map data below is a saved copy.",

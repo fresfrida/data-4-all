@@ -23,9 +23,12 @@
 
 /**
  * @typedef {Object} Area
- * @property {string} id
+ * A province (row of the live `provinces` table, DECISIONS.md D-062). Read via referenceDataService, never a static list.
+ * @property {string} id      the province slug; what organisations.city / items.area hold
  * @property {string} en
  * @property {string} vi
+ * @property {string} mapKey  the province name as the map data spells it ("HàTĩnh")
+ * @property {string|null} region
  */
 
 /**
@@ -55,9 +58,9 @@
  * @property {string} organisationId
  * @property {Category} category
  * @property {boolean} priority        true = priority need
- * @property {number|null} [quantity]  optional whole number, with `unit`
- * @property {string|null} [unit]      a code from lib/quantity.js UNITS
+ * @property {number|null} [quantity]  whole number of "items", or null = an ongoing, open-ended need (D-063)
  * @property {string} createdAt        ISO string
+ * One need per organisation per category (D-064).
  */
 
 /**

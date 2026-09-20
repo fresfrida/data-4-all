@@ -30,7 +30,10 @@ export class MapView {
   // and zooming/panning stop at the edge of that world instead of showing empty space.
   // `requireModifierToZoom`: the mouse wheel only zooms with Ctrl/Cmd held (trackpad
   // pinch already sends Ctrl), so scrolling the page over the map never zooms it by accident.
-  constructor(container, { features, metroHubs, facilities, land = null, requireModifierToZoom = true }) {
+  // `cooperativeTouch`: for a map embedded in a scrolling page. One finger is left to the browser (the page scrolls
+  // past the map, and a brief hint says how to move it); two fingers pan and pinch-zoom the map. Off (the default),
+  // one finger pans, which suits a map that fills the screen. Two-finger pinch/pan works either way.
+  constructor(container, { features, metroHubs, facilities, land = null, requireModifierToZoom = true, cooperativeTouch = false }) {
     this.container = container;
     this.features = features;
     this.metroHubs = metroHubs;
@@ -40,6 +43,11 @@ export class MapView {
     this.showFacilities = true;
     this.onSelect = null; // (provinceName) => void
     this.requireModifierToZoom = requireModifierToZoom;
+    this.cooperativeTouch = cooperativeTouch;
+    // "pan-y" lets a one-finger vertical swipe scroll the page; "none" hands every touch to the map.
+    this.container.style.touchAction = cooperativeTouch ? "pan-y" : "none";
+    // Shown briefly on a one-finger drag in cooperative mode. Callers may replace it (e.g. translated).
+    this.touchHintText = "Use two fingers to move the map";
     // Shown briefly when the wheel is used without the modifier. Callers may replace it (e.g. translated).
     this.zoomHintText = /Mac|iPhone|iPad/.test(navigator.platform) ? "Hold \u2318 and scroll to zoom" : "Hold Ctrl and scroll to zoom";
 
@@ -92,13 +100,15 @@ export class MapView {
     this._setViewBox({ x: cx - w / 2, y: cy - h / 2, w, h });
   }
 
-  _showZoomHint() {
+  _showZoomHint() { this._showHint(this.zoomHintText); }
+
+  _showHint(text) {
     if (!this.zoomHint) {
       this.zoomHint = document.createElement("div");
       this.zoomHint.id = "zoomHint";
       this.container.append(this.zoomHint);
     }
-    this.zoomHint.textContent = this.zoomHintText;
+    this.zoomHint.textContent = text;
     this.zoomHint.classList.add("visible");
     clearTimeout(this._zoomHintTimer);
     this._zoomHintTimer = setTimeout(() => this.zoomHint.classList.remove("visible"), 1400);
@@ -273,13 +283,44 @@ export class MapView {
     window.addEventListener("mousemove", (e) => move(e.clientX, e.clientY));
     window.addEventListener("mouseup", end);
 
-    // Touch support so pan/zoom works the same on the mobile-first layout.
+    // Touch. Two fingers pan and pinch-zoom (the point between them follows the fingers). One finger pans only when
+    // not `cooperativeTouch`; otherwise it is left to the browser so the page can scroll, and a hint is shown.
+    let pinch = null, hintOrigin = null;
+    const fingers = (e) => {
+      const a = e.touches[0], b = e.touches[1];
+      return { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2, d: Math.max(Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), 1) };
+    };
     this.svgRoot.addEventListener("touchstart", (e) => {
-      if (e.touches.length === 1) start(e.touches[0].clientX, e.touches[0].clientY);
+      const svg = this.svgRoot.querySelector("svg");
+      if (e.touches.length >= 2 && svg) {
+        end(); hintOrigin = null; this._dragMoved = true; // a pinch is not a tap on a province
+        pinch = { ...fingers(e), vb: { ...this.viewBox }, rect: svg.getBoundingClientRect() };
+      } else if (e.touches.length === 1) {
+        const t = e.touches[0];
+        if (this.cooperativeTouch) { this._dragMoved = false; hintOrigin = { x: t.clientX, y: t.clientY }; }
+        else start(t.clientX, t.clientY);
+      }
     }, { passive: true });
     this.svgRoot.addEventListener("touchmove", (e) => {
-      if (e.touches.length === 1) { move(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); }
+      if (pinch && e.touches.length >= 2) {
+        e.preventDefault();
+        const c = fingers(e), { vb, rect } = pinch;
+        const w = Math.min(this.fullView.w, Math.max(this.fullView.w * 0.06, vb.w * pinch.d / c.d));
+        const h = vb.h * (w / vb.w);
+        const wx = vb.x + ((pinch.x - rect.left) / rect.width) * vb.w, wy = vb.y + ((pinch.y - rect.top) / rect.height) * vb.h;
+        this._setViewBox({ x: wx - ((c.x - rect.left) / rect.width) * w, y: wy - ((c.y - rect.top) / rect.height) * h, w, h });
+      } else if (e.touches.length === 1) {
+        if (!this.cooperativeTouch) { move(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); }
+        else if (hintOrigin && Math.hypot(e.touches[0].clientX - hintOrigin.x, e.touches[0].clientY - hintOrigin.y) > 10) {
+          hintOrigin = null; this._showHint(this.touchHintText);
+        }
+      }
     }, { passive: false });
-    this.svgRoot.addEventListener("touchend", end);
+    const touchEnd = (e) => {
+      if (e.touches.length < 2) pinch = null;
+      if (e.touches.length === 0) { hintOrigin = null; end(); }
+    };
+    this.svgRoot.addEventListener("touchend", touchEnd);
+    this.svgRoot.addEventListener("touchcancel", touchEnd);
   }
 }

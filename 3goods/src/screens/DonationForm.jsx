@@ -278,7 +278,9 @@ export function DonationForm() {
           <option value="" disabled>
             {t("fields.selectArea")}
           </option>
-          {data.areas.map((a) => (
+          {[...data.areas]
+            .sort((a, b) => (a[locale] ?? a.en).localeCompare(b[locale] ?? b.en, locale))
+            .map((a) => (
             <option key={a.id} value={a.id}>
               {a[locale] ?? a.en}
             </option>

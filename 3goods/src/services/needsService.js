@@ -5,13 +5,15 @@
  * not the boolean this app models — `fromRow`/`toInsertRow` translate at
  * the boundary so the rest of the app keeps working with a boolean, same as
  * before Supabase's redesign (see DECISIONS.md D-042). A need is just
- * category + quantity + unit + priority; the old `tag` column is left in the
- * table but neither read nor written (DECISIONS.md D-059).
+ * category + optional quantity + priority; the old `tag` column is left in the
+ * table but neither read nor written (DECISIONS.md D-059). A blank quantity means
+ * an ongoing, open-ended need (D-063); a quantity is always counted in the one generic
+ * unit, "items" (D-064), and an organisation has at most one need per category (D-064).
  */
 
 import { getAll, insert, update as dbUpdate, remove as dbRemove } from "../lib/db.js";
 import { AppError } from "../lib/errors.js";
-import { isValidQuantity } from "../lib/quantity.js";
+import { isValidQuantity, NEED_UNIT } from "../lib/quantity.js";
 import { getCategoryDbId, getCategorySlugFromDbId } from "./referenceDataService.js";
 
 async function fromRow(row) {
@@ -21,7 +23,6 @@ async function fromRow(row) {
     category: await getCategorySlugFromDbId(row.category_id),
     priority: row.priority === "high",
     quantity: row.quantity ?? null,
-    unit: row.unit ?? null,
     createdAt: row.created_at,
   };
 }
@@ -45,7 +46,8 @@ export async function getNeeds(filters = {}) {
 }
 
 /**
- * @param {{organisationId: string, category: string, priority?: boolean, quantity?: number|null, unit?: string|null}} payload
+ * @param {{organisationId: string, category: string, priority?: boolean, quantity?: number|null}} payload
+ *   `quantity` null/absent = an ongoing need; there is no unit to choose (D-064).
  * @returns {Promise<import('../data/types.js').Need>}
  */
 export async function createNeed(payload) {
@@ -54,14 +56,18 @@ export async function createNeed(payload) {
   const quantity = payload.quantity ?? null;
   if (!isValidQuantity(quantity)) throw new AppError("quantityInvalid");
 
+  const categoryDbId = await getCategoryDbId(payload.category);
+  const existing = (await getAll("needs")).some((row) => row.org_id === payload.organisationId && row.category_id === categoryDbId);
+  if (existing) throw new AppError("needCategoryExists");
+
   const row = await insert(
     "needs",
     {
       org_id: payload.organisationId,
-      category_id: await getCategoryDbId(payload.category),
+      category_id: categoryDbId,
       priority: payload.priority ? "high" : "medium",
       quantity,
-      unit: quantity === null ? null : payload.unit || null,
+      unit: quantity === null ? null : NEED_UNIT,
       status: "open",
       created_at: new Date().toISOString(),
     },

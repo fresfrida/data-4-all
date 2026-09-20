@@ -114,6 +114,20 @@ alter table items add column if not exists secondary_category_id uuid references
 
 alter table needs add column if not exists tag text;
 
+-- Provinces (DECISIONS.md D-062): the 63 real provinces, replacing the old hard-coded 8-area list. `slug` is the
+-- area id stored in organisations.city / items.area. The rows, the remap of the old 8 area ids and the
+-- one-need-per-organisation-per-category index (D-064) are in supabase/migration-provinces.sql (run it in the
+-- SQL Editor); `npm run db:seed` also upserts the provinces from src/data/provinces.js.
+create table if not exists provinces (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  map_key text not null unique,
+  name text not null,
+  name_vi text not null,
+  region text,
+  created_at timestamptz default now()
+);
+
 -- Quantity + unit on items (DECISIONS.md D-052). `needs` already had both
 -- columns in the original live schema; `items` did not. Apply in the
 -- Supabase SQL Editor (the anon key cannot run DDL). The app only writes
@@ -148,7 +162,7 @@ declare
 begin
   for t in select unnest(array[
     'categories','organisations','users','items','needs','requests',
-    'conversations','messages','updates'
+    'conversations','messages','updates','provinces'
   ])
   loop
     execute format('alter table %I enable row level security', t);

@@ -4,6 +4,7 @@ import { useAsync } from "../../../lib/useAsync.js";
 import { loadFullMapData } from "../api/mapApiClient.js";
 import { getOrganisations } from "../../../services/organisationsService.js";
 import { getNeeds } from "../../../services/needsService.js";
+import { getAreas } from "../../../services/referenceDataService.js";
 import { VietnamMapView } from "./VietnamMapView.jsx";
 import { LoadingState } from "../../../components/feedback/LoadingState.jsx";
 import { ErrorState } from "../../../components/feedback/ErrorState.jsx";
@@ -23,31 +24,6 @@ const DISASTER_TYPE_MAP = {
 
 const PRIORITY_RANK = { high: 3, medium: 2, low: 1 };
 
-// Map province name (as it appears in the province data) -> the 3goods area id used by organisations and by the
-// donation form. Eight areas cover only some provinces: a province that isn't listed here has no matching area.
-// "mekong" is a region, so every Mekong Delta province except Cần Thơ (its own area) maps to it.
-const PROVINCE_TO_AREA = {
-  HàNội: "hanoi",
-  HồChíMinh: "hcmc",
-  ĐàNẵng: "danang",
-  ThừaThiênHuế: "hue",
-  CầnThơ: "cantho",
-  HảiPhòng: "haiphong",
-  KhánhHòa: "nhatrang",
-  AnGiang: "mekong",
-  BạcLiêu: "mekong",
-  BếnTre: "mekong",
-  CàMau: "mekong",
-  ĐồngTháp: "mekong",
-  HậuGiang: "mekong",
-  KiênGiang: "mekong",
-  LongAn: "mekong",
-  SócTrăng: "mekong",
-  TiềnGiang: "mekong",
-  TràVinh: "mekong",
-  VĩnhLong: "mekong",
-};
-
 // The GADM province names have their spaces stripped ("HàTĩnh") — put them back for display.
 const formatProvince = (name) => (name ? name.replace(/(\p{Ll})(\p{Lu})/gu, "$1 $2") : "");
 
@@ -58,8 +34,8 @@ const PRIORITY_STYLES = {
 };
 
 async function loadMapShellData() {
-  const [mapData, organisations, needs] = await Promise.all([loadFullMapData(), getOrganisations(), getNeeds()]);
-  return { mapData, organisations, needs };
+  const [mapData, organisations, needs, areas] = await Promise.all([loadFullMapData(), getOrganisations(), getNeeds(), getAreas()]);
+  return { mapData, organisations, needs, areas };
 }
 
 export function MapScreenShell() {
@@ -82,12 +58,15 @@ export function MapScreenShell() {
     [selectedFeature]
   );
 
-  const nearbyOrgs = useMemo(() => {
-    if (!data?.organisations || !selectedProvince) return [];
-    const areaId = PROVINCE_TO_AREA[selectedProvince];
-    // The panel is headed "Verified 3goods Organisations Nearby", so only verified organisations are listed.
-    return areaId ? data.organisations.filter((org) => org.areaId === areaId && org.verified) : [];
-  }, [data, selectedProvince]);
+  // Every province the map can show is a row of the provinces table (D-062), matched by the map's own province name.
+  const selectedArea = useMemo(() => data?.areas.find((area) => area.mapKey === selectedProvince) ?? null, [data, selectedProvince]);
+
+  // A live count of the organisations based in the selected province, split by verified/unverified (no named list).
+  const orgCounts = useMemo(() => {
+    const inProvince = selectedArea ? (data?.organisations ?? []).filter((org) => org.areaId === selectedArea.id) : [];
+    const verified = inProvince.filter((org) => org.verified).length;
+    return { verified, unverified: inProvince.length - verified };
+  }, [data, selectedArea]);
 
   const recommendedCategories = useMemo(() => {
     const { itemNeeds } = data?.mapData ?? {};
@@ -124,10 +103,9 @@ export function MapScreenShell() {
     : null;
 
   const pProps = selectedFeature?.properties || {};
-  // Carry the clicked area into the donation form when this province maps to one of the 3goods areas.
-  const donateArea = PROVINCE_TO_AREA[selectedProvince];
-  const donateHref = donateArea ? `${ROUTES.donateNew}?area=${donateArea}` : ROUTES.donateNew;
-  const provinceName = formatProvince(pProps.province);
+  // Carry the clicked province into the donation form as its area (works for all 63 provinces).
+  const donateHref = selectedArea ? `${ROUTES.donateNew}?area=${selectedArea.id}` : ROUTES.donateNew;
+  const provinceName = selectedArea ? (selectedArea[locale] ?? selectedArea.en) : formatProvince(pProps.province);
   const disasterScoreDisplay = typeof pProps.disaster_score === "number" ? pProps.disaster_score.toFixed(2) : "—";
   const povertyDisplay = typeof pProps.poverty_rate === "number" ? `${pProps.poverty_rate}%` : "—";
   const disasterTypeDisplay = disasterTypes.length
@@ -280,6 +258,7 @@ export function MapScreenShell() {
             showFacilities={showFacilities}
             showMetroHubs={showMetroHubs}
             zoomHint={t("map.zoomHint", { key: /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘" : "Ctrl" })}
+            touchHint={t("map.touchHint")}
             selectedProvince={selectedProvince}
             onSelectProvince={(name) => setSelectedProvince(name)}
           />
@@ -379,22 +358,10 @@ export function MapScreenShell() {
             <h3 className="text-xs font-bold uppercase tracking-wider text-ink-800 border-b border-ink-600/10 pb-2">
               {t("map.nearbyOrgsTitle")}
             </h3>
-            {nearbyOrgs.length > 0 ? (
-              <div className="flex flex-col gap-2.5">
-                {nearbyOrgs.map((org) => (
-                  <div key={org.id} className="flex flex-col gap-1 p-2.5 rounded-xl bg-cream-50 border border-ink-600/10">
-                    <div className="flex justify-between items-center">
-                      <Link to={ROUTES.organisation(org.id)} className="text-xs font-bold text-ink-800 hover:text-accent-600">
-                        {org.name[locale] ?? org.name.en}
-                      </Link>
-                      <span className="text-[10px] text-emerald-700 font-semibold bg-emerald-100 px-1.5 py-0.5 rounded">
-                        {t("map.verifiedOrg")}
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-ink-600 line-clamp-2">{org.mission[locale] ?? org.mission.en}</p>
-                  </div>
-                ))}
-              </div>
+            {orgCounts.verified + orgCounts.unverified > 0 ? (
+              <p className="text-sm font-semibold text-ink-800" aria-live="polite">
+                {t("map.orgCount", { verified: orgCounts.verified, unverified: orgCounts.unverified })}
+              </p>
             ) : (
               <div className="text-xs text-ink-600 py-2">
                 {t("map.noOrgsNearby", { province: provinceName })}

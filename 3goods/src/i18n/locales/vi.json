@@ -129,6 +129,7 @@
     "deliveryOptionRequired": "Vui lòng chọn hình thức giao nhận.",
     "organisationIdRequired": "Cần có tổ chức.",
     "quantityInvalid": "Số lượng phải là số nguyên từ 1 trở lên.",
+    "needCategoryExists": "Bạn đã có nhu cầu cho danh mục này. Hãy xóa nhu cầu đó trước nếu muốn thay đổi.",
     "systemCodeRequired": "Tin nhắn hệ thống cần có mã tin nhắn.",
     "messageTextRequired": "Vui lòng nhập nội dung tin nhắn.",
     "itemNotFound": "Vật phẩm này không còn tồn tại.",
@@ -161,7 +162,9 @@
     "cans": "lon",
     "cans_one": "lon",
     "books": "cuốn",
-    "books_one": "cuốn"
+    "books_one": "cuốn",
+    "items": "món",
+    "items_one": "món"
   },
   "systemMessages": {
     "request_accepted": "Yêu cầu đã được chấp nhận. Bạn có thể sắp xếp việc nhận tại đây."
@@ -220,6 +223,13 @@
     "loading": "Đang tải…",
     "primaryNav": "Điều hướng chính"
   },
+  "needs": {
+    "ongoing": "Thường xuyên",
+    "categoryListed": "{category} (đã có trong danh sách)",
+    "quantityLabel": "Số lượng (tùy chọn)",
+    "quantityPlaceholder": "vd. 50",
+    "quantityHint": "Để trống nếu tổ chức luôn sẵn sàng nhận mặt hàng này; sẽ hiển thị là nhu cầu thường xuyên. Số lượng được tính theo món."
+  },
   "map": {
     "title": "Bản đồ cứu trợ",
     "subtitle": "Lớp bản đồ nhiệt tương tác hiển thị mức độ thiên tai, chỉ số nghèo và cơ sở hạ tầng cộng đồng trên khắp Việt Nam.",
@@ -236,11 +246,11 @@
     "povertyRateProxy": "Tỷ lệ hộ nghèo ước tính:",
     "suggestedCategories": "Danh mục vật phẩm cứu trợ đề xuất",
     "noRecommendations": "Không có đề xuất cụ thể nào cho khu vực này.",
-    "nearbyOrgsTitle": "Tổ chức 3goods đã xác minh lân cận",
-    "noOrgsNearby": "Chưa có tổ chức 3goods nào đặt trụ sở tại {province}. Người quyên góp vẫn có thể gửi vật phẩm cho các đội cứu trợ toàn quốc.",
+    "nearbyOrgsTitle": "Tổ chức lân cận",
+    "orgCount": "{verified} đã xác minh, {unverified} chưa xác minh",
+    "noOrgsNearby": "Chưa có tổ chức 3goods nào đăng ký tại {province}. Người quyên góp vẫn có thể gửi vật phẩm cho các đội cứu trợ toàn quốc.",
     "postDonationFor": "+ Đăng quyên góp cho {province}",
     "allVietnam": "Toàn Việt Nam",
-    "verifiedOrg": "Tổ chức xác minh",
     "regionalContext": "Bối cảnh rủi ro khu vực",
     "priorityHigh": "Cao",
     "priorityMedium": "Trung bình",
@@ -248,6 +258,7 @@
     "priorityKeyTitle": "Mức ưu tiên",
     "showMetroHubs": "Hiện thành phố lớn",
     "zoomHint": "Giữ {key} và cuộn để thu phóng",
+    "touchHint": "Dùng hai ngón tay để di chuyển bản đồ",
     "legendMetro": "Vòng tròn xanh: các thành phố lớn nhất Việt Nam, nơi quyên góp thường xuất phát ({cities})",
     "legendFacility": "Ghim xám: {count} cơ sở cộng đồng từ OpenStreetMap (không phải tổ chức 3goods)",
     "dataFallbackNotice": "Không kết nối được dịch vụ dữ liệu bản đồ trực tuyến, nên một phần dữ liệu bản đồ bên dưới là bản đã lưu.",

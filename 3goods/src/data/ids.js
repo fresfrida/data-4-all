@@ -79,7 +79,7 @@ export const NEED_IDS = {
   need003: "e27eca88-2ee0-45ad-96cb-2253e69c71bc",
   need004: "3e1b63d5-2562-4c00-a8e3-f4718144c4a4",
   need005: "ff019210-0f11-4161-9448-0a64d9987647",
-  need006: "f64f4d09-c08c-41e6-9f94-40607665845e",
+  // need006 was merged into need005 (D-064) and removed.
   need007: "52c89b69-bde4-4509-9a98-74f1e7217294",
   need008: "74508d58-0091-4d41-8340-6c4ee3139688",
   need009: "82d53157-447b-4345-85da-47d8a016936e",

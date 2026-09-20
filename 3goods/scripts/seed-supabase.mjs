@@ -29,6 +29,7 @@ import { createClient } from "@supabase/supabase-js";
 import { ITEMS } from "../src/data/items.js";
 import { NEEDS } from "../src/data/needs.js";
 import { ORGANISATIONS } from "../src/data/organisations.js";
+import { PROVINCES } from "../src/data/provinces.js";
 import { REQUESTS } from "../src/data/requests.js";
 import { CONVERSATIONS } from "../src/data/conversations.js";
 import { MESSAGES } from "../src/data/messages.js";
@@ -70,9 +71,9 @@ if (!url || !anonKey) {
 const supabase = createClient(url, anonKey);
 const WINDOW_SEP = " | ";
 
-async function upsert(table, rows) {
+async function upsert(table, rows, onConflict = "id") {
   if (rows.length === 0) return;
-  const { error } = await supabase.from(table).upsert(rows, { onConflict: "id" });
+  const { error } = await supabase.from(table).upsert(rows, { onConflict });
   if (error) {
     console.error(`[${table}] failed:`, error.message);
     process.exit(1);
@@ -117,6 +118,14 @@ async function main() {
     itemCategoryIds
       .map(([title, slug, id, secondarySlug]) => `${title} (${slug}${secondarySlug ? ` + ${secondarySlug}` : ""}) -> ${id}`)
       .join("\n  "),
+  );
+
+  // Provinces come first (organisations.city / items.area hold province slugs). Needs the provinces table to exist:
+  // run supabase/migration-provinces.sql once in the SQL Editor (D-062). Keyed on slug, not id, so re-runs keep the ids.
+  await upsert(
+    "provinces",
+    PROVINCES.map((p) => ({ slug: p.slug, map_key: p.mapKey, name: p.en, name_vi: p.vi, region: p.region })),
+    "slug",
   );
 
   await upsert(
@@ -175,7 +184,7 @@ async function main() {
       category_id: categoryId(need.category),
       priority: need.priority ? "high" : "medium",
       quantity: need.quantity ?? null,
-      unit: need.unit ?? null,
+      unit: need.quantity != null ? "items" : null, // needs use one generic unit (D-064)
       status: "open",
       created_at: need.createdAt,
     })),

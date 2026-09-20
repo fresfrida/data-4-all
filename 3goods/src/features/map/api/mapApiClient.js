@@ -28,6 +28,9 @@ const DATASETS = {
   metroHubs: { api: "/api/metro-hubs", snapshot: "/data/metro_hubs.json" },
   itemNeeds: { api: "/api/item-needs", snapshot: "/data/donation_items_by_disaster.json" },
   meta: { api: "/api/meta", snapshot: null },
+  // Base-map land around Vietnam (Laos, Cambodia, ...), built by 3goods-map/src/build_neighbour_land.mjs from
+  // Natural Earth. Not disaster data and not an API endpoint: always the bundled file ("bundled", never a fallback).
+  neighbourLand: { api: null, snapshot: "/data/neighbour_land.json" },
 };
 
 async function fetchJson(url) {
@@ -45,6 +48,14 @@ async function fetchJson(url) {
 /** @returns {Promise<{data: any, source: "api"|"snapshot"|"unavailable"}>} */
 async function loadDataset(name) {
   const { api, snapshot } = DATASETS[name];
+  if (!api) {
+    try {
+      return { data: await fetchJson(snapshot), source: "bundled" };
+    } catch (err) {
+      console.warn(`[3goods] bundled map layer ${snapshot} failed:`, err.message);
+      return { data: null, source: "unavailable" };
+    }
+  }
   try {
     return { data: await fetchJson(`${API_BASE}${api}`), source: "api" };
   } catch (apiErr) {
@@ -66,8 +77,8 @@ async function loadDataset(name) {
  *
  * @returns {Promise<{
  *   features: object[], metroHubs: object[], facilities: object[],
- *   itemNeeds: object|null, meta: object|null,
- *   sources: Record<"provinces"|"facilities"|"metroHubs"|"itemNeeds"|"meta", "api"|"snapshot"|"unavailable">
+ *   itemNeeds: object|null, meta: object|null, land: object|null,
+ *   sources: Record<"provinces"|"facilities"|"metroHubs"|"itemNeeds"|"meta"|"neighbourLand", "api"|"snapshot"|"bundled"|"unavailable">
  * }>}
  */
 export async function loadFullMapData() {
@@ -86,6 +97,7 @@ export async function loadFullMapData() {
     facilities: byName.facilities.data ?? [],
     itemNeeds: byName.itemNeeds.data ?? null,
     meta: byName.meta.data ?? null,
+    land: byName.neighbourLand.data ?? null,
     sources: Object.fromEntries(names.map((name) => [name, byName[name].source])),
   };
 }

@@ -1,6 +1,7 @@
 # 3goods Handoff
 
-Last updated: session 6, tenth checkpoint: 3G-052 / D-056, D-057 (seed scaled to 8 orgs / 20 donors, board pills
+Last updated: session 6, eleventh checkpoint: 3G-053 / D-058 to D-061 (chat at request time, tags removed, base map +
+zoom fixes; **root map site files changed but not redeployed**). Previous: tenth checkpoint: 3G-052 / D-056, D-057 (seed scaled to 8 orgs / 20 donors, board pills
 category-only, map wired to all 5 API endpoints). Previous: ninth checkpoint: 3G-051 / D-053 (accept lock, need quantities, walkthrough, UAT cleanup).
 Previous: eighth checkpoint: 3G-050 / D-052 (pre-demo bug fixes; **item quantity SQL still to be run
 by the user**). Previous: seventh checkpoint: 3G-049 / D-051 (tab title "3goods", demo login picks any seeded
@@ -23,10 +24,26 @@ after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_AN
 Production env vars on this project (`vercel env ls production` to confirm) — set in session 5.
 
 ## Current task
-**3G-043 through 3G-052 done. The `items.quantity`/`unit` SQL from D-052 has been run and verified live (posted a
+**3G-043 through 3G-053 done. The `items.quantity`/`unit` SQL from D-052 has been run and verified live (posted a
 "12 boxes" item on production; detail + card display it; test row deleted). No open actions.**
 
 ## Completed this session (session 6)
+- **3G-053** (DECISIONS.md D-058 to D-061).
+  - **Root map site changed, NOT redeployed:** `3goods-map/web/{mapView,geo,main,dataService}.js`, `index.html`,
+    `data/neighbour_land.json`, `src/build_neighbour_land.mjs`. The 3goods copies in `src/features/map/vendor/` are
+    byte-identical to the root files. The live root site (`002-data-4-life.vercel.app`) still has the old island-look
+    map until that project is redeployed from these files (its deploy source folder isn't recorded anywhere; ask
+    before deploying).
+  - Live data you may want to know about: someone replaced Mekong Delta Neighbours' 3 seeded needs with one
+    Non-Perishable Food need at 02:50 UTC on 20 Sep (looks like manual testing); I did not touch it. A re-seed would
+    restore the 3 seeded needs alongside it. Live conversations are now backfilled: every request has one.
+  - Behaviour notes: needs/items no longer read or write `needs.tag` / `items.need_tags` (columns kept, old values
+    stay). NeedsManagement still shows quantity, as plain text next to the pill (it's the editor). Books for Children
+    has two Books needs (100 books, 80 sets); with tags gone they show as one "Books" pill on the board/profile and two
+    rows in Needs Management.
+  - Touch devices: `.map-container` has `touch-action: none` and the vendored MapView cancels one-finger touchmove, so
+    on a phone a finger on the map pans it and cannot scroll the page (and there is no pinch zoom). Not changed
+    (only wheel zoom was in scope); a two-finger-pan pattern would fix it.
 - **3G-052** (DECISIONS.md D-056, D-057).
   - Part A: board pills = category name only; need quantities set (Clothes needs + the two hand-added live needs, now
     `need016`/`need017` in the seed); seed + live now **8 organisations, 20 donors, 8 organisation logins, 26 needs**

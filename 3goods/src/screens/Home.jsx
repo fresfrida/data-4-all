@@ -82,23 +82,14 @@ export function Home() {
               </p>
             </div>
 
-            {/* Action Buttons — donor gets the Donate CTA; guest and organisation both browse items */}
+            {/* Action Buttons: the same for guest, donor and organisation (a donor posts via the "Donate" nav item, D-060) */}
             <div className="flex flex-wrap items-center gap-3 pt-2">
-              {role === "donor" ? (
-                <Link
-                  to={ROUTES.donateNew}
-                  className="inline-flex items-center justify-center rounded-full bg-accent-500 px-6 py-3 text-sm font-bold text-white shadow-lg hover:bg-accent-600 transition-all active:scale-95 min-w-[160px]"
-                >
-                  + {t("hero.ctaDonate")}
-                </Link>
-              ) : (
-                <Link
-                  to={ROUTES.discoverItems}
-                  className="inline-flex items-center justify-center rounded-full bg-accent-500 px-6 py-3 text-sm font-bold text-white shadow-lg hover:bg-accent-600 transition-all active:scale-95 min-w-[160px]"
-                >
-                  📦 {t("hero.ctaBrowse")}
-                </Link>
-              )}
+              <Link
+                to={ROUTES.discoverItems}
+                className="inline-flex items-center justify-center rounded-full bg-accent-500 px-6 py-3 text-sm font-bold text-white shadow-lg hover:bg-accent-600 transition-all active:scale-95 min-w-[160px]"
+              >
+                📦 {t("hero.ctaBrowse")}
+              </Link>
               <Link
                 to={ROUTES.map}
                 className="inline-flex items-center justify-center rounded-full bg-white/95 px-6 py-3 text-sm font-bold text-ink-900 backdrop-blur-md border border-white hover:bg-white transition-all active:scale-95 min-w-[160px] shadow-md"

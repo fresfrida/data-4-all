@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAsync } from "../lib/useAsync.js";
 import { getNeeds, createNeed, setNeedPriority, removeNeed } from "../services/needsService.js";
-import { getCategories, getTagsForCategory } from "../services/referenceDataService.js";
+import { getCategories } from "../services/referenceDataService.js";
 import { translateError } from "../lib/errors.js";
 import { UNITS, parseQuantity, formatQuantity } from "../lib/quantity.js";
 import { useSession } from "../context/SessionContext.jsx";
@@ -14,9 +14,7 @@ import { NeedChip } from "../components/needs/NeedChip.jsx";
 
 async function loadNeedsManagement(organisationId) {
   const [needs, categories] = await Promise.all([getNeeds({ organisationId }), getCategories()]);
-  const tagLabelsByCategory = {};
-  for (const c of categories) tagLabelsByCategory[c.id] = await getTagsForCategory(c.id);
-  return { needs, categories, tagLabelsByCategory };
+  return { needs, categories };
 }
 
 /** Organisation publishes/edits its own "we currently need" list. */
@@ -28,8 +26,6 @@ export function NeedsManagement() {
   const { status, data, error, reload } = useAsync(() => loadNeedsManagement(organisationId), [organisationId]);
 
   const [category, setCategory] = useState("");
-  const [tagOptions, setTagOptions] = useState([]);
-  const [tag, setTag] = useState("");
   const [priority, setPriority] = useState(false);
   const [quantity, setQuantity] = useState("");
   const [unit, setUnit] = useState(UNITS[0]);
@@ -65,12 +61,6 @@ export function NeedsManagement() {
   if (status === "loading" || !data) return <LoadingState />;
   if (status === "error") return <ErrorState message={t("errors.generic")} onRetry={reload} />;
 
-  const onCategoryChange = async (nextCategory) => {
-    setCategory(nextCategory);
-    setTag("");
-    setTagOptions(await getTagsForCategory(nextCategory));
-  };
-
   const onAdd = (e) => {
     e.preventDefault();
     setFormError(null);
@@ -79,17 +69,14 @@ export function NeedsManagement() {
         await createNeed({
           organisationId: loggedInIdentity.organisationId,
           category,
-          tag,
           priority,
           quantity: parseQuantity(quantity),
           unit,
         });
         setCategory("");
-        setTag("");
         setPriority(false);
         setQuantity("");
         setUnit(UNITS[0]);
-        setTagOptions([]);
         reload();
       } catch (err) {
         setFormError(err);
@@ -112,8 +99,6 @@ export function NeedsManagement() {
   };
 
   const categoryLabel = (id) => data.categories.find((c) => c.id === id)?.[locale] ?? id;
-  const tagLabel = (categoryId, tagId) =>
-    data.tagLabelsByCategory[categoryId]?.find((o) => o.id === tagId)?.[locale] ?? tagId;
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 flex flex-col gap-6">
@@ -129,13 +114,11 @@ export function NeedsManagement() {
           {data.needs.map((need) => (
             <div key={need.id} className="flex items-center justify-between gap-2 rounded-card border border-ink-600/10 bg-white p-3">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs font-semibold text-ink-600">{categoryLabel(need.category)}</span>
-                <NeedChip
-                  label={tagLabel(need.category, need.tag)}
-                  quantityLabel={formatQuantity(need.quantity, need.unit, t)}
-                  priority={need.priority}
-                  onRemove={() => onRemove(need.id)}
-                />
+                <NeedChip label={categoryLabel(need.category)} priority={need.priority} onRemove={() => onRemove(need.id)} />
+                {/* Quantity is shown here, in the editor, as plain text — not inside the pill (pills are category + star only). */}
+                {formatQuantity(need.quantity, need.unit, t) && (
+                  <span className="text-xs font-medium text-ink-600">{formatQuantity(need.quantity, need.unit, t)}</span>
+                )}
               </div>
               <button type="button" onClick={() => onTogglePriority(need)} className="text-xs font-medium text-accent-600 hover:underline">
                 {need.priority ? t("actions.unmarkPriority") : t("actions.markPriority")}
@@ -151,7 +134,7 @@ export function NeedsManagement() {
           <select
             required
             value={category}
-            onChange={(e) => onCategoryChange(e.target.value)}
+            onChange={(e) => setCategory(e.target.value)}
             className="flex-1 rounded-lg border border-ink-600/20 px-3 py-2 text-sm"
           >
             <option value="" disabled>
@@ -160,22 +143,6 @@ export function NeedsManagement() {
             {data.categories.map((c) => (
               <option key={c.id} value={c.id}>
                 {c[locale] ?? c.en}
-              </option>
-            ))}
-          </select>
-          <select
-            required
-            value={tag}
-            onChange={(e) => setTag(e.target.value)}
-            disabled={!category}
-            className="flex-1 rounded-lg border border-ink-600/20 px-3 py-2 text-sm disabled:opacity-50"
-          >
-            <option value="" disabled>
-              {t("fields.needTags")}
-            </option>
-            {tagOptions.map((tagOption) => (
-              <option key={tagOption.id} value={tagOption.id}>
-                {tagOption[locale] ?? tagOption.en}
               </option>
             ))}
           </select>

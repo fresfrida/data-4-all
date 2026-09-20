@@ -3,7 +3,7 @@ import { MapView } from "../vendor/mapView.js";
 import { applyGreyBaseHeat } from "../heatColors.js";
 import "../../../styles/map.css";
 
-export function VietnamMapView({ data, field = "disaster_score", showFacilities = true, showMetroHubs = true, selectedProvince, onSelectProvince }) {
+export function VietnamMapView({ data, field = "disaster_score", showFacilities = true, showMetroHubs = true, zoomHint, selectedProvince, onSelectProvince }) {
   const containerRef = useRef(null);
   const mapViewRef = useRef(null);
 
@@ -17,7 +17,9 @@ export function VietnamMapView({ data, field = "disaster_score", showFacilities 
       features: data.features,
       metroHubs: data.metroHubs || [],
       facilities: data.facilities || [],
+      land: data.land || null,
     });
+    if (zoomHint) mapInstance.zoomHintText = zoomHint; // translated "Hold Ctrl and scroll to zoom"
 
     mapInstance.setField(field);
     mapInstance.setShowFacilities(showFacilities);

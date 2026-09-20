@@ -28,7 +28,6 @@ async function fromRow(row, usersById) {
     titleVi: row.title_vi ?? undefined,
     category: await getCategorySlugFromDbId(row.category_id),
     secondaryCategory: (await getCategorySlugFromDbId(row.secondary_category_id)) ?? undefined,
-    needTags: row.need_tags ?? [],
     condition: row.condition ?? "",
     areaId: row.area ?? "",
     description: row.description ?? "",
@@ -55,7 +54,6 @@ async function toInsertRow(payload) {
     title_vi: payload.titleVi || null,
     category_id: await getCategoryDbId(payload.category),
     secondary_category_id: payload.secondaryCategory ? await getCategoryDbId(payload.secondaryCategory) : null,
-    need_tags: payload.needTags ?? [],
     condition: payload.condition ?? "",
     area: payload.areaId,
     description: payload.description ?? "",
@@ -81,7 +79,6 @@ async function loadUsersById() {
  * @param {string} [filters.deliveryOption]
  * @param {string} [filters.status]              defaults to only "available" if omitted
  * @param {string} [filters.donorId]              only this donor's items
- * @param {string[]} [filters.needTags]            item must include at least one of these tags
  * @returns {Promise<import('../data/types.js').Item[]>}
  */
 export async function getItems(filters = {}) {
@@ -106,9 +103,6 @@ export async function getItems(filters = {}) {
   }
   if (filters.deliveryOption) {
     rows = rows.filter((item) => item.deliveryOption === filters.deliveryOption);
-  }
-  if (filters.needTags?.length) {
-    rows = rows.filter((item) => item.needTags.some((tag) => filters.needTags.includes(tag)));
   }
 
   return rows.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));

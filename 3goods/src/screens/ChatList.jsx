@@ -79,7 +79,7 @@ export function ChatList() {
             <Avatar name={partnerName} id={partnerId} type={partnerType} size="md" />
             <div className="flex flex-col min-w-0 flex-1">
               <span className="text-sm font-bold text-ink-800">{partnerName}</span>
-              <span className="line-clamp-1 text-xs text-ink-600">{getMessageText(lastMessage, t)}</span>
+              <span className="line-clamp-1 text-xs text-ink-600">{lastMessage ? getMessageText(lastMessage, t) : t("screens.chatNoMessages")}</span>
             </div>
           </Link>
         );

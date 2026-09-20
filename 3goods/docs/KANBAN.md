@@ -38,6 +38,28 @@ session; see each Done entry's evidence)
 
 ## Done
 
+- **3G-053** — Chat starts when a request is made; need/item tags removed; category-only pills everywhere; map base map
+  + zoom fixes; hero CTA; donate-from-map area prefill (see DECISIONS.md D-058 to D-061)
+  - Deliverable: (1) `createRequest` now creates the conversation (find-or-create), `acceptRequest` finds it and posts the
+    system message; chat links for both sides from the moment of the request; live backfill of the 2 requests that had
+    none. (2) Tags removed from needs and items in the app layer (form, services, ItemDetail matching = category only,
+    seed data, locale keys); DB columns untouched. (3) Board and profile pills = category + star, one per category.
+    (4) Map: neighbouring land + blue sea, view shaped like the container (no black bars); (5) Ctrl/Cmd+wheel zoom with a
+    translated hint, zoom-out stops on the default view, pan confined to it. (6) "OSM Pins" toggle renamed "Show
+    community facilities" (kept, per user). (7) The map's "Post a donation for …" link already existed; it now
+    carries `?area=` (all 8 areas, Mekong provinces included) and the form pre-selects it. (8) One hero CTA "Browse
+    Items Donated" for every state.
+  - Deps: none. Acceptance: `npm run i18n:check`, `npm run build`, 375px + 1280px checks in EN + VI, live test of #1/#2.
+  - Evidence: `npm run i18n:check` → 221/221; `npm run build` succeeds. Live (headless Chrome + CDP, real DB, QA rows
+    deleted after): donation posted with no tag control and saved; org requested it → status "Requested" + Chat link
+    immediately, empty thread ("No messages yet"), org and donor messaged before any accept, then accept added the
+    system message to the same conversation (exactly 1 conversation per request). Needs form has category/qty/unit/
+    priority only; board and profile pills contain no digit or "·" (EN + VI); donor hero shows one CTA → /discover and
+    the donor nav still has Donate → /donate/new; map link → `?area=hcmc`/`mekong` pre-fills the select, Hà Tĩnh
+    (no area) leaves it blank, invalid value ignored. Map: view aspect == container aspect at 375px and 1280px; plain
+    wheel not cancelled + hint shown, Ctrl/Cmd wheel zooms; 60× zoom-out lands exactly on the default view; a huge drag
+    stays inside it. All layers still render (43/6/48 province fills, 89 pins, 5 cities). Zero console errors.
+
 - **3G-052** — Cleanup + scale-up (Part A) and the map now really uses all 5 map-site API endpoints (Part B) (see
   DECISIONS.md D-056, D-057)
   - Deliverable: Organisations board pills show the category name only (quantities stay on the profile page). Quantities

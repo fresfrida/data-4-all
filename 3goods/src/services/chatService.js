@@ -56,7 +56,11 @@ export async function getConversationById(id) {
 
 /**
  * Idempotent — if a conversation already exists for this requestId, returns
- * it instead of creating a duplicate.
+ * it instead of creating a duplicate. Called when a request is *made*
+ * (requestsService.createRequest) and again, as find-or-create, when it is
+ * accepted. `request_id`/`item_id` are nullable on the table, so a
+ * conversation with no request (e.g. a donor messaging a recommended
+ * organisation directly) can reuse this shape later without restructuring.
  */
 export async function ensureConversationForRequest({ requestId, itemId, donorId, organisationId }) {
   const rows = (await getAll("conversations")).map(fromConversationRow);

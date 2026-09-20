@@ -13,11 +13,13 @@ export async function loadAppData() {
 
   // metro_hubs.json is also the source /api/metro-hubs serves -- one file,
   // read by both the browser app and any external integration.
-  const [itemNeeds, facilities, metroHubs] = await Promise.all([
+  // neighbour_land.json is the base-map land around Vietnam (Laos, Cambodia, ...); the map still works without it.
+  const [itemNeeds, facilities, metroHubs, land] = await Promise.all([
     fetch("data/donation_items_by_disaster.json").then(r => r.json()).catch(() => null),
     fetch("data/donation_facilities_osm.json").then(r => r.json()).catch(() => []),
     fetch("data/metro_hubs.json").then(r => r.json()).catch(() => []),
+    fetch("data/neighbour_land.json").then(r => r.json()).catch(() => null),
   ]);
 
-  return { features, itemNeeds, facilities, metroHubs };
+  return { features, itemNeeds, facilities, metroHubs, land };
 }

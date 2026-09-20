@@ -1,10 +1,9 @@
 import { useTranslate } from "../../i18n/useTranslate.js";
 
 /**
- * @param {{label: string, quantityLabel?: string, priority?: boolean, onRemove?: () => void}} props
- * `quantityLabel` is pre-formatted (e.g. "50 kg") via lib/quantity.js.
+ * @param {{label: string, priority?: boolean, onRemove?: () => void}} props
  */
-export function NeedChip({ label, quantityLabel, priority = false, onRemove }) {
+export function NeedChip({ label, priority = false, onRemove }) {
   const t = useTranslate();
   return (
     <span
@@ -14,7 +13,6 @@ export function NeedChip({ label, quantityLabel, priority = false, onRemove }) {
     >
       {priority && <span aria-hidden="true">★</span>}
       {label}
-      {quantityLabel && <span className="font-semibold opacity-80">· {quantityLabel}</span>}
       {onRemove && (
         <button
           type="button"

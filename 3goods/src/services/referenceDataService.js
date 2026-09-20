@@ -1,8 +1,8 @@
 /**
- * Static reference data (areas, categories, need tags), plus the live
+ * Static reference data (areas, categories), plus the live
  * `categories` table id lookups other services need.
  *
- * Areas/need-tag metadata (labels, icons) still comes from the static
+ * Area/category metadata (labels, icons) still comes from the static
  * src/data/*.js lists — the live DB doesn't carry i18n label data for
  * these, only the category *names*. `items`/`needs` foreign-key to a
  * `category_id` uuid that Supabase generated when the categories table was
@@ -14,12 +14,7 @@
  */
 
 import { AREAS, getAreaById as _getAreaById } from "../data/areas.js";
-import {
-  CATEGORIES,
-  NEED_TAGS_BY_CATEGORY,
-  getCategoryById as _getCategoryById,
-  getTagsForCategory as _getTagsForCategory,
-} from "../data/categories.js";
+import { CATEGORIES, getCategoryById as _getCategoryById } from "../data/categories.js";
 import { getAll } from "../lib/db.js";
 
 export async function getAreas() {
@@ -36,14 +31,6 @@ export async function getCategories() {
 
 export async function getCategoryById(id) {
   return _getCategoryById(id);
-}
-
-export async function getTagsForCategory(categoryId) {
-  return _getTagsForCategory(categoryId);
-}
-
-export async function getAllNeedTagsByCategory() {
-  return NEED_TAGS_BY_CATEGORY;
 }
 
 /** Cached for the lifetime of the page — the live categories table is fixed reference data. */

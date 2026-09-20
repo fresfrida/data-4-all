@@ -23,16 +23,29 @@ const DISASTER_TYPE_MAP = {
 
 const PRIORITY_RANK = { high: 3, medium: 2, low: 1 };
 
-// 3goods organisation area ids -> the province name used in the map data.
-// "mekong" is a region, not a province, so it has no single match.
-const AREA_TO_PROVINCE = {
-  hanoi: "HàNội",
-  hcmc: "HồChíMinh",
-  danang: "ĐàNẵng",
-  hue: "ThừaThiênHuế",
-  cantho: "CầnThơ",
-  haiphong: "HảiPhòng",
-  nhatrang: "KhánhHòa",
+// Map province name (as it appears in the province data) -> the 3goods area id used by organisations and by the
+// donation form. Eight areas cover only some provinces: a province that isn't listed here has no matching area.
+// "mekong" is a region, so every Mekong Delta province except Cần Thơ (its own area) maps to it.
+const PROVINCE_TO_AREA = {
+  HàNội: "hanoi",
+  HồChíMinh: "hcmc",
+  ĐàNẵng: "danang",
+  ThừaThiênHuế: "hue",
+  CầnThơ: "cantho",
+  HảiPhòng: "haiphong",
+  KhánhHòa: "nhatrang",
+  AnGiang: "mekong",
+  BạcLiêu: "mekong",
+  BếnTre: "mekong",
+  CàMau: "mekong",
+  ĐồngTháp: "mekong",
+  HậuGiang: "mekong",
+  KiênGiang: "mekong",
+  LongAn: "mekong",
+  SócTrăng: "mekong",
+  TiềnGiang: "mekong",
+  TràVinh: "mekong",
+  VĩnhLong: "mekong",
 };
 
 // The GADM province names have their spaces stripped ("HàTĩnh") — put them back for display.
@@ -71,7 +84,9 @@ export function MapScreenShell() {
 
   const nearbyOrgs = useMemo(() => {
     if (!data?.organisations || !selectedProvince) return [];
-    return data.organisations.filter((org) => AREA_TO_PROVINCE[org.areaId] === selectedProvince);
+    const areaId = PROVINCE_TO_AREA[selectedProvince];
+    // The panel is headed "Verified 3goods Organisations Nearby", so only verified organisations are listed.
+    return areaId ? data.organisations.filter((org) => org.areaId === areaId && org.verified) : [];
   }, [data, selectedProvince]);
 
   const recommendedCategories = useMemo(() => {
@@ -98,7 +113,7 @@ export function MapScreenShell() {
   // Show the real value or a dash — never a made-up fallback score.
   const { sources, meta } = data.mapData;
   // `meta` only feeds the optional "About this data" panel, so a missing one just hides the panel — it never triggers the warning.
-  const { meta: _metaSource, ...mapDataSources } = sources;
+  const { meta: _metaSource, neighbourLand: _landSource, ...mapDataSources } = sources;
   const mapNotice = Object.values(mapDataSources).includes("unavailable")
     ? t("map.dataUnavailableNotice")
     : Object.values(mapDataSources).includes("snapshot")
@@ -109,6 +124,9 @@ export function MapScreenShell() {
     : null;
 
   const pProps = selectedFeature?.properties || {};
+  // Carry the clicked area into the donation form when this province maps to one of the 3goods areas.
+  const donateArea = PROVINCE_TO_AREA[selectedProvince];
+  const donateHref = donateArea ? `${ROUTES.donateNew}?area=${donateArea}` : ROUTES.donateNew;
   const provinceName = formatProvince(pProps.province);
   const disasterScoreDisplay = typeof pProps.disaster_score === "number" ? pProps.disaster_score.toFixed(2) : "—";
   const povertyDisplay = typeof pProps.poverty_rate === "number" ? `${pProps.poverty_rate}%` : "—";
@@ -180,7 +198,7 @@ export function MapScreenShell() {
             }`}
           >
             <span>📍</span>
-            <span>{t("map.showOsmPins")}</span>
+            <span>{t("map.showFacilities")}</span>
           </button>
 
           {/* Big-city (metro hub) circles Toggle Pill */}
@@ -261,6 +279,7 @@ export function MapScreenShell() {
             field={activeLayer}
             showFacilities={showFacilities}
             showMetroHubs={showMetroHubs}
+            zoomHint={t("map.zoomHint", { key: /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘" : "Ctrl" })}
             selectedProvince={selectedProvince}
             onSelectProvince={(name) => setSelectedProvince(name)}
           />
@@ -383,7 +402,7 @@ export function MapScreenShell() {
             )}
 
             <Link
-              to={ROUTES.donateNew}
+              to={donateHref}
               className="mt-1 w-full text-center py-2.5 px-4 rounded-full bg-accent-500 hover:bg-accent-600 text-white text-xs font-bold shadow-sm transition-all"
             >
               {t("map.postDonationFor", { province: provinceName })}

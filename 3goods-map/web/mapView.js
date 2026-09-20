@@ -1,4 +1,4 @@
-import { buildShapes, projectToPixel, minmaxSqrt } from "./geo.js";
+import { buildShapes, projectToPixel, minmaxSqrt, buildLandPaths, worldPixelRect } from "./geo.js";
 import { fieldRange, normalize } from "./scoring.js";
 
 const PIN_PATH = "M12 2C7.58 2 4 5.58 4 10c0 5.25 8 14 8 14s8-8.75 8-14c0-4.42-3.58-8-8-8z";
@@ -24,7 +24,13 @@ function scoreRamp(t) {
 // by (setField) and listen for clicks (onSelect). That's what lets the
 // exact same MapView serve both the donor and organization panels.
 export class MapView {
-  constructor(container, { features, metroHubs, facilities }) {
+  // `land` (optional) is a GeoJSON FeatureCollection of neighbouring countries plus
+  // a `world` {west,south,east,north} rectangle (data/neighbour_land.json). With it
+  // the map draws Vietnam as part of a continent (land beside the sea, not an island)
+  // and zooming/panning stop at the edge of that world instead of showing empty space.
+  // `requireModifierToZoom`: the mouse wheel only zooms with Ctrl/Cmd held (trackpad
+  // pinch already sends Ctrl), so scrolling the page over the map never zooms it by accident.
+  constructor(container, { features, metroHubs, facilities, land = null, requireModifierToZoom = true }) {
     this.container = container;
     this.features = features;
     this.metroHubs = metroHubs;
@@ -33,13 +39,22 @@ export class MapView {
     this.selectedProvince = null;
     this.showFacilities = true;
     this.onSelect = null; // (provinceName) => void
+    this.requireModifierToZoom = requireModifierToZoom;
+    // Shown briefly when the wheel is used without the modifier. Callers may replace it (e.g. translated).
+    this.zoomHintText = /Mac|iPhone|iPad/.test(navigator.platform) ? "Hold \u2318 and scroll to zoom" : "Hold Ctrl and scroll to zoom";
 
     this.extent = buildShapes(features, 520);
     this.bboxByName = Object.fromEntries(this.extent.shapes.map(sh => [sh.p.province, sh.bbox]));
     this.metroRadius = minmaxSqrt(metroHubs.map(h => h.population), 4, 11);
 
-    this.viewBox = { x: 0, y: 0, w: this.extent.width, h: this.extent.height };
-    this.fullView = { ...this.viewBox };
+    this.landPaths = land ? buildLandPaths(land.features, this.extent) : [];
+    // Everything the map draws lives inside `world` (the sea and land cover it entirely).
+    this.world = land?.world
+      ? worldPixelRect(land.world, this.extent)
+      : { x0: -2 * this.extent.width, y0: -0.5 * this.extent.height, x1: 3 * this.extent.width, y1: 1.5 * this.extent.height };
+
+    this.fullView = this._computeFullView();
+    this.viewBox = { ...this.fullView };
 
     this.svgRoot = document.createElement("div");
     this.svgRoot.id = "svgRoot";
@@ -49,6 +64,44 @@ export class MapView {
     this.container.append(this.svgRoot, this.facilityTip);
 
     this._wirePanZoom();
+    // Keep the view matched to the container's shape (no letterbox bars) when it is resized.
+    if (typeof ResizeObserver !== "undefined") {
+      this._resizeObserver = new ResizeObserver(() => this._onResize());
+      this._resizeObserver.observe(this.container);
+    }
+  }
+
+  // The smallest rectangle with the container's aspect ratio that contains all of
+  // Vietnam, centred on it (and never larger than the drawn world). Showing this at
+  // zoom 1 means the SVG fills the container, so there are no empty bars beside the map.
+  _computeFullView() {
+    const cw = this.container.clientWidth, ch = this.container.clientHeight;
+    const aspect = cw > 0 && ch > 0 ? cw / ch : this.extent.width / this.extent.height;
+    let w = this.extent.width, h = this.extent.height;
+    if (w / h < aspect) w = h * aspect; else h = w / aspect;
+    const shrink = Math.min(1, (this.world.x1 - this.world.x0) / w, (this.world.y1 - this.world.y0) / h);
+    w *= shrink; h *= shrink;
+    return { x: this.extent.width / 2 - w / 2, y: this.extent.height / 2 - h / 2, w, h };
+  }
+
+  _onResize() {
+    const zoom = this.viewBox.w / this.fullView.w;
+    const cx = this.viewBox.x + this.viewBox.w / 2, cy = this.viewBox.y + this.viewBox.h / 2;
+    this.fullView = this._computeFullView();
+    const w = this.fullView.w * zoom, h = this.fullView.h * zoom;
+    this._setViewBox({ x: cx - w / 2, y: cy - h / 2, w, h });
+  }
+
+  _showZoomHint() {
+    if (!this.zoomHint) {
+      this.zoomHint = document.createElement("div");
+      this.zoomHint.id = "zoomHint";
+      this.container.append(this.zoomHint);
+    }
+    this.zoomHint.textContent = this.zoomHintText;
+    this.zoomHint.classList.add("visible");
+    clearTimeout(this._zoomHintTimer);
+    this._zoomHintTimer = setTimeout(() => this.zoomHint.classList.remove("visible"), 1400);
   }
 
   setField(field) { this.field = field; this.render(); }
@@ -66,7 +119,10 @@ export class MapView {
     if (!bbox) return;
     const bw = Math.max(bbox.x1 - bbox.x0, 8), bh = Math.max(bbox.y1 - bbox.y0, 8);
     const padFactor = 0.7;
-    const w = bw * (1 + padFactor), h = bh * (1 + padFactor);
+    let w = bw * (1 + padFactor), h = bh * (1 + padFactor);
+    // Match the container's shape so the province view fills it (no empty bars).
+    const aspect = this.fullView.w / this.fullView.h;
+    if (w / h < aspect) w = h * aspect; else h = w / aspect;
     const cx = (bbox.x0 + bbox.x1) / 2, cy = (bbox.y0 + bbox.y1) / 2;
     this._setViewBox({ x: cx - w / 2, y: cy - h / 2, w, h });
   }
@@ -79,9 +135,9 @@ export class MapView {
 
     const defs = `<defs>
       <linearGradient id="oceanGrad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#e9f5fb"/>
-        <stop offset="55%" stop-color="#cbe7f6"/>
-        <stop offset="100%" stop-color="#a4d2ea"/>
+        <stop offset="0%" stop-color="#a9d6f2"/>
+        <stop offset="55%" stop-color="#82bfe9"/>
+        <stop offset="100%" stop-color="#5ba6dc"/>
       </linearGradient>
       <filter id="landShadow" x="-20%" y="-20%" width="140%" height="140%">
         <feDropShadow dx="0" dy="2.5" stdDeviation="3.5" flood-color="#0a1a2c" flood-opacity="0.3"/>
@@ -91,7 +147,13 @@ export class MapView {
       </filter>
     </defs>`;
 
-    const ocean = `<rect x="0" y="0" width="${this.extent.width}" height="${this.extent.height}" fill="url(#oceanGrad)"/>`;
+    // Sea fills the whole world rectangle; neighbouring countries sit on top of it in a
+    // neutral land colour (thick same-colour stroke closes hairline gaps along the border).
+    const { x0, y0, x1, y1 } = this.world;
+    const ocean = `<rect x="${x0.toFixed(1)}" y="${y0.toFixed(1)}" width="${(x1 - x0).toFixed(1)}" height="${(y1 - y0).toFixed(1)}" fill="url(#oceanGrad)"/>` +
+      (this.landPaths.length
+        ? `<g class="neighbour-land">${this.landPaths.map(l => `<path d="${l.d}" fill="#e6e0d2" stroke="#e6e0d2" stroke-width="3" stroke-linejoin="round"><title>${l.name}</title></path>`).join("")}</g>`
+        : "");
 
     const provinces = this.extent.shapes.map(sh => {
       const v = sh.p[this.field];
@@ -150,15 +212,26 @@ export class MapView {
     if (svg) svg.setAttribute("viewBox", `${this.viewBox.x.toFixed(2)} ${this.viewBox.y.toFixed(2)} ${this.viewBox.w.toFixed(2)} ${this.viewBox.h.toFixed(2)}`);
   }
 
-  _setViewBox(vb) { this.viewBox = vb; this._applyViewBox(); }
+  // Every view change goes through here. The view is confined to `fullView` (the whole of Vietnam,
+  // shaped like the container): zoom-out stops exactly on it, and panning can never reveal more
+  // than that default view already shows, so there is never empty background beyond the map.
+  _setViewBox(vb) {
+    const k = Math.min(1, this.fullView.w / vb.w, this.fullView.h / vb.h);
+    let { x, y, w, h } = vb;
+    if (k < 1) { x += (w - w * k) / 2; y += (h - h * k) / 2; w *= k; h *= k; }
+    const f = this.fullView;
+    x = Math.min(Math.max(x, f.x), f.x + f.w - w);
+    y = Math.min(Math.max(y, f.y), f.y + f.h - h);
+    this.viewBox = { x, y, w, h };
+    this._applyViewBox();
+  }
 
   zoomBy(factor, cx, cy) {
     if (cx === undefined) cx = this.viewBox.x + this.viewBox.w / 2;
     if (cy === undefined) cy = this.viewBox.y + this.viewBox.h / 2;
-    let newW = this.viewBox.w * factor, newH = this.viewBox.h * factor;
-    const minW = this.fullView.w * 0.06, minH = this.fullView.h * 0.06;
-    newW = Math.min(this.fullView.w, Math.max(minW, newW));
-    newH = Math.min(this.fullView.h, Math.max(minH, newH));
+    // Zoom-out stops at fullView (the map exactly fills the container); zoom-in stops at 6% of it.
+    const newW = Math.min(this.fullView.w, Math.max(this.fullView.w * 0.06, this.viewBox.w * factor));
+    const newH = this.viewBox.h * (newW / this.viewBox.w);
     const ratioX = (cx - this.viewBox.x) / this.viewBox.w, ratioY = (cy - this.viewBox.y) / this.viewBox.h;
     this._setViewBox({ x: cx - ratioX * newW, y: cy - ratioY * newH, w: newW, h: newH });
   }
@@ -166,6 +239,8 @@ export class MapView {
   _wirePanZoom() {
     this._dragMoved = false;
     this.svgRoot.addEventListener("wheel", (e) => {
+      // Plain wheel scrolls the page; Ctrl/Cmd + wheel (and trackpad pinch, which sends Ctrl) zooms.
+      if (this.requireModifierToZoom && !(e.ctrlKey || e.metaKey)) { this._showZoomHint(); return; }
       e.preventDefault();
       const svg = this.svgRoot.querySelector("svg");
       if (!svg) return;

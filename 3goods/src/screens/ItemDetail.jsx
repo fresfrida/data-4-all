@@ -7,7 +7,7 @@ import { getRequests, createRequest, deriveDisplayStatus } from "../services/req
 import { getNeeds } from "../services/needsService.js";
 import { getOrganisations } from "../services/organisationsService.js";
 import { getConversations } from "../services/chatService.js";
-import { getAreaById, getCategoryById, getTagsForCategory } from "../services/referenceDataService.js";
+import { getAreaById, getCategoryById } from "../services/referenceDataService.js";
 import { translateError } from "../lib/errors.js";
 import { useSession } from "../context/SessionContext.jsx";
 import { useLocale } from "../i18n/LocaleContext.jsx";
@@ -25,11 +25,10 @@ import { formatQuantity } from "../lib/quantity.js";
 async function loadItemDetail(itemId, orgIdIfLoggedIn, donorIdIfLoggedIn) {
   const item = await getItemById(itemId);
   if (!item) return { item: null };
-  const [area, category, secondaryCategory, tags, requests] = await Promise.all([
+  const [area, category, secondaryCategory, requests] = await Promise.all([
     getAreaById(item.areaId),
     getCategoryById(item.category),
     item.secondaryCategory ? getCategoryById(item.secondaryCategory) : null,
-    getTagsForCategory(item.category),
     getRequests({ itemId }),
   ]);
   let orgNeeds = [];
@@ -40,8 +39,10 @@ async function loadItemDetail(itemId, orgIdIfLoggedIn, donorIdIfLoggedIn) {
   let conversations = [];
   if (donorIdIfLoggedIn && item.donorId === donorIdIfLoggedIn) {
     [organisations, conversations] = await Promise.all([getOrganisations(), getConversations({ donorId: donorIdIfLoggedIn })]);
+  } else if (orgIdIfLoggedIn) {
+    conversations = await getConversations({ organisationId: orgIdIfLoggedIn });
   }
-  return { itemId, item, area, category, secondaryCategory, tags, requests, orgNeeds, organisations, conversations };
+  return { itemId, item, area, category, secondaryCategory, requests, orgNeeds, organisations, conversations };
 }
 
 export function ItemDetail() {
@@ -64,16 +65,14 @@ export function ItemDetail() {
   if (status === "error") return <ErrorState message={t("errors.generic")} onRetry={reload} />;
   if (!data.item) return <ErrorState message={t("screens.itemNoLongerExists")} />;
 
-  const { item, area, category, secondaryCategory, tags, requests, orgNeeds, organisations, conversations } = data;
+  const { item, area, category, secondaryCategory, requests, orgNeeds, organisations, conversations } = data;
   const photo = item.photoPaths?.[0];
-  const tagLabel = (tagId) => tags.find((tag) => tag.id === tagId)?.[locale] ?? tags.find((tag) => tag.id === tagId)?.en ?? tagId;
 
   const isOwnListing = identity && item.donorId === identity.id;
   const isOwnerDonor = role === "donor" && isOwnListing;
   const myRequest = orgId ? requests.find((r) => r.organisationId === orgId) : null;
-  const matchesNeed = orgNeeds.some(
-    (need) => (need.category === item.category || need.category === item.secondaryCategory) && item.needTags.includes(need.tag),
-  );
+  const myRequestConversation = myRequest ? conversations.find((c) => c.requestId === myRequest.id) : null;
+  const matchesNeed = orgNeeds.some((need) => need.category === item.category || need.category === item.secondaryCategory);
 
   const onRequest = () => {
     requireLogin(async (loggedInIdentity) => {
@@ -103,16 +102,6 @@ export function ItemDetail() {
           {category?.[locale] ?? category?.en}
           {secondaryCategory && ` · ${secondaryCategory[locale] ?? secondaryCategory.en}`} · {area?.[locale] ?? area?.en}
         </p>
-
-        {item.needTags?.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
-            {item.needTags.map((tagId) => (
-              <span key={tagId} className="rounded-full bg-cream-200 px-2.5 py-1 text-xs font-medium text-ink-700">
-                {tagLabel(tagId)}
-              </span>
-            ))}
-          </div>
-        )}
 
         {matchesNeed && (
           <p className="rounded-lg bg-accent-50 px-3 py-2 text-xs text-accent-700">{t("screens.matchesNeedNote")}</p>
@@ -186,9 +175,20 @@ export function ItemDetail() {
         {role === "organisation" && !isOwnListing && (item.status === "available" || myRequest) && (
           <>
             {myRequest || justRequested ? (
-              <p className="w-fit rounded-full bg-good-100 px-4 py-2 text-sm font-semibold text-good-600">
-                {t(`requestStatus.${myRequest ? deriveDisplayStatus(myRequest, item) : "requested"}`)}
-              </p>
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="w-fit rounded-full bg-good-100 px-4 py-2 text-sm font-semibold text-good-600">
+                  {t(`requestStatus.${myRequest ? deriveDisplayStatus(myRequest, item) : "requested"}`)}
+                </p>
+                {/* The conversation exists from the moment the request is made (D-058), before any accept. */}
+                {myRequestConversation && (
+                  <Link
+                    to={ROUTES.chatDetail(myRequestConversation.id)}
+                    className="rounded-full border border-accent-500 bg-white px-4 py-2 text-sm font-bold text-accent-700 hover:bg-accent-50"
+                  >
+                    💬 {t("nav.chat")}
+                  </Link>
+                )}
+              </div>
             ) : (
               <button
                 type="button"

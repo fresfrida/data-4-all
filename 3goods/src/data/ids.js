@@ -111,6 +111,9 @@ export const REQUEST_IDS = {
 
 export const CONVERSATION_IDS = {
   conversation001: "0e05dbf4-8200-4c4d-8d34-20988e98944b",
+  conversation002: "08deb6c0-af0d-4e9d-b81a-68e277cda2ed",
+  // conversation003 already existed live (created by an earlier accept); adopted with its live id so a re-seed updates it.
+  conversation003: "71ac055f-774b-48ed-a323-c80f6b30d1a3",
 };
 
 export const MESSAGE_IDS = {

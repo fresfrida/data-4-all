@@ -4,7 +4,9 @@
  * The live `needs` table's `priority` column is text (`'high'`/`'medium'`),
  * not the boolean this app models — `fromRow`/`toInsertRow` translate at
  * the boundary so the rest of the app keeps working with a boolean, same as
- * before Supabase's redesign (see DECISIONS.md D-042).
+ * before Supabase's redesign (see DECISIONS.md D-042). A need is just
+ * category + quantity + unit + priority; the old `tag` column is left in the
+ * table but neither read nor written (DECISIONS.md D-059).
  */
 
 import { getAll, insert, update as dbUpdate, remove as dbRemove } from "../lib/db.js";
@@ -17,7 +19,6 @@ async function fromRow(row) {
     id: row.id,
     organisationId: row.org_id,
     category: await getCategorySlugFromDbId(row.category_id),
-    tag: row.tag ?? "",
     priority: row.priority === "high",
     quantity: row.quantity ?? null,
     unit: row.unit ?? null,
@@ -44,13 +45,12 @@ export async function getNeeds(filters = {}) {
 }
 
 /**
- * @param {{organisationId: string, category: string, tag: string, priority?: boolean, quantity?: number|null, unit?: string|null}} payload
+ * @param {{organisationId: string, category: string, priority?: boolean, quantity?: number|null, unit?: string|null}} payload
  * @returns {Promise<import('../data/types.js').Need>}
  */
 export async function createNeed(payload) {
   if (!payload.organisationId) throw new AppError("organisationIdRequired");
   if (!payload.category) throw new AppError("categoryRequired");
-  if (!payload.tag) throw new AppError("needTagRequired");
   const quantity = payload.quantity ?? null;
   if (!isValidQuantity(quantity)) throw new AppError("quantityInvalid");
 
@@ -59,7 +59,6 @@ export async function createNeed(payload) {
     {
       org_id: payload.organisationId,
       category_id: await getCategoryDbId(payload.category),
-      tag: payload.tag,
       priority: payload.priority ? "high" : "medium",
       quantity,
       unit: quantity === null ? null : payload.unit || null,

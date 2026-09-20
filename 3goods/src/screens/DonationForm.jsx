@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAsync } from "../lib/useAsync.js";
-import { getAreas, getCategories, getTagsForCategory } from "../services/referenceDataService.js";
+import { getAreas, getCategories } from "../services/referenceDataService.js";
 import { UNITS, parseQuantity } from "../lib/quantity.js";
 import { createDonation } from "../services/itemsService.js";
 import { uploadItemPhotos } from "../services/storageService.js";
@@ -26,12 +26,14 @@ export function DonationForm() {
   const { locale } = useLocale();
   const t = useTranslate();
   const navigate = useNavigate();
+  // "/donate/new?area=hanoi" (e.g. from the Relief Map's "Post a donation for …" link) starts with that area chosen.
+  const [searchParams] = useSearchParams();
+  const areaParam = searchParams.get("area");
 
   const [title, setTitle] = useState("");
   const [titleVi, setTitleVi] = useState("");
   const [category, setCategory] = useState("");
   const [secondaryCategory, setSecondaryCategory] = useState("");
-  const [tags, setTags] = useState([]);
   const [condition, setCondition] = useState("");
   const [areaId, setAreaId] = useState("");
   const [description, setDescription] = useState("");
@@ -49,7 +51,10 @@ export function DonationForm() {
   // instead of freezing it in whatever language was active when it was
   // thrown (found during 3G-017 verification; see DECISIONS.md D-017).
   const [submitError, setSubmitError] = useState(null);
-  const [tagOptions, setTagOptions] = useState([]);
+
+  useEffect(() => {
+    if (data?.areas.some((area) => area.id === areaParam)) setAreaId((current) => current || areaParam);
+  }, [data, areaParam]);
 
   if (status === "loading" || !data) return <LoadingState />;
 
@@ -79,15 +84,9 @@ export function DonationForm() {
     );
   }
 
-  const onCategoryChange = async (nextCategory) => {
+  const onCategoryChange = (nextCategory) => {
     setCategory(nextCategory);
     if (secondaryCategory === nextCategory) setSecondaryCategory("");
-    setTags([]);
-    setTagOptions(await getTagsForCategory(nextCategory));
-  };
-
-  const toggleTag = (tagId) => {
-    setTags((prev) => (prev.includes(tagId) ? prev.filter((id) => id !== tagId) : [...prev, tagId]));
   };
 
   const addWindow = () => {
@@ -116,7 +115,6 @@ export function DonationForm() {
         titleVi,
         category,
         secondaryCategory: secondaryCategory || undefined,
-        needTags: tags,
         condition,
         quantity: parseQuantity(quantity),
         unit,
@@ -217,28 +215,6 @@ export function DonationForm() {
             ))}
         </select>
       </label>
-
-      {tagOptions.length > 0 && (
-        <div className="flex flex-col gap-1.5">
-          <span className="text-xs font-semibold text-ink-700">{t("fields.needTags")}</span>
-          <div className="flex flex-wrap gap-1.5">
-            {tagOptions.map((tag) => (
-              <button
-                type="button"
-                key={tag.id}
-                onClick={() => toggleTag(tag.id)}
-                className={`rounded-full border px-3 py-1.5 text-xs font-medium ${
-                  tags.includes(tag.id)
-                    ? "border-accent-500 bg-accent-100 text-accent-700"
-                    : "border-ink-600/20 bg-white text-ink-600"
-                }`}
-              >
-                {tag[locale] ?? tag.en}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
 
       <label className="flex flex-col gap-1.5">
         <span className="text-xs font-semibold text-ink-700">{t("fields.condition")}</span>

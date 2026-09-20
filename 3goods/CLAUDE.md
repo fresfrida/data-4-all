@@ -95,7 +95,9 @@ file's comment for why.
   3goods organisations come only from `organisationsService`. The client calls all five endpoints (`provinces`,
   `facilities`, `metro-hubs`, `item-needs`, `meta`) on the deployed root map site (base URL
   `VITE_MAP_API_BASE_URL`, default `https://002-data-4-life.vercel.app`). If the API is unreachable it falls back to
-  the bundled `public/data/` snapshot (a copy of what the API serves) and the map shows a notice — see D-057. A facility pin from OpenStreetMap is
+  the bundled `public/data/` snapshot (a copy of what the API serves) and the map shows a notice — see D-057.
+  The vendored `mapView.js`/`geo.js` are verbatim copies of the root site's `web/` files (compare with `cmp`); the
+  base-map land around Vietnam is `neighbour_land.json`, built by `3goods-map/src/build_neighbour_land.mjs` (D-061). A facility pin from OpenStreetMap is
   never presented as a registered 3goods organisation, and no score is invented where the map API
   returns `null`.
 

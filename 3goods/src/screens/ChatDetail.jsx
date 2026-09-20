@@ -110,6 +110,7 @@ export function ChatDetail() {
 
       {/* Messages */}
       <div className="flex-1 space-y-3 overflow-y-auto rounded-card border border-ink-600/10 bg-white p-4 shadow-xs">
+        {messages.length === 0 && <p className="py-6 text-center text-sm text-ink-600">{t("screens.chatNoMessages")}</p>}
         {messages.map((message) => {
           if (message.senderId === "system") {
             return (

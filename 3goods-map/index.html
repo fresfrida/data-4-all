@@ -97,6 +97,8 @@
   .facility-pin { fill: #a3adc2; stroke: #f8fafc; stroke-width: 1.6; transition: fill .15s ease; }
   .facility-pin-dot { fill: #f8fafc; }
   .facility-pin-group:hover .facility-pin { fill: #d6dce6; }
+  #zoomHint { position: absolute; left: 50%; top: 14px; transform: translateX(-50%); background: rgba(15,23,42,.88); color: #fff; font-size: 12px; font-weight: 600; padding: 7px 14px; border-radius: 999px; pointer-events: none; opacity: 0; transition: opacity .2s ease; z-index: 10; white-space: nowrap; }
+  #zoomHint.visible { opacity: 1; }
   #facilityTip { position: absolute; background: var(--surface-2); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); padding: 7px 11px; font-size: 11px; color: var(--text); pointer-events: none; max-width: 220px; z-index: 10; box-shadow: var(--shadow-soft); }
 
   #zoomControls { position: absolute; bottom: 16px; right: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 5; }

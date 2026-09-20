@@ -686,6 +686,86 @@ page; `DonationForm`'s collection-windows section reads "Collection time windows
 - **Snapshot upkeep:** `public/data/` must be re-copied from `3goods-map/data/` if the map site's data changes (it is
   only a fallback, so drift shows up as a mismatch only when the API is down).
 
+## D-058 — A conversation is created when a request is made, not when it is accepted (product change; user-requested)
+- **Before:** `ensureConversationForRequest` ran only inside `acceptRequest`, so donor and organisation could not message
+  until the donor had already accepted.
+- **Now:** `createRequest` creates the conversation (in parallel with the two notifications). `acceptRequest` still calls
+  the same find-or-create, which now just returns the existing one (and covers requests made before this change), then
+  posts the "request accepted" system message exactly as before. `postSystemMessage` and the D-016 code+params format are
+  untouched. Verified live: one conversation per request across request → chat → accept, the system message lands in the
+  same thread, after the two users' messages.
+- **Reachability:** organisation: a Chat link beside its request status on the item page and on each row of My
+  Organisation (previously shown only once accepted, and pointing at the list). Donor: the existing Chat link on the
+  request row appears as soon as the conversation exists. Empty threads show "No messages yet. Say hello!".
+- **Kept general on purpose:** `conversations.request_id` / `item_id` are nullable, and `ensureConversationForRequest`
+  documents that a conversation with no request (donor posts an item → messages a recommended organisation directly) can
+  reuse this shape later. That feature is not built.
+- **Unavailable siblings** (D-053) keep their conversation, so an organisation whose request was superseded can still
+  message the donor. Undo/Re-open (D-054) do not touch conversations.
+- **Data:** seed conversations added for `request002`/`request003` (`conversation003` adopts the existing live id);
+  the 2 live requests that had none were backfilled (one belonged to a hand-made request, not in the seed).
+
+## D-059 — Need and item "tags" are removed; pills show category (+ priority star) only
+- **Decision (user):** the per-category tags (rice, adult_clothes, childrens_books, …) added confusion, not value. A need is
+  now category + quantity + unit + priority; an item is category (+ optional second category) with no tag selector.
+- **App layer only.** `needsService` no longer reads/writes `tag` and no longer throws `needTagRequired`;
+  `itemsService` no longer reads/writes `need_tags` or filters by tag; `DonationForm`/`NeedsManagement` lost the tag
+  controls; `ItemDetail`'s "may match one of your needs" note is category-only (`need.category` equals the item's
+  category or second category); `NEED_TAGS_BY_CATEGORY`, `getTagsForCategory`, `getAllNeedTagsByCategory`, the
+  `fields.needTags` / `validation.needTagRequired` strings, and the tag fields in `needs.js`/`items.js`/the seed script were
+  deleted. **The `needs.tag` and `items.need_tags` columns are left in the database** (no migration); existing values
+  are simply ignored, and new rows get null/empty.
+- **Pills (reverses D-052's profile quantity):** board and organisation-profile pills are the category name + the priority
+  star, one pill per category (an organisation may have several needs in a category), no tag text, no quantity.
+  `NeedChip`'s quantity prop and the earlier board-only summing helper are gone. **Quantity is still stored and shown in
+  the one place an organisation edits its needs** (Needs Management shows "× 40 pieces" as plain text next to the pill).
+  That is a judgement call: the request was about pills, and an editor that hid the numbers it collects would be unusable.
+- **Consequence:** two needs in the same category are indistinguishable except by quantity (Books for Children has
+  "100 books" and "80 sets"); the board/profile show a single "Books" pill, Needs Management shows both rows.
+
+## D-060 — Hero CTA, facilities label, and donate-from-map area prefill
+- **Hero:** every state (guest, donor, organisation) now sees the same primary CTA, "Browse Items Donated" → `/discover`
+  (VI "Xem đồ quyên góp"); `hero.ctaDonate` was deleted. The user described the logged-out button as already saying "Browse
+  Items Donated" — it said "Browse Items", so the shared label was renamed for everyone. A donor still posts via the
+  "Donate" item (with the "+" emphasis) in both the mobile bottom nav and the desktop top nav (verified).
+  (The hero lives in `Home.jsx`; `DiscoverNeeds.jsx` is now just the Organisations page.)
+- **"OSM Pins":** the request to remove the toggle was withdrawn ("keep them on but perhaps rename OSM"). The toggle
+  now reads "Show community facilities" / "Hiện cơ sở cộng đồng"; the legend and disclaimer still name OpenStreetMap
+  for attribution.
+- **Donate from a map location:** the entry point already existed (the "+ Post a Donation for {province}" link on the
+  Relief Map) but carried no area. It now links to `/donate/new?area=<areaId>` and `DonationForm` pre-selects that area
+  (only if it is one of the 8 known areas; anything else is ignored). One `PROVINCE_TO_AREA` table replaces the old
+  area→province one: 7 named provinces (Hà Nội, Hồ Chí Minh, Đà Nẵng, Thừa Thiên Huế, Cần Thơ, Hải Phòng, Khánh Hòa —
+  the last stands in for Nha Trang) plus the 12 other Mekong Delta provinces → `mekong`. **A province outside these has no
+  matching area** (e.g. Hà Tĩnh, the map's default), so its link opens the form blank; that is the limit of the 8-area
+  list, not a bug. The same table now drives "Verified 3goods Organisations Nearby", which additionally lists only
+  *verified* organisations (the panel heading says so; an unverified one used to get a "Verified Org" badge).
+
+## D-061 — Map base map, zoom behaviour, and the root-first vendor change
+- **Process:** fixes to rendering were made in the root site's `3goods-map/web/mapView.js` and `geo.js` first, then copied
+  verbatim into `3goods/src/features/map/vendor/` (`cmp` shows them identical). Before this, the vendored copies were
+  prettier-reformatted versions of the root files; a whitespace/comment-insensitive comparison showed mapView.js and geo.js
+  were semantically identical to root, so re-copying lost nothing. The root site's `main.js`, `dataService.js` and
+  `index.html` were updated so the root map benefits too. **The root site has not been redeployed.**
+- **"Vietnam looks like an island":** the province data only contains Vietnam, so everything west of it was drawn as the same
+  pale blue as the sea. Now the map draws the land of Vietnam's neighbours (15 countries from Natural Earth 1:50m, public
+  domain, clipped to lon 90–122 / lat 0–32, simplified to 0.02°, 39 KB) in a neutral land colour under the provinces, and the
+  sea is a real blue. Built by `3goods-map/src/build_neighbour_land.mjs`. In 3goods the file is a bundled base-map layer
+  (`public/data/neighbour_land.json`), not an API endpoint and not disaster data, so it never triggers the "saved copy"
+  notice. Vietnam itself is left out of that layer (the detailed GADM provinces are the real thing); a thick same-colour
+  stroke on the neighbours closes hairline gaps along the border.
+- **Black bars:** the SVG used to keep Vietnam's tall aspect ratio inside a wide container, leaving dark bars at both sides at
+  every zoom. The default view is now the smallest rectangle with the container's own aspect ratio that contains all of
+  Vietnam, centred on it (`fullView`, recomputed with a ResizeObserver); provinces focus to the same aspect.
+- **Zoom (investigated and decided):** plain wheel scrolling over the map scrolls the page; **Ctrl or Cmd + wheel zooms**
+  (a trackpad pinch already reports Ctrl, so pinch still works). A plain wheel shows a brief hint, "Hold ⌘/Ctrl and scroll to
+  zoom", set by the wrapper from a locale string so it is translated. The +/− buttons and Reset are unchanged. Every view
+  change is confined to `fullView`: zoom-out stops exactly on the default view (verified: 60 notches out from a corner lands
+  on it), and panning can never reveal more than that view (an earlier version clamped to the whole drawn world and let
+  you drag to featureless land). `.map-container`'s fallback background is now the sea blue.
+- **Not changed, worth deciding:** on touch devices a finger on the map pans it and cannot scroll the page, and pinch zoom
+  does not exist. That is the same "accidental interaction" problem for phones; it was out of the wheel-zoom scope.
+
 ---
 
 ## Deferred questions (not blocking Phase 1)

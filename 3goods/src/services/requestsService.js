@@ -4,9 +4,11 @@
  * (DECISIONS.md D-009). This file is the *only* place that rule is checked
  * — screens never re-implement it.
  *
- * Accepting a request also, in one place: reserves the item, ensures a
- * conversation exists, posts a system message, and pushes an update to the
- * organisation. A screen calling `acceptRequest` doesn't need to know any
+ * Making a request also starts its conversation (D-058), so donor and
+ * organisation can message each other before any accept decision. Accepting a
+ * request then reserves the item, finds that same conversation (find-or-create,
+ * so requests made before D-058 still work), posts the "request accepted"
+ * system message, and pushes an update to the organisation. A screen calling `acceptRequest` doesn't need to know any
  * of that happened — it just re-reads the item/request afterward.
  *
  * The live `requests` table has no `updated_at` column (see DECISIONS.md
@@ -76,8 +78,15 @@ export async function createRequest({ itemId, organisationId }) {
 
   // The donor hears about the request; the requesting organisation gets its
   // own confirmation entry in its Updates feed (organisations are their own
-  // notification target — see updatesService.js).
+  // notification target — see updatesService.js). The conversation is created
+  // now, not on accept, so the two sides can talk before any decision (D-058).
   await Promise.all([
+    ensureConversationForRequest({
+      requestId: request.id,
+      itemId: item.id,
+      donorId: item.donorId,
+      organisationId,
+    }),
     pushUpdate({
       userId: item.donorId,
       type: "item_requested",

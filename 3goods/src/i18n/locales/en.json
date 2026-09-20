@@ -229,7 +229,8 @@
     "contactUs": "Contact Us",
     "privacy": "Privacy & Data Use",
     "watchVideo": "Watch our intro video",
-    "copyright": "© 2026 3goods Platform. All Rights Reserved."
+    "copyrightLine1": "© 2026 3goods Platform.",
+    "copyrightLine2": "All Rights Reserved."
   },
   "a11y": {
     "languageSwitcher": "Language",

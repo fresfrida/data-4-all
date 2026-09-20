@@ -229,7 +229,8 @@
     "contactUs": "Liên hệ",
     "privacy": "Quyền riêng tư & Sử dụng dữ liệu",
     "watchVideo": "Xem video giới thiệu",
-    "copyright": "© 2026 Nền tảng 3goods. Tất cả quyền được bảo lưu."
+    "copyrightLine1": "© 2026 Nền tảng 3goods.",
+    "copyrightLine2": "Tất cả quyền được bảo lưu."
   },
   "a11y": {
     "languageSwitcher": "Ngôn ngữ",

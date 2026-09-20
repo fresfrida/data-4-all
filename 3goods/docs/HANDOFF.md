@@ -1,7 +1,7 @@
 # 3goods Handoff
 
 Last updated: session 6, twelfth checkpoint: 3G-054 / D-062 to D-066 (provinces table, optional + generic need quantity, one need per
-category, nearby-organisations count, touch map; **code committed, waiting on the user to run `supabase/migration-provinces.sql`**).
+category, nearby-organisations count, touch map; **SQL run by the user, pushed, deployed, verified live**).
 Previous: eleventh checkpoint: 3G-053 / D-058 to D-061 (chat at request time, tags removed, base map +
 zoom fixes; **root map site files changed but not redeployed**). Previous: tenth checkpoint: 3G-052 / D-056, D-057 (seed scaled to 8 orgs / 20 donors, board pills
 category-only, map wired to all 5 API endpoints). Previous: ninth checkpoint: 3G-051 / D-053 (accept lock, need quantities, walkthrough, UAT cleanup).
@@ -26,16 +26,13 @@ after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_AN
 Production env vars on this project (`vercel env ls production` to confirm) — set in session 5.
 
 ## Current task
-**3G-054 (Verify): code is done; the app now READS the `provinces` table, so it must not be deployed until the user has run
-`supabase/migration-provinces.sql` in the Supabase SQL Editor** (production would show no areas and the map screen would error). Next actions,
-in order: (1) user runs the SQL; (2) verify live (63 rows, organisations/items remapped, needs merged), run the provinces
-check queries at the bottom of the SQL file; (3) `git push`, `vercel deploy --prod --yes`, re-check on `3goods.vercel.app`;
-(4) ask the user what granularity to reseed organisations at (not one per province) — do NOT default to 63.
+**3G-054 done: SQL run, pushed (27cb93b), deployed to 3goods.vercel.app, verified live (see KANBAN). Open: ask the user what granularity to reseed organisations at
+(item 6; NOT one per province, do not default to 63). Root map site still not redeployed.**
 Earlier: 3G-043 through 3G-053 done. The `items.quantity`/`unit` SQL from D-052 has been run and verified live (posted a
 "12 boxes" item on production; detail + card display it; test row deleted). No open actions.**
 
 ## Completed this session (session 6)
-- **3G-054** (DECISIONS.md D-062 to D-066). **Not yet run by anyone: `supabase/migration-provinces.sql`.**
+- **3G-054** (DECISIONS.md D-062 to D-066). (SQL since run by the user; live data verified: 63 provinces, remapped areas, merged Books need.)
   - Provinces table: `src/data/areas.js` is deleted; `src/data/provinces.js` holds the 63 provinces (seed source + the old-8→province
     map). `referenceDataService` reads the `provinces` table. `organisations.city` / `items.area` now hold province slugs
     (`ho-chi-minh-city`, `khanh-hoa`, ...). Old ids remapped: hcmc, danang, hue→thua-thien-hue, cantho, haiphong, nhatrang→khanh-hoa,

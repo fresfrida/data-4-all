@@ -18,22 +18,7 @@ suggested next task)
 
 ## Verify
 
-- **3G-054** — Provinces table, optional/generic needs, nearby count, touch map (D-062 to D-066). **Code done and committed;
-  waiting on the user to run `supabase/migration-provinces.sql`** (creates + seeds `provinces`, remaps organisations/items, merges
-  the two Books needs, sets unit "items", adds the one-need-per-category index). After that: live check of remapped areas,
-  redeploy, and the coverage-reseed granularity question (item 6, deliberately not started).
-  - Verified so far (no live writes; the sandbox blocked writes to the shared DB): `npm run i18n:check` 230/230; `npm run
-    build`; headless Chrome + CDP with the network layer answering as the *post-SQL* database (real live rows for organisations/
-    items/needs, transformed exactly as the SQL will, `provinces` generated from `src/data/provinces.js`, all writes answered
-    locally): 375px VI + 1280px EN map (63 provinces render; Hà Tĩnh/Hà Nội/Cần Thơ/An Giang/Đồng Tháp/Khánh Hòa panels show
-    the right live counts; donate links carry `?area=<slug>` for each), donation form pre-selects `ha-tinh` from the map link with
-    64 options, all 8 organisations show the right province, Discover Items shows no legacy slug (EN + VI), Needs Management (EN
-    375/1280, VI 375): one merged Books row "× 180 items", listed categories disabled, no unit selector, blank quantity POSTs
-    `quantity:null, unit:null`, quantity 75 POSTs `unit:"items"`, a duplicate Books need throws `needCategoryExists`, Mekong's
-    no-quantity need shows "Ongoing"/"Thường xuyên". Touch (synthetic touches through Chrome's input pipeline, 375px, on the real
-    map screen): one-finger drag scrolls the page and does not move the map, shows the translated hint; two-finger pan moves the map
-    without scrolling; pinch zooms in and out; a tap selects a province; the root site's default (non-cooperative) mode still pans
-    with one finger. Zero app console errors.
+(none)
 
 ## Backlog — Phase 3: secondary screens & polish
 
@@ -51,6 +36,26 @@ suggested next task)
 - **3G-039** Proposal doc only: move `features/map` into a standalone repo (paths, deploy settings) — do not execute
 
 ## Done
+
+- **3G-054** — Provinces table, optional/generic needs, nearby count, touch map (D-062 to D-066). **Done and deployed** (commit 27cb93b; the user ran `supabase/migration-provinces.sql`, which creates + seeds `provinces`, remaps organisations/items, merges
+  the two Books needs, sets unit "items", adds the one-need-per-category index). Open: the coverage-reseed granularity question (item 6, deliberately not started, needs the user's answer).
+  - Verified so far (no live writes; the sandbox blocked writes to the shared DB): `npm run i18n:check` 230/230; `npm run
+    build`; headless Chrome + CDP with the network layer answering as the *post-SQL* database (real live rows for organisations/
+    items/needs, transformed exactly as the SQL will, `provinces` generated from `src/data/provinces.js`, all writes answered
+    locally): 375px VI + 1280px EN map (63 provinces render; Hà Tĩnh/Hà Nội/Cần Thơ/An Giang/Đồng Tháp/Khánh Hòa panels show
+    the right live counts; donate links carry `?area=<slug>` for each), donation form pre-selects `ha-tinh` from the map link with
+    64 options, all 8 organisations show the right province, Discover Items shows no legacy slug (EN + VI), Needs Management (EN
+    375/1280, VI 375): one merged Books row "× 180 items", listed categories disabled, no unit selector, blank quantity POSTs
+    `quantity:null, unit:null`, quantity 75 POSTs `unit:"items"`, a duplicate Books need throws `needCategoryExists`, Mekong's
+    no-quantity need shows "Ongoing"/"Thường xuyên". Touch (synthetic touches through Chrome's input pipeline, 375px, on the real
+    map screen): one-finger drag scrolls the page and does not move the map, shows the translated hint; two-finger pan moves the map
+    without scrolling; pinch zooms in and out; a tap selects a province; the root site's default (non-cooperative) mode still pans
+    with one finger. Zero app console errors.
+
+  - Live evidence (after the SQL, production `3goods.vercel.app`, read-only, real DB): 63 provinces; all 8 organisations and 22 items on real
+    provinces (0 unknown areas); 23 needs, 0 duplicate (org, category), units `items`/null only; Books for Children = one Books need, 180 items;
+    map panels (EN 1280 + VI 375) show the right live counts and `?area=<slug>` links for 8 provinces + Hà Tĩnh; donation form pre-selects
+    `ha-tinh` (64 options); needs pages EN/VI 375 + EN 1280 show "× 180 items" / "Ongoing"; zero app console errors.
 
 - **3G-053** — Chat starts when a request is made; need/item tags removed; category-only pills everywhere; map base map
   + zoom fixes; hero CTA; donate-from-map area prefill (see DECISIONS.md D-058 to D-061)

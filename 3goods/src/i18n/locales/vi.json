@@ -100,6 +100,7 @@
   "itemStatus": {
     "available": "Còn nhận quyên góp",
     "reserved": "Đã được giữ",
+    "donated": "Đã quyên góp",
     "unavailable": "Không còn khả dụng"
   },
   "requestStatus": {
@@ -176,6 +177,7 @@
     "discoverNeedsIntro": "Xem các tổ chức cứu trợ địa phương hiện đang cần gì và nên quyên góp cho ai.",
     "discoverAvailableGoodsTitle": "Khám phá vật phẩm sẵn có được quyên góp",
     "discoverNeedsCta": "đăng một khoản quyên góp",
+    "chatUnread": "Mới",
     "discoverItemsIntro": "Duyệt các vật phẩm mà người quyên góp đã đăng và yêu cầu những gì tổ chức bạn cần.",
     "searchItems": "Tìm vật phẩm…",
     "searchOrganisations": "Tìm tổ chức…",
@@ -221,7 +223,15 @@
     "languageSwitcher": "Ngôn ngữ",
     "removeChip": "Xóa {label}",
     "loading": "Đang tải…",
-    "primaryNav": "Điều hướng chính"
+    "primaryNav": "Điều hướng chính",
+    "unreadChats": "{count} cuộc trò chuyện chưa đọc"
+  },
+  "pagination": {
+    "label": "Phân trang",
+    "previous": "Trước",
+    "next": "Tiếp",
+    "page": "Trang {page}",
+    "showing": "Hiển thị {from}–{to} trên {total}"
   },
   "needs": {
     "ongoing": "Thường xuyên",

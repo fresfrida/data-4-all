@@ -9,6 +9,7 @@
  */
 
 import { NEED_IDS, ORG_IDS } from "./ids.js";
+import { COVERAGE_NEEDS } from "./coverage.js";
 
 /** @type {Need[]} */
 export const NEEDS = [
@@ -48,4 +49,7 @@ export const NEEDS = [
   { id: NEED_IDS.need024, organisationId: ORG_IDS.mekongNeighbours, category: "Household Items", priority: true, quantity: 120, createdAt: "2026-09-20T02:10:00.000Z" },
   { id: NEED_IDS.need025, organisationId: ORG_IDS.mekongNeighbours, category: "Hygiene Products", priority: false, quantity: 300, createdAt: "2026-09-20T02:10:00.000Z" },
   { id: NEED_IDS.need026, organisationId: ORG_IDS.mekongNeighbours, category: "Clothes", priority: false, quantity: 50, createdAt: "2026-09-20T02:10:00.000Z" },
+
+  // Coverage organisations (D-070).
+  ...COVERAGE_NEEDS,
 ];

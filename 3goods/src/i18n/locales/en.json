@@ -100,6 +100,7 @@
   "itemStatus": {
     "available": "Available",
     "reserved": "Reserved",
+    "donated": "Donated",
     "unavailable": "No longer available"
   },
   "requestStatus": {
@@ -176,6 +177,7 @@
     "discoverNeedsIntro": "Browse what local relief organisations currently need and see who to donate to.",
     "discoverAvailableGoodsTitle": "Discover Available Goods to be Donated",
     "discoverNeedsCta": "post a donation",
+    "chatUnread": "New",
     "discoverItemsIntro": "Browse items donors have listed and request what your organisation needs.",
     "searchItems": "Search items…",
     "searchOrganisations": "Search organisations…",
@@ -221,7 +223,15 @@
     "languageSwitcher": "Language",
     "removeChip": "Remove {label}",
     "loading": "Loading…",
-    "primaryNav": "Primary navigation"
+    "primaryNav": "Primary navigation",
+    "unreadChats": "{count} unread conversations"
+  },
+  "pagination": {
+    "label": "Pagination",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {page}",
+    "showing": "Showing {from}–{to} of {total}"
   },
   "needs": {
     "ongoing": "Ongoing",

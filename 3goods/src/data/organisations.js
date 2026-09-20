@@ -11,6 +11,7 @@
  */
 
 import { ORG_IDS } from "./ids.js";
+import { COVERAGE_ORGANISATIONS } from "./coverage.js";
 
 /** @type {Organisation[]} */
 export const ORGANISATIONS = [
@@ -110,6 +111,8 @@ export const ORGANISATIONS = [
     isDemo: true,
     pastReceivedItemIds: [],
   },
+  // Spread across provinces in proportion to the map's real community-facility distribution (D-070).
+  ...COVERAGE_ORGANISATIONS,
 ];
 
 export function getOrganisationById(id) {

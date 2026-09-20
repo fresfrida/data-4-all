@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAsync } from "../lib/useAsync.js";
 import { getConversationById, getMessages, sendMessage } from "../services/chatService.js";
@@ -7,6 +7,7 @@ import { getItemById } from "../services/itemsService.js";
 import { getOrganisationById } from "../services/organisationsService.js";
 import { getMessageText } from "../lib/messageText.js";
 import { useSession } from "../context/SessionContext.jsx";
+import { useUnreadChats } from "../context/UnreadChatsContext.jsx";
 import { useLocale } from "../i18n/LocaleContext.jsx";
 import { useTranslate } from "../i18n/useTranslate.js";
 import { LoadingState } from "../components/feedback/LoadingState.jsx";
@@ -37,6 +38,13 @@ export function ChatDetail() {
   const { status, data, error, reload } = useAsync(() => loadChatDetail(chatId), [chatId]);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
+  const { markSeen } = useUnreadChats();
+
+  // Whatever is on screen has been seen: clears this conversation's unread mark (and the nav badge) for this viewer.
+  const newestMessageAt = data?.messages?.length ? data.messages[data.messages.length - 1].createdAt : null;
+  useEffect(() => {
+    if (newestMessageAt) markSeen(chatId, newestMessageAt);
+  }, [chatId, newestMessageAt, markSeen]);
 
   if (!isLoggedIn) {
     return (

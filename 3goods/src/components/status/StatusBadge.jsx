@@ -11,6 +11,7 @@ const STYLE_BY_STATUS = {
   accepted: "bg-accent-100 text-accent-700",
   arranging_collection: "bg-accent-100 text-accent-700",
   reserved: "bg-accent-100 text-accent-700",
+  donated: "bg-good-100 text-good-600",
   completed: "bg-good-100 text-good-600",
   declined: "bg-ink-600/10 text-ink-600",
   unavailable: "bg-ink-600/10 text-ink-600",

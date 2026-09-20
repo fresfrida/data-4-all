@@ -11,6 +11,7 @@
  */
 
 import { USER_IDS, ORG_IDS } from "./ids.js";
+import { COVERAGE_USERS } from "./coverage.js";
 
 /** @type {User} */
 export const DEMO_DONOR_USER = {
@@ -68,4 +69,6 @@ export const OTHER_ORG_USERS = [
   { id: USER_IDS.orgHaiphongRelief, name: "Hai Phong Harbour Relief", role: "organisation", areaId: "hai-phong", organisationId: ORG_IDS.haiphongRelief },
   { id: USER_IDS.orgNhatrangAid, name: "Nha Trang Seaside Aid", role: "organisation", areaId: "khanh-hoa", organisationId: ORG_IDS.nhatrangAid },
   { id: USER_IDS.orgMekongNeighbours, name: "Mekong Delta Neighbours", role: "organisation", areaId: "an-giang", organisationId: ORG_IDS.mekongNeighbours },
+  // Coverage organisations (D-070).
+  ...COVERAGE_USERS,
 ];

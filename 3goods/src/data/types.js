@@ -92,6 +92,8 @@
  * @property {string} [notes]
  * @property {string[]} photoPaths      paths under /demo-items/, or [] for icon fallback
  * @property {ItemStatus} status
+ * @property {"available"|"reserved"|"donated"|"unavailable"} [displayStatus]  what to show (D-067): a reserved item whose accepted
+ *   request is completed shows as "donated". Set by itemsService.getItems/getItemById (not by createDonation).
  * @property {string} [acceptedRequestId]
  * @property {string} createdAt
  */

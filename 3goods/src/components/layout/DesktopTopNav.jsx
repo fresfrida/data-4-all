@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import { useSession } from "../../context/SessionContext.jsx";
 import { useTranslate } from "../../i18n/useTranslate.js";
 import { getNavItems } from "./navConfig.js";
+import { UnreadBadge } from "./UnreadBadge.jsx";
 import { LanguageSwitcher } from "../controls/LanguageSwitcher.jsx";
 import { DemoLoginButton } from "../controls/DemoLoginButton.jsx";
 import { HeartHandshakeIcon } from "../icons.jsx";
@@ -24,7 +25,7 @@ export function DesktopTopNav() {
 
         {/* Navigation Items - Fixed Centered Middle Column */}
         <nav aria-label={t("a11y.primaryNav")} className="flex items-center justify-center gap-2 justify-self-center">
-          {items.map(({ to, label, Icon }) => (
+          {items.map(({ to, label, Icon, badge }) => (
             <NavLink
               key={to}
               to={to}
@@ -37,6 +38,7 @@ export function DesktopTopNav() {
             >
               <Icon className="h-4 w-4 shrink-0" />
               <span className="truncate">{label}</span>
+              {badge === "chat" && <UnreadBadge />}
             </NavLink>
           ))}
         </nav>

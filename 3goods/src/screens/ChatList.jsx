@@ -4,6 +4,7 @@ import { getConversations, getMessages } from "../services/chatService.js";
 import { getOrganisationById } from "../services/organisationsService.js";
 import { getMessageText } from "../lib/messageText.js";
 import { useSession } from "../context/SessionContext.jsx";
+import { useUnreadChats } from "../context/UnreadChatsContext.jsx";
 import { useLocale } from "../i18n/LocaleContext.jsx";
 import { useTranslate } from "../i18n/useTranslate.js";
 import { LoadingState } from "../components/feedback/LoadingState.jsx";
@@ -30,6 +31,7 @@ export function ChatList() {
   const { locale } = useLocale();
   const t = useTranslate();
   const { status, data, error, reload } = useAsync(() => loadChatList(role, identity), [role, identity?.id]);
+  const { unreadIds } = useUnreadChats();
 
   if (!isLoggedIn) {
     return (
@@ -69,6 +71,7 @@ export function ChatList() {
         const partnerName = role === "organisation" ? t("screens.chatPartnerDonor") : org?.name[locale] ?? org?.name.en;
         const partnerType = role === "organisation" ? "donor" : "organisation";
         const partnerId = role === "organisation" ? conversation.donorId : org?.id;
+        const unread = unreadIds.has(conversation.id);
 
         return (
           <Link
@@ -79,8 +82,13 @@ export function ChatList() {
             <Avatar name={partnerName} id={partnerId} type={partnerType} size="md" />
             <div className="flex flex-col min-w-0 flex-1">
               <span className="text-sm font-bold text-ink-800">{partnerName}</span>
-              <span className="line-clamp-1 text-xs text-ink-600">{lastMessage ? getMessageText(lastMessage, t) : t("screens.chatNoMessages")}</span>
+              <span className={`line-clamp-1 text-xs ${unread ? "font-semibold text-ink-800" : "text-ink-600"}`}>{lastMessage ? getMessageText(lastMessage, t) : t("screens.chatNoMessages")}</span>
             </div>
+            {unread && (
+              <span data-testid="chat-unread-row" className="shrink-0 rounded-full bg-rose-500 px-2 py-0.5 text-[10px] font-bold uppercase text-white">
+                {t("screens.chatUnread")}
+              </span>
+            )}
           </Link>
         );
       })}

@@ -74,6 +74,27 @@ export async function ensureConversationForRequest({ requestId, itemId, donorId,
   return fromConversationRow(row);
 }
 
+/**
+ * Conversations (for this viewer) that hold a message from the *other* party newer than what the viewer has seen.
+ * System messages ("Request accepted.") are not chat messages and never count. `seen` maps conversationId -> ISO
+ * timestamp of the newest message already looked at (src/lib/chatSeen.js). One conversations read + one messages read.
+ * @param {{donorId?: string, organisationId?: string}} filter  whose conversations
+ * @param {"donor"|"organisation"} viewerRole
+ * @param {Record<string, string>} seen
+ * @returns {Promise<Set<string>>} unread conversation ids
+ */
+export async function getUnreadConversationIds(filter, viewerRole, seen = {}) {
+  const [conversations, messageRows] = await Promise.all([getConversations(filter), getAll("messages")]);
+  const mine = new Set(conversations.map((c) => c.id));
+  const unread = new Set();
+  for (const row of messageRows) {
+    if (!mine.has(row.conversation_id) || !row.sender_id) continue; // not this viewer's, or a system message
+    if ((row.sender_role ?? "") === viewerRole) continue; // their own message
+    if (row.created_at > (seen[row.conversation_id] ?? "")) unread.add(row.conversation_id);
+  }
+  return unread;
+}
+
 /** @returns {Promise<import('../data/types.js').Message[]>} sorted oldest-first */
 export async function getMessages(conversationId) {
   const rows = (await getAll("messages")).map(fromMessageRow);

@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import { useSession } from "../../context/SessionContext.jsx";
 import { useTranslate } from "../../i18n/useTranslate.js";
 import { getNavItems } from "./navConfig.js";
+import { UnreadBadge } from "./UnreadBadge.jsx";
 
 /** The role-specific items from getNavItems (3 for guest, 5 when logged in). End(exact) match on donor `/` so Discover Needs doesn't fight the tab bar for "active" state incorrectly. */
 export function MobileBottomNav() {
@@ -15,7 +16,7 @@ export function MobileBottomNav() {
       className="fixed inset-x-0 bottom-0 z-30 flex border-t border-ink-600/10 bg-cream-50/95 backdrop-blur sm:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      {items.map(({ to, label, Icon, emphasise }) => (
+      {items.map(({ to, label, Icon, emphasise, badge }) => (
         <NavLink
           key={to}
           to={to}
@@ -31,7 +32,10 @@ export function MobileBottomNav() {
               <Icon className="h-5 w-5" />
             </span>
           ) : (
-            <Icon className="h-5 w-5" />
+            <span className="relative">
+              <Icon className="h-5 w-5" />
+              {badge === "chat" && <UnreadBadge className="absolute -right-2.5 -top-1.5" />}
+            </span>
           )}
           <span className={emphasise ? "sr-only" : ""}>{label}</span>
         </NavLink>

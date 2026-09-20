@@ -96,7 +96,7 @@ export function ItemDetail() {
       <div className="flex flex-1 flex-col gap-3">
         <div className="flex items-start justify-between gap-2">
           <h1 className="text-xl font-bold text-ink-800">{locale === "vi" ? (item.titleVi ?? item.title) : item.title}</h1>
-          <StatusBadge status={item.status} kind="item" />
+          <StatusBadge status={item.displayStatus ?? item.status} kind="item" />
         </div>
         <p className="text-sm text-ink-600">
           {category?.[locale] ?? category?.en}

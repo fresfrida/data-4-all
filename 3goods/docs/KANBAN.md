@@ -18,7 +18,9 @@ suggested next task)
 
 ## Verify
 
-(none)
+- **3G-055** — Coverage reseed (D-070), root map redeploy (D-072), Discover Items pagination + status banners (D-067/D-068),
+  tab title (D-071), shared unread-chat badge (D-069). **Everything is deployed except the coverage data: waiting on the user to run
+  `supabase/seed-coverage.sql`.** After that: read-only live check (31 organisations, 16 provinces, map counts, hero stats).
 
 ## Backlog — Phase 3: secondary screens & polish
 
@@ -36,6 +38,17 @@ suggested next task)
 - **3G-039** Proposal doc only: move `features/map` into a standalone repo (paths, deploy settings) — do not execute
 
 ## Done
+
+- **3G-055** — see the Verify entry above until the coverage SQL has been run (then move here).
+  - Verified (headless Chrome + CDP, 375px VI and 1280px EN; live rows read-only, every write answered locally): Discover Items
+    (live 19 available + 3 reserved): page 1 = 12 available, no banners; "Showing 1–12 of 22" / VI "Hiển thị 1–12 trên 22"; page 2 =
+    7 available then 3 reserved with "Reserved"/"Đã được giữ" banners; `?page=2` survives reload; Next disabled on the last page;
+    typing a search returns to page 1. Scenario layer (one accepted request set to completed, one item withdrawn): bottom order
+    Reserved, Reserved, Donated, No longer available (VI: Đã được giữ ×2, Đã quyên góp, Không còn khả dụng); item page badge
+    "Donated". Unread chat, real conversation Mai Nguyen ↔ Hanoi Community Pantry: organisation and donor each see badge 1 on the
+    Chat item (mobile + desktop, EN + VI), the list marks it "New", opening it clears both, an injected new message from the other
+    party brings the badge back after a focus check; guest sees none. Title exact. No app console errors. Root site: local and live
+    pinch + one-finger pan; all 5 `/api/*` 200.
 
 - **3G-054** — Provinces table, optional/generic needs, nearby count, touch map (D-062 to D-066). **Done and deployed** (commit 27cb93b; the user ran `supabase/migration-provinces.sql`, which creates + seeds `provinces`, remaps organisations/items, merges
   the two Books needs, sets unit "items", adds the one-need-per-category index). Open: the coverage-reseed granularity question (item 6, deliberately not started, needs the user's answer).

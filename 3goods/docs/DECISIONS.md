@@ -854,6 +854,104 @@ page; `DonationForm`'s collection-windows section reads "Collection time windows
 - **Not tested on a physical device:** verified with Chrome DevTools synthetic touches (real input pipeline, real
   `touch-action` handling), not a phone. Worth a quick check on a real iPhone/Android, mainly for iOS Safari's own gestures.
 
+## D-067 — Accepted items stay in Discover Items, sorted last, with a status banner matching the real state (user-requested)
+- **Before:** `getItems()`'s default filter returned only `status === "available"`, so an item vanished from Discover Items the
+  moment its request was accepted.
+- **Now:** no default status filter (an explicit `status`, or `donorId` for the donor's own list, still narrows as before). Every item carries
+  a derived `displayStatus` (set by `getItems`/`getItemById`, never stored):
+  `available` (stored available); `reserved` (stored reserved, accepted request still `accepted` / `arranging_collection`);
+  **`donated`** (stored reserved and the accepted request has reached `completed`, i.e. actually collected);
+  `unavailable` (the donor withdrew it). "Reserved" and "Donated" are deliberately different: the item's own `status` never
+  moves past `reserved`, so `completed` is read from the accepted request (one extra `requests` read per list load).
+- **Order:** available (newest first), then reserved, then donated, then withdrawn, each newest first. The donor's own list
+  ("Me") keeps plain newest-first.
+- **Card:** the photo is muted (60% opacity, part greyscale) with a full-width banner along its bottom edge: "Reserved" (blue),
+  "Donated" (green), "No longer available" (dark grey), translated (`itemStatus.*`, new key `donated`). Available cards look
+  as before. The item page's badge uses the same `displayStatus`. Cards still link to the item page; requesting stays gated on
+  `status === "available"` as before.
+- Live at the time of writing: 19 available + 3 reserved, none completed, so "Donated" and withdrawn were verified with a
+  scenario layer (see KANBAN 3G-055); "Reserved" was verified on the real rows.
+
+## D-068 — Discover Items is paginated (12 per page, client-side, page in the URL)
+- **Why 12:** divisible by 2, 3 and 4, so every grid row is full at each breakpoint (the grid is 1/2/3/4 columns).
+- **How:** the service still returns the whole list (the app filters/searches client-side everywhere else); `DiscoverItems` slices
+  it. New shared `components/controls/Pagination.jsx` (Previous, numbered pages with "…" gaps, Next, "Showing 13–22 of 22",
+  `aria-current="page"`, translated `pagination.*`), hidden when there is one page. The page is `?page=N`, so Back from an item
+  returns to the same page and a reload keeps it; an out-of-range or junk value is clamped. Typing in the search box or changing the
+  category returns to page 1. A page change scrolls the list to the top.
+- **Server-side paging is not built:** with a few dozen items a full read is cheap. If the table grows to hundreds, move the
+  slice into `getItems` (range queries) — the screen's page logic would not change.
+
+## D-069 — One shared unread-chat indicator for donors and organisations
+- **Finding:** neither role's navigation had any unread-chat affordance (the request assumed donors did): no badge, no
+  read state anywhere in chat. So one shared mechanism was built, not an organisation-specific one.
+- **What "unread" means:** a conversation is unread for the viewer when it holds a **chat message from the other party** (system
+  messages such as "Request accepted" never count; your own messages never count) newer than the newest message the viewer has
+  looked at in that conversation.
+- **Where it is stored:** `messages` has no read column, so "seen" is kept per browser and per demo identity in localStorage
+  (`3goods.chatSeen.<identity id>` → `{conversationId: iso}` via `lib/chatSeen.js`, through the safe localStorage wrapper). A
+  schema change (`read_at`) would sync across devices but needs SQL; not done. **Consequence:** in a browser that has never opened a
+  conversation, every existing message from the other party is unread; clearing site data brings them back.
+- **UI:** `UnreadChatsContext` (inside `SessionProvider`) computes the unread set (`chatService.getUnreadConversationIds`: one
+  conversations read + one messages read) and exposes `count`, `unreadIds`, `markSeen`, `refresh`. `UnreadBadge` is a red count
+  bubble on the Chat item of **both** navs (over the icon on the mobile bar, beside the label on desktop), with a translated
+  screen-reader label ("1 unread conversations"); `navConfig` marks the item (`badge: "chat"`), so donor and organisation nav can
+  not drift apart. The Chat list marks unread rows (bold preview + "New"). Opening a conversation marks what is on screen as
+  seen (`ChatDetail`), clearing the row and the badge.
+- **Freshness:** no push channel exists, so it is re-checked on every route change, when the tab regains focus, and every 15 s.
+- **Not done:** the Updates (bell) item has no unread indicator either. Updates have a read flag but are keyed by a different id
+  for organisations, so it needs its own look; it can reuse `UnreadBadge`.
+
+## D-070 — Organisation coverage follows where the map's real community facilities are
+- **Request:** seed a proportional number of organisations "following the real-world pattern" of the 89 OSM facilities, not an
+  arbitrary count.
+- **Method:** each facility pin (`donation_facilities_osm.json`, the same 89 the map draws) was assigned to a province by
+  point-in-polygon against `vn_provinces.geojson`. The `addr_province` field is empty for most pins, so it was not used. 88 fall
+  inside a province; one (a fisheries logistics centre on Đá Tây A island in the Spratlys) falls outside every polygon and is
+  counted for Khánh Hòa, which administers Trường Sa. Result: Hanoi 25, Ho Chi Minh City 11, Bà Rịa-Vũng Tàu 9, Cần Thơ 5, Hải
+  Phòng 4, Bắc Ninh / Đà Nẵng / Đồng Nai 3, Nghệ An / Phú Thọ / Thái Bình / Thanh Hóa / Khánh Hòa 2, and 1 each in 15 more
+  provinces (29 provinces have at least one). **Region totals:** Red River Delta 35, South East 24, North Central and Central
+  Coast 12, Mekong Delta 9, Northern Midlands and Mountains 6, Central Highlands 2.
+- **Allocation:** about **1 organisation per 3 facilities** (target 30 in total), largest-remainder rounding, so shares add up
+  exactly. The 8 existing organisations count toward their province's share and only the shortfall was added; provinces where an
+  existing organisation exceeds its share (Thừa Thiên Huế has no facility pin, An Giang has 1) keep it. Result: **31 organisations
+  in 16 provinces (23 new)**: Hà Nội 9, Hồ Chí Minh 4, Bà Rịa-Vũng Tàu 3, Cần Thơ 2, Hải Phòng 2, one each in Thừa Thiên Huế,
+  Đà Nẵng, Khánh Hòa, An Giang, Bắc Ninh, Bình Định, Đồng Nai, Nghệ An, Phú Thọ, Thái Bình, Thanh Hóa. Provinces with a single
+  pin mostly get none: that is the "fewer where they don't cluster" the request asked for, not an oversight.
+- **Caveat about the map's own numbers:** the province properties carry a `facility_count` too, but its total is 1,374, a
+  different, larger extract used for the coverage-gap score. The request named the 89 pins the map wires up, so those were used;
+  the two datasets do not agree on the ranking beyond the top few (e.g. it puts Bắc Ninh and Bà Rịa-Vũng Tàu very high).
+- **Content:** fictional, generated once into `src/data/coverage.js` (fixed uuids; never regenerate): 12 name/mission themes in EN and VI,
+  2 or 3 needs each (one per category, some with no quantity = ongoing, D-063), a login user each, and about one in four
+  unverified (5 of the 23 new; 7 of 31 overall) so the verified/unverified count has both to show. `organisations.js`, `users.js`
+  and `needs.js` append these; `npm run db:seed` would push them.
+- **How it reaches the database:** as SQL for the user to run, `supabase/seed-coverage.sql`, generated by
+  `node scripts/build-coverage-sql.mjs` (upserts on the fixed ids, categories by name, one transaction). Side effects once
+  it is run: hero "Verified organisations" and "Provinces covered" change (31 organisations, 24 verified, 16 provinces), the login
+  picker lists 31 organisations, and the Organisations board has 31 cards.
+
+## D-071 — Browser tab title is "3goods, a Data4Life Hackathon Website"
+- `index.html` `<title>` is exactly that text (supersedes D-051's plain "3goods"). The in-app brand text (`app.name`) stays "3goods".
+
+## D-072 — The root map site was redeployed; the deploy folder and one data-file incident are now recorded
+- **Where it deploys from:** the Vercel project `002-data-4-life` (`https://002-data-4-life.vercel.app`, Root Directory ".") serves
+  `index.html`, `web/`, `data/`, `api/` at its root. In this repo those live in **`3goods-map/`**, so the deploy is run **from inside
+  `3goods-map/`** after `vercel link --yes --project 002-data-4-life` (the link is `3goods-map/.vercel`, git-ignored). Deploying from
+  the repo root would publish both projects' folders with no `index.html` and break the site. `vercel link` also writes a
+  `.env.local` and a `.gitignore` there; both were deleted (not needed).
+- **What went live:** everything pending since D-061 (neighbouring-land base map, view fitted to the container, Ctrl/Cmd+wheel
+  zoom, bounded pan) plus D-066's two-finger pinch/pan. The root map keeps its full-screen behaviour: one finger still pans
+  (`cooperativeTouch` is off there). Smoke-tested on the live site with synthetic touches: pinch zooms, one-finger pans, no
+  console errors.
+- **Incident (fixed within minutes):** the first redeploy made `/api/provinces` return 500 ("Expected property name or '}'"). Cause:
+  `3goods-map/data/vn_map_data.js`, committed in this repo, had been reformatted into a JavaScript object literal with unquoted keys,
+  while `api/provinces.js` strips the `window.VN_MAP_DATA =` wrapper and calls `JSON.parse`. The previous deployment evidently
+  had the strict-JSON file. The file was verified deep-equal to the 3goods snapshot of what the API had been serving, rewritten as
+  `window.VN_MAP_DATA = <strict JSON>;` (still a plain script for the browser), and redeployed. All five endpoints return 200 with
+  CORS `*` (provinces 63 features). 3goods falls back to its bundled snapshot when the API fails, so the 3goods map stayed usable
+  (with its "saved copy" notice) in the gap. **Lesson:** do not run a formatter over `3goods-map/data/*.js`; smoke-test all five
+  `/api/*` endpoints after any deploy of that folder.
+
 ---
 
 ## Deferred questions (not blocking Phase 1)

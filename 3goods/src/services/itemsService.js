@@ -67,6 +67,21 @@ async function toInsertRow(payload) {
   };
 }
 
+/**
+ * What an item should *show* (D-067). `status` is what is stored: available / reserved / unavailable.
+ * A reserved item whose accepted request has reached "completed" was actually collected, so it is shown as
+ * "donated"; a reserved one still being arranged stays "reserved". Withdrawn listings stay "unavailable".
+ * @returns {"available"|"reserved"|"donated"|"unavailable"}
+ */
+function deriveItemDisplayStatus(item, acceptedRequest) {
+  if (item.status === "available") return "available";
+  if (item.status === "unavailable") return "unavailable";
+  return acceptedRequest?.status === "completed" ? "donated" : "reserved";
+}
+
+/** Browse order: available first, then reserved, then donated, then withdrawn; newest first inside each group. */
+const DISPLAY_ORDER = { available: 0, reserved: 1, donated: 2, unavailable: 3 };
+
 async function loadUsersById() {
   const users = await getAll("users");
   return new Map(users.map((u) => [u.id, u]));
@@ -77,23 +92,26 @@ async function loadUsersById() {
  * @param {string} [filters.category]
  * @param {string} [filters.areaId]
  * @param {string} [filters.deliveryOption]
- * @param {string} [filters.status]              defaults to only "available" if omitted
+ * @param {string} [filters.status]              only this stored status; omitted = every status (D-067)
  * @param {string} [filters.donorId]              only this donor's items
  * @returns {Promise<import('../data/types.js').Item[]>}
  */
 export async function getItems(filters = {}) {
-  const [rawRows, usersById] = await Promise.all([getAll("items"), loadUsersById()]);
-  let rows = await Promise.all(rawRows.map((row) => fromRow(row, usersById)));
+  const [rawRows, usersById, requestRows] = await Promise.all([getAll("items"), loadUsersById(), getAll("requests")]);
+  const requestsById = new Map(requestRows.map((r) => [r.id, r]));
+  let rows = await Promise.all(
+    rawRows.map(async (row) => {
+      const item = await fromRow(row, usersById);
+      return { ...item, displayStatus: deriveItemDisplayStatus(item, requestsById.get(row.accepted_request_id)) };
+    }),
+  );
 
   if (filters.donorId) {
     rows = rows.filter((item) => item.donorId === filters.donorId);
   } else if (filters.status) {
     rows = rows.filter((item) => item.status === filters.status);
-  } else {
-    // Default browsing view: only show what's still available unless the
-    // caller explicitly asked for a specific status or "my own items".
-    rows = rows.filter((item) => item.status === "available");
   }
+  // No status filter: items stay listed once accepted (D-067), they just sort below the available ones.
 
   if (filters.category) {
     rows = rows.filter((item) => item.category === filters.category || item.secondaryCategory === filters.category);
@@ -105,7 +123,9 @@ export async function getItems(filters = {}) {
     rows = rows.filter((item) => item.deliveryOption === filters.deliveryOption);
   }
 
-  return rows.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+  // A donor's own list ("Me") keeps plain newest-first; the browse list sorts by display status first.
+  const rank = (item) => (filters.donorId ? 0 : DISPLAY_ORDER[item.displayStatus]);
+  return rows.sort((a, b) => rank(a) - rank(b) || (a.createdAt < b.createdAt ? 1 : -1));
 }
 
 /** @returns {Promise<import('../data/types.js').Item|null>} */
@@ -113,7 +133,9 @@ export async function getItemById(id) {
   const row = await getById("items", id);
   if (!row) return null;
   const usersById = await loadUsersById();
-  return fromRow(row, usersById);
+  const item = await fromRow(row, usersById);
+  const acceptedRequest = row.accepted_request_id ? await getById("requests", row.accepted_request_id) : null;
+  return { ...item, displayStatus: deriveItemDisplayStatus(item, acceptedRequest) };
 }
 
 /**

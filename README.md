@@ -4,13 +4,11 @@
 
 [Try the live site](https://3goods.vercel.app/)
 
-[<img width="1440" alt="Updated 3goods landing page" src="./landing-updated.svg" />](./landing-updated.svg)
+[<img width='1440' alt='Updated 3goods landing page' src='https://github.com/user-attachments/assets/73a6a0ce-85e8-4a14-bc2b-239f53d49589' />](https://3goods.vercel.app/)
+
+3goods is a collaborative platform that helps organisations share what they need and helps donors see where goods can make the greatest difference.
 
 ## Why we built it
-
-Data for Life 2026 gave us a social-security problem statement from the 86th Command, Ministry of National Defence: build a system that coordinates donations based on actual needs. The hackathon was backed by AI Singapore and introduced to us through NUS-ISS.
-
-<img width="1080" alt="Data for Life 2026 problem statement from the 86th Command, Ministry of National Defence" src="https://github.com/user-attachments/assets/7dde859f-1e53-4e74-bcbd-dd514c75ba58" />
 
 The problem felt close to home. My teammate and I have both volunteered for a long time, so community-service problems like this one are close to our hearts. In this problem, generous donations can still miss the people they are meant to help. One organisation may receive too much of the wrong thing while another still faces a shortage.
 
@@ -18,7 +16,7 @@ We started with that gap and asked a simple question: what if organisations coul
 
 ## From an idea to a prototype
 
-We brainstormed the donor and organisation journeys together, worked through the matching idea, and built the prototype with Claude Code in roughly four days.
+We brainstormed the donor and organisation journeys together, worked through the matching idea, and built the prototype with Claude Code Pro (subscription, no API) in roughly four days.
 
 The web application uses React, JavaScript, Vite, Tailwind CSS and Supabase, and is deployed on Vercel. A custom SVG map and small serverless API present data from OpenStreetMap, EM-DAT, UNDP/MOLISA and GADM. Python scripts were used offline to clean, combine and score the source data before the resulting map datasets were published for the JavaScript application.
 
@@ -26,30 +24,37 @@ This is a two-person hackathon prototype, not a finished donation service. It is
 
 ## If you are donating
 
-You begin with the item you already have. Browse what verified organisations currently need, list an item you can give, and contact an organisation when there is a potential match. When you list an item, you also say how it gets there: happy to deliver, or pickup only, so the organisation knows what to arrange. If one organisation does not need it, the item remains available for other organisations to discover and request. A small act of giving becomes easier when the next step is just a conversation.
+Start with the map, choose a country and see which goods are most needed there.
 
-<img width="1440" alt="Available donations with needs-matching labels" src="https://github.com/user-attachments/assets/9aea79e4-49d4-4101-9416-6347eb4709dd" />
+[<img width='1440' alt='3goods global needs map' src='https://github.com/user-attachments/assets/e2c50ac4-d41f-4754-b04e-34821359e89c' />](https://3goods.vercel.app/)
 
-<img width="1440" alt="Donation item detail" src="https://github.com/user-attachments/assets/6a5fe838-e22a-4b2e-937c-6788199250c5" />
+## If you represent an organisation
 
-## If you are an organisation
+Register or log in, add your current needs and make those needs visible to donors.
 
-Using a demonstration organisation account, you can publish what your community currently needs and mark the most urgent needs as priorities. When you browse items offered by donors, matching labels show which items may fit your organisation's needs. You can request an item, chat with the donor, and coordinate the handoff directly.
+<table>
+  <tr>
+    <td width='50%'><img alt='3goods organisation registration form' src='https://github.com/user-attachments/assets/072135be-4531-49ba-a9a6-a0cbaf9b2da0' /></td>
+    <td width='50%'><img alt='3goods organisation login page' src='https://github.com/user-attachments/assets/55902144-400d-417a-88b3-5b5e22b904df' /></td>
+  </tr>
+</table>
 
-<img width="1440" alt="Organisations directory" src="https://github.com/user-attachments/assets/5b1e22ab-a4e1-4d84-a934-d6734e7136b1" />
+## Run it locally
 
-[<img width="1440" alt="Goods offered by donors with organisation match labels" src="./organisation-matches.svg" />](./organisation-matches.svg)
+```bash
+npm install
+npm run dev
+```
 
-## How the map works
+For local data and authentication, add your own Supabase environment values.
 
-Python data-processing scripts combine disaster exposure, regional poverty proxies, geographic boundaries and mapped facilities into deployment-ready datasets. The live map is rendered in the browser with JavaScript and reads those datasets through a small Vercel API, with a bundled fallback copy.
+## Credits
 
-[<img width="1440" alt="3goods map showing a registered organisation in Thanh Hoa" src="./map-registered.svg" />](./map-registered.svg)
+Built by **Bao Long** and **Frida** for the [Data for Life 2026](https://dataforlife2026.devpost.com/) hackathon.
 
-[<img width="1440" alt="3goods map showing the invite a facility flow in Thai Binh" src="./map-invite.svg" />](./map-invite.svg)
+### Data sources
 
-## Please enjoy using the site
-
-The prototype is live at [3goods.vercel.app](https://3goods.vercel.app/).
-
-We hope it makes giving feel a little more thoughtful, receiving a little less overwhelming, and the distance between a generous person and a real need a little shorter.
+- [OpenStreetMap](https://www.openstreetmap.org/)
+- [EM-DAT](https://www.emdat.be/)
+- [UNDP / MOLISA](https://www.undp.org/vietnam)
+- [GADM](https://gadm.org/)

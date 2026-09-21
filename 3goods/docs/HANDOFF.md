@@ -29,10 +29,12 @@ after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_AN
 Production env vars on this project (`vercel env ls production` to confirm) — set in session 5.
 
 ## Current task
+**3G-061 / D-077 (atomic Undo + Mark as collected) is coded but NOT deployed.** The new code calls the Postgres functions `undo_acceptance` and `mark_item_collected`, which do
+not exist in the live database yet. Run `supabase/migration-status-transitions.sql` (idempotent) in the SQL Editor, THEN deploy (`vercel deploy --prod --yes`), then verify. Deploying
+first breaks Undo and Mark as collected. The stale-rows fix (3G-062) is already live.
 **3G-060 / D-076 (atomic accept) is done, deployed and verified live** (see KANBAN 3G-060); the user ran `supabase/migration-accept-request.sql`. Same session:
 Chat before the status chip on `/my-organisation` rows; the mobile bottom nav no longer wraps "Available donations" (items size to their label, `MobileBottomNav.jsx`).
-Known small gap found while testing: after a *failed* Accept (e.g. a stale second tab) the error shows but the rows are not refetched, so the page stays stale
-until reload (`useRequestActions` only refreshes after success). Undo and Mark as collected are still several sequential writes (not atomic).
+(The "stale rows after a failed Accept" gap found while testing is fixed by 3G-062; Undo and Mark as collected go atomic in 3G-061.)
 **3G-059 / D-075 (status model + chat) is done, deployed and verified live** (see KANBAN 3G-059). The user ran `supabase/migration-start-conversation.sql`
 and `supabase/migration-status-model.sql` in the SQL Editor (the auto-mode classifier had blocked Claude from applying them to the production database);
 both are idempotent. Live data after migration: 19 available + 4 reserved items, requests 4 accepted / 3 pending, 4 conversations (all with messages).

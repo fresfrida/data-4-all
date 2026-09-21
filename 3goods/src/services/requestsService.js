@@ -13,8 +13,10 @@
  *
  * Accepting a request reserves the item, marks that request accepted and
  * *actually declines* every other pending request on the item in the
- * database, so there is nothing left to derive at display time. Those three
- * writes are one database transaction (the `accept_request` function, D-076).
+ * database, so there is nothing left to derive at display time. Each change
+ * of status is one database transaction: `accept_request` (D-076),
+ * `undo_acceptance` and `mark_item_collected` (D-077); the notification that
+ * follows is a separate JS call, so a lost notification never undoes a change.
  * The one way a request becomes declined is through another request's
  * acceptance, which is what lets `undoAcceptance` put them back exactly.
  *
@@ -26,9 +28,8 @@
  * since nothing displays it.
  */
 
-import { getAll, getById, insert, update as dbUpdate, updateMany, rpc } from "../lib/db.js";
-import { getItemById, updateItemStatus } from "./itemsService.js";
-import { getOrganisationById } from "./organisationsService.js";
+import { getAll, getById, insert, rpc } from "../lib/db.js";
+import { getItemById } from "./itemsService.js";
 import { pushUpdate } from "./updatesService.js";
 import { AppError } from "../lib/errors.js";
 import { ITEM_STATUS, REQUEST_STATUS } from "../lib/constants.js";
@@ -108,8 +109,27 @@ export async function createRequest({ itemId, organisationId }) {
   return request;
 }
 
-/** Rule violations `accept_request` raises; the database error message is the code, which becomes an `AppError`. */
-const ACCEPT_ERROR_CODES = ["requestNotFound", "itemForRequestNotFound", "requestNotPending", "itemAlreadyReserved"];
+/**
+ * Rule violations the status functions raise. The database error message is the code; it becomes an `AppError` so the screen shows
+ * a translated message (anything else is a real failure and is rethrown as is).
+ */
+const RULE_ERROR_CODES = [
+  "requestNotFound",
+  "itemForRequestNotFound",
+  "itemNotFound",
+  "requestNotPending",
+  "itemAlreadyReserved",
+  "itemStatusChangeInvalid",
+];
+
+/** Calls one of the status functions (supabase/schema.sql) and returns its `{changed, request, item}` result. */
+async function callStatusFunction(name, args) {
+  try {
+    return await rpc(name, args);
+  } catch (err) {
+    throw RULE_ERROR_CODES.includes(err?.message) ? new AppError(err.message) : err;
+  }
+}
 
 /**
  * The one place "only one accepted organisation per listing" is enforced
@@ -117,7 +137,7 @@ const ACCEPT_ERROR_CODES = ["requestNotFound", "itemForRequestNotFound", "reques
  * and declines every other pending request on the item, all in one database
  * transaction (`accept_request`, D-076), so a failure part-way cannot leave
  * the item and its requests disagreeing. The organisation is notified
- * afterwards, separately: a lost notification must not undo an acceptance.
+ * afterwards, separately.
  *
  * Throws rather than silently no-op-ing if the item is not available (another
  * organisation was accepted from a second tab, the listing was withdrawn) or
@@ -126,13 +146,7 @@ const ACCEPT_ERROR_CODES = ["requestNotFound", "itemForRequestNotFound", "reques
  * no-op, so a stale tap can't notify the organisation twice.
  */
 export async function acceptRequest(requestId) {
-  let result;
-  try {
-    result = await rpc("accept_request", { p_request_id: requestId });
-  } catch (err) {
-    throw ACCEPT_ERROR_CODES.includes(err?.message) ? new AppError(err.message) : err;
-  }
-
+  const result = await callStatusFunction("accept_request", { p_request_id: requestId });
   const request = fromRow(result.request);
   if (!result.changed) return request;
 
@@ -147,51 +161,35 @@ export async function acceptRequest(requestId) {
 }
 
 /**
- * Undoes an acceptance while the goods have not been collected yet: the item
- * is available again, this request is pending again, and the requests that
- * accepting it declined go back to pending (declined only ever comes from an
- * acceptance, so on this item that is all of them). A collected item cannot be
- * undone.
+ * Undoes an acceptance while the goods have not been collected yet, in one
+ * database transaction (`undo_acceptance`, D-077): the item is available again,
+ * this request is pending again, and the requests that accepting it declined go
+ * back to pending (declined only ever comes from an acceptance, so on this item
+ * that is all of them). A collected item cannot be undone (`itemStatusChangeInvalid`);
+ * undoing a request that is not accepted changes nothing.
  */
 export async function undoAcceptance(requestId) {
-  const request = await getRequestById(requestId);
-  if (!request) throw new AppError("requestNotFound");
-  if (request.status !== REQUEST_STATUS.accepted) return request;
-
-  await updateItemStatus(request.itemId, ITEM_STATUS.available);
-  const [row] = await Promise.all([
-    dbUpdate("requests", requestId, { status: REQUEST_STATUS.pending }),
-    updateMany("requests", { item_id: request.itemId, status: REQUEST_STATUS.declined }, { status: REQUEST_STATUS.pending }),
-  ]);
-  return fromRow(row);
+  const result = await callStatusFunction("undo_acceptance", { p_request_id: requestId });
+  return fromRow(result.request);
 }
 
 /**
- * The goods have been handed over: the item goes reserved -> collected. The
+ * The goods have been handed over: the item goes reserved -> collected in one
+ * database transaction (`mark_item_collected`, D-077), which also adds the item to
+ * the accepted organisation's past-received list (shown on its profile). The
  * accepted request stays "accepted" — it already recorded which organisation
- * was chosen. Also records the item on that organisation's past-received list
- * (shown on its profile) and tells the donor.
+ * was chosen. Then the donor is notified. Marking an already-collected item
+ * changes nothing (no second notification); an item that is not reserved is refused.
  */
 export async function markItemCollected(itemId) {
-  const item = await getItemById(itemId);
-  if (!item) throw new AppError("itemNotFound");
-  const acceptedRequest = item.acceptedRequestId ? await getRequestById(item.acceptedRequestId) : null;
+  const result = await callStatusFunction("mark_item_collected", { p_item_id: itemId });
+  if (!result.changed) return;
 
-  const updated = await updateItemStatus(itemId, ITEM_STATUS.collected);
-
-  const organisation = acceptedRequest ? await getOrganisationById(acceptedRequest.organisationId) : null;
-  if (organisation && !organisation.pastReceivedItemIds.includes(item.id)) {
-    await dbUpdate("organisations", organisation.id, {
-      past_received_item_ids: [...organisation.pastReceivedItemIds, item.id],
-    });
-  }
   await pushUpdate({
-    userId: item.donorId,
+    userId: result.item.donor_id,
     type: "donation_completed",
-    params: { itemTitle: item.title },
-    linkItemId: item.id,
-    linkRequestId: acceptedRequest?.id,
+    params: { itemTitle: result.item.title },
+    linkItemId: itemId,
+    linkRequestId: result.request?.id ?? undefined,
   });
-
-  return updated;
 }

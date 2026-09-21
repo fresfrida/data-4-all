@@ -70,18 +70,6 @@ export async function update(table, id, patch) {
   return data ?? null;
 }
 
-/**
- * Updates every row where each column in `match` equals its value (optionally skipping the row `exceptId`) in one statement.
- * @returns the updated records.
- */
-export async function updateMany(table, match, patch, exceptId) {
-  let query = supabase.from(table).update(patch).match(match);
-  if (exceptId) query = query.neq("id", exceptId);
-  const { data, error } = await query.select();
-  if (error) throw error;
-  return data ?? [];
-}
-
 /** Calls a Postgres function (see supabase/schema.sql). @returns whatever the function returns. */
 export async function rpc(fn, args) {
   const { data, error } = await supabase.rpc(fn, args);

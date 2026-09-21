@@ -1078,6 +1078,25 @@ code as the message (`requestNotFound`, `itemForRequestNotFound`, `requestNotPen
 `.rpc()` and turns those messages into the same `AppError`s as before. Locking the item row also serialises two people accepting different requests on the
 same item at once: the second gets `itemAlreadyReserved`. Accepting an already-accepted request returns `changed: false` and changes nothing.
 **Still in JS, on purpose.** The "request accepted" notification is pushed after the atomic core succeeds (a lost notification must not undo an acceptance).
-**Rule duplication.** "An item can only be reserved from available" now exists twice: in `itemsService`'s transition table and in this function. `updateItemStatus`
-still owns every other status change; only accepting goes through the function.
-**Not covered.** `undoAcceptance` and `markItemCollected` are still several sequential writes; they were not part of this change.
+**Rule duplication.** "An item can only be reserved from available" existed twice (the JS transition table and this function); D-077 removed the JS side.
+**Not covered here, closed by D-077:** `undoAcceptance` and `markItemCollected` were still several sequential writes.
+
+## D-077 — Undo and Mark as collected are one database transaction each (`undo_acceptance`, `mark_item_collected`); refused actions refetch
+**Why.** Same risk D-076 closed for Accept: `undoAcceptance` (item, request, siblings) and `markItemCollected` (item, organisation's past-received list) were several
+sequential JS writes, so a failure part-way could leave the item and its requests disagreeing.
+**What.** `supabase/migration-status-transitions.sql` (also in `schema.sql`) adds two functions with the same conventions as `accept_request`: lock the item row
+first, re-check the rules inside the lock, error message = the code (`requestNotFound`, `itemForRequestNotFound`, `itemNotFound`, `itemStatusChangeInvalid`),
+and repeating an action that already happened returns `changed: false` and changes nothing.
+- `undo_acceptance(request_id)`: item reserved -> available (pointer cleared), the accepted request -> pending, its auto-declined siblings -> pending. Refused with
+  `itemStatusChangeInvalid` once the item is collected, or if the item is not reserved for this request. Undoing a request that is not accepted is a no-op.
+- `mark_item_collected(item_id)`: item reserved -> collected, request stays accepted, item appended to the accepted organisation's `past_received_item_ids`
+  (inside the same transaction). Already collected = no-op (**behaviour change:** it used to throw; a stale second click is now harmless and sends no second
+  notification). Available / withdrawn items are refused with `itemStatusChangeInvalid`.
+Three separate functions rather than one parameterised one: accept, undo and collect check and write different things, and one function per user action reads better.
+`requestsService` has one helper (`callStatusFunction`) that calls any of the three and maps their error messages to `AppError`; the donor/organisation notifications
+stay separate JS calls afterwards.
+**JS side simplified.** `itemsService.updateItemStatus` can no longer write `reserved` or `collected` at all (its table is now only available <-> unavailable, the
+donor's withdraw/relist), so the app has exactly one writer per transition and no duplicated rule. `db.updateMany` was deleted (unused).
+**Refused actions refetch.** `useRequestActions` (Accept, Undo) now refetches in `finally`, so after a refused action (e.g. "already decided" from a second tab) the rows show
+the real state beside the error instead of staying stale. `ChatDetail`'s Mark as collected got the same treatment plus a visible error (it had no error handling); the error
+renders outside the button's block, because the refetch hides the button once the item is no longer reserved.

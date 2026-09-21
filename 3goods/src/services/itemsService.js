@@ -140,40 +140,29 @@ export async function createDonation(payload) {
 }
 
 /**
- * Where an item may go from each status. This table is the whole state machine (D-075):
- * available -> reserved (a request is accepted) -> collected (goods handed over);
- * reserved -> available (the acceptance is undone); available <-> unavailable (the donor withdraws / relists).
- * `collected` is final.
+ * The item lifecycle (D-075) is available -> reserved -> collected, plus `unavailable` when the donor withdraws the listing.
+ * Every change of status that involves a request — reserving, un-reserving, collecting — is a database function that also
+ * updates the requests (requestsService: accept_request, undo_acceptance, mark_item_collected, D-076/D-077), so this file cannot
+ * write those statuses at all. What is left here is the donor's own withdraw / relist, and this table is its whole state machine.
  */
 const TRANSITIONS = {
-  [ITEM_STATUS.available]: [ITEM_STATUS.reserved, ITEM_STATUS.unavailable],
-  [ITEM_STATUS.reserved]: [ITEM_STATUS.collected, ITEM_STATUS.available],
+  [ITEM_STATUS.available]: [ITEM_STATUS.unavailable],
   [ITEM_STATUS.unavailable]: [ITEM_STATUS.available],
-  [ITEM_STATUS.collected]: [],
 };
 
 /**
- * The only function that writes `items.status`. Every status change (accepting a request, undoing it, marking the goods
- * collected, withdrawing or relisting) goes through here, so an invalid jump throws instead of leaving the item in a state no
- * screen expects. `items.accepted_request_id` follows the status: set when reserving, kept once collected, cleared otherwise.
+ * The only function in the app that writes `items.status` directly: withdraw (available -> unavailable) and relist
+ * (unavailable -> available). A reserved or collected item cannot be withdrawn: it throws `itemStatusChangeInvalid`.
  *
  * @param {string} itemId
- * @param {"available"|"reserved"|"collected"|"unavailable"} nextStatus
- * @param {{acceptedRequestId?: string}} [options]  required when reserving
+ * @param {"available"|"unavailable"} nextStatus
  */
-export async function updateItemStatus(itemId, nextStatus, { acceptedRequestId } = {}) {
+export async function updateItemStatus(itemId, nextStatus) {
   const row = await getById("items", itemId);
   if (!row) throw new AppError("itemNotFound");
   if (!TRANSITIONS[row.status]?.includes(nextStatus)) throw new AppError("itemStatusChangeInvalid", { from: row.status, to: nextStatus });
 
-  const patch = { status: nextStatus };
-  if (nextStatus === ITEM_STATUS.reserved) {
-    if (!acceptedRequestId) throw new AppError("requestNotFound");
-    patch.accepted_request_id = acceptedRequestId;
-  } else if (nextStatus !== ITEM_STATUS.collected) {
-    patch.accepted_request_id = null;
-  }
-  return fromRow(await update("items", itemId, patch), await loadUsersById());
+  return fromRow(await update("items", itemId, { status: nextStatus, accepted_request_id: null }), await loadUsersById());
 }
 
 /** Donor withdraws their own listing (only while it is still available). */
@@ -182,8 +171,6 @@ export function markItemUnavailable(itemId) {
 }
 
 /** Donor relists a withdrawn listing. Not for releasing a reservation: that is requestsService.undoAcceptance. */
-export async function reopenItemAvailability(itemId) {
-  const item = await getItemById(itemId);
-  if (item?.status !== ITEM_STATUS.unavailable) throw new AppError("itemStatusChangeInvalid", { from: item?.status, to: ITEM_STATUS.available });
+export function reopenItemAvailability(itemId) {
   return updateItemStatus(itemId, ITEM_STATUS.available);
 }

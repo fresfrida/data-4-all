@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { translateError } from "../lib/errors.js";
 import { useParams, useNavigate, Navigate, Link } from "react-router-dom";
 import { useAsync } from "../lib/useAsync.js";
 import { getConversationById, findConversation, getMessages, sendMessage, startConversation } from "../services/chatService.js";
@@ -50,6 +51,9 @@ export function ChatDetail() {
   );
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
+  const [collecting, setCollecting] = useState(false);
+  // Raw error object, translated at render time — see D-017.
+  const [collectError, setCollectError] = useState(null);
   const { markSeen } = useUnreadChats();
 
   // Whatever is on screen has been seen: clears this conversation's unread mark (and the nav badge) for this viewer.
@@ -116,8 +120,18 @@ export function ChatDetail() {
   };
 
   const onMarkCollected = async () => {
-    await markItemCollected(item.id);
-    reload();
+    if (collecting) return;
+    setCollecting(true);
+    setCollectError(null);
+    try {
+      await markItemCollected(item.id);
+    } catch (err) {
+      setCollectError(err);
+    } finally {
+      // Refetch whether it worked or was refused (e.g. the item was already marked from another tab), so the header always shows the real status.
+      reload();
+      setCollecting(false);
+    }
   };
 
   return (
@@ -173,12 +187,15 @@ export function ChatDetail() {
       </div>
 
       {/* Handover control: moves the item reserved -> collected */}
+      {/* Outside the button's block on purpose: after a refused attempt the refetch hides the button, but the reason must stay visible. */}
+      {collectError && <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{translateError(collectError, t)}</p>}
       {canMarkCollected && (
         <div className="flex gap-2">
           <button
             type="button"
             onClick={onMarkCollected}
-            className="rounded-full border border-good-600 bg-good-100 px-4 py-2 text-xs font-bold text-good-600 hover:bg-good-100/80 transition-all"
+            disabled={collecting}
+            className="w-fit rounded-full border border-good-600 bg-good-100 px-4 py-2 text-xs font-bold text-good-600 hover:bg-good-100/80 transition-all disabled:cursor-not-allowed disabled:opacity-60"
           >
             {t("actions.markCollected")}
           </button>

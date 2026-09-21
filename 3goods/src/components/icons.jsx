@@ -48,12 +48,15 @@ export function UserIcon({ className }) {
   );
 }
 
-/** Standard magnifier: lens and handle sit on the icon's 45-degree diagonal and the whole glyph is centred in the 24x24 box (bounds 3..21). */
+/**
+ * Magnifier tuned by eye against the other nav glyphs, not by centring: the lens is sized like the pin's head and sits up-left of centre with a short handle,
+ * so the diagonal's weight doesn't make the icon lean toward the bottom-right (a geometrically centred, longer-handled version did).
+ */
 export function SearchIcon({ className }) {
   return (
     <svg viewBox="0 0 24 24" className={className} {...base} aria-hidden="true">
-      <circle cx="11" cy="11" r="8" />
-      <path d="M21 21l-4.35-4.35" />
+      <circle cx="10.5" cy="10.5" r="7" />
+      <path d="M15.6 15.6L19 19" />
     </svg>
   );
 }

@@ -4,7 +4,7 @@
 
 [Try the live site](https://3goods.vercel.app/)
 
-<img width="1440" alt="3goods landing page" src="https://github.com/user-attachments/assets/f5feff45-1e43-47c6-895a-d7cabf80885d" />
+[<img width="1440" alt="Updated 3goods landing page" src="./landing-updated.svg" />](./landing-updated.svg)
 
 ## Why we built it
 

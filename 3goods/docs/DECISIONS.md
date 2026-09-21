@@ -1100,3 +1100,10 @@ donor's withdraw/relist), so the app has exactly one writer per transition and n
 **Refused actions refetch.** `useRequestActions` (Accept, Undo) now refetches in `finally`, so after a refused action (e.g. "already decided" from a second tab) the rows show
 the real state beside the error instead of staying stale. `ChatDetail`'s Mark as collected got the same treatment plus a visible error (it had no error handling); the error
 renders outside the button's block, because the refetch hides the button once the item is no longer reserved.
+
+## D-078 — "Available donations" stays the visual middle of the nav; magnifier icon redrawn centred
+The guest nav is Organisations, Available donations, Map; the organisation nav is Updates, Map, Available donations, Chat, Us. Available donations is the middle item of both,
+so it sits at the same horizontal position when logging in or out (measured: x=137 of 390 on mobile, x=555 of 1280 on desktop, EN, in both states). Do not reorder either list to make
+Map line up: an earlier attempt moved it in the guest list and pushed Available donations off-centre. The "slant" on that item was never CSS (no rotate/transform exists); it was the
+magnifier glyph, now a standard lens-plus-handle centred in its 24x24 box. The Discover count is "{verified} of {count} verified" (over the currently filtered list) so it no longer
+looks like it contradicts the hero's verified-organisations stat.

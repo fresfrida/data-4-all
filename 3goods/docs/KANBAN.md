@@ -58,6 +58,8 @@ suggested next task)
 
 ## Done
 
+- **3G-063** — Nav touch-up: "Available donations" is the middle nav item for guest (Organisations, Available donations, Map) and organisation (Updates, Map, Available donations, Chat, Us), same visual
+  centre in both; magnifier icon redrawn centred and symmetric in its box (no CSS transform was ever involved). Discover count reads "24 of 31 verified". See D-078.
 - **3G-061** — Undo + Mark as collected atomic (D-077): `undo_acceptance` / `mark_item_collected` Postgres functions, one `.rpc()` call each; Mark as collected also got visible error
   handling + refetch. Verified live (headless Chrome, EN at 1280px + VI at 390px, zero console errors, throwaway item + 3 pending requests + a real chat, all removed afterwards; DB rows
   read at every step): Undo via UI -> item `available`, pointer cleared, all requests `pending`; re-accept works; stale Undo after another tab collected -> translated

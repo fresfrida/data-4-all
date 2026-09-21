@@ -7,12 +7,6 @@ Only one task In Progress at a time. IDs are stable — never renumber, only re-
 
 ## In Progress
 
-- **3G-059** — One status per thing (D-075): item `available -> reserved -> collected`, request `pending | accepted | declined`, real auto-decline,
-  chat created on first message, donor names in org chat, quantity dropped from needs. **Code done and building; NOT deployed and NOT verified live:**
-  the two database steps (`supabase/migration-start-conversation.sql` function, `supabase/migration-status-model.sql` data rewrite) were blocked by the
-  auto-mode classifier. They must be run (by the user in the Supabase SQL Editor, or after approving Claude to) before deploying. Then verify the
-  two-pending-requests scenario (accept one, check the DB row of the other is `declined`) in EN + VI, mobile + desktop.
-
 (none — Phase 0 and the Phase 1 core journey are checkpointed below; see HANDOFF.md for the
 suggested next task)
 
@@ -64,6 +58,13 @@ suggested next task)
 
 ## Done
 
+- **3G-059** — One status per thing (D-075): item `available -> reserved -> collected`, request `pending | accepted | declined`, real auto-decline,
+  chat created on first message (`start_conversation`), donor names in org chat threads, quantity/unit dropped from needs, `deriveDisplayStatus` deleted.
+  Verified live (headless Chrome, 1280px + 390px, EN + VI, zero console errors) against the real database with a throwaway item + two pending requests
+  (removed afterwards): accept one -> DB shows item `reserved` + accepted request, the other request `declined`; every screen (item page as donor / accepted
+  org / declined org, /me, My Organisation, /discover card) shows exactly one item state; Undo restores item `available` + both `pending` (DB checked);
+  organisation opened the compose view (no conversation existed), first send created the conversation + message (DB checked) and redirected to `/chat/:id`;
+  Mark as collected -> item `collected`, request stays `accepted`, item added to the organisation's past-received list, donor notified.
 - **3G-058** — Messaging/copy pass + need-match badges + intro-video link (D-074, requested by the user during the demo freeze). Hero subline and
   primary CTA ("See verified needs", scrolls to the board on the same page), catalogue renamed (nav "Available donations", heading "Goods offered by
   donors", free-donation line above the grid), display-only need-match badge on item cards, `/video` redirect + footer link. Verified live on

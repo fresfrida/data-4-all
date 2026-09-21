@@ -29,14 +29,14 @@ after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_AN
 Production env vars on this project (`vercel env ls production` to confirm) — set in session 5.
 
 ## Current task
-**3G-059 / D-075 (status model + chat) is coded but blocked before deploy.** The new code cannot run against the current live database: it writes
-`pending`/`declined`/`collected` and calls the `start_conversation` function. Run `supabase/migration-start-conversation.sql`, then
-`supabase/migration-status-model.sql` (both idempotent), THEN deploy, then do the live verification listed in KANBAN 3G-059. Do not deploy first.
-(Live data at the time: 4 reserved items, requests 2 accepted / 2 arranging_collection / 3 requested, 3 empty conversation shells to delete.)
+**3G-059 / D-075 (status model + chat) is done, deployed and verified live** (see KANBAN 3G-059). The user ran `supabase/migration-start-conversation.sql`
+and `supabase/migration-status-model.sql` in the SQL Editor (the auto-mode classifier had blocked Claude from applying them to the production database);
+both are idempotent. Live data after migration: 19 available + 4 reserved items, requests 4 accepted / 3 pending, 4 conversations (all with messages).
+Two of those conversations only contain the old system "Request accepted." message (kept, still renders). Nothing else is open on this task.
 Pre-existing, not touched: `screens.organisationNoLongerExists` has no translation key.
 **Demo freeze: the testing agent runs the full demo path. Only bug fixes from QA until then.** Fixed this checkpoint (3G-057): missing `screens.notFoundTitle`
-(404 page), English region/city names on the Vietnamese map. **Open debt, not to be touched before the demo:** the blank first chat message row
-(`body = NULL`, the `request_accepted` system message, invisible in the UI). Also left alone: UAT test rows in the live DB.
+(404 page), English region/city names on the Vietnamese map. The earlier "blank first chat message row" debt is resolved by D-075 (no system message is written any more; conversations only exist with a real message).
+Also left alone: UAT test rows in the live DB.
 Still open below: the coverage SQL (`supabase/seed-coverage.sql`) if the user has not run it yet, and the iOS Safari touch check.
 
 **3G-055 + 3G-056 (Verify): all code is deployed. One open action for the user: run `supabase/seed-coverage.sql` in the Supabase SQL Editor (23 fictional

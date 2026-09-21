@@ -1,6 +1,6 @@
 # 3goods
 
-*A Data for Life 2026 prototype for coordinating donations between donors and organisations, based on actual needs.*
+*A Data for Life 2026 prototype for coordinating donations between donors and organisations.*
 
 [Try the live site](https://3goods.vercel.app/)
 
@@ -26,7 +26,7 @@ This is a two-person hackathon prototype, not a finished donation service. It is
 
 ## If you are donating
 
-You begin with the item you already have. Browse what organisations actually need, then chat the organisation directly to offer your item. And if that organisation does not need it right now, your item stays in the marketplace - other organisations can see it and approach you for as long as it is available. A small act of giving becomes easier when the next step is just a conversation.
+You begin with the item you already have. Browse what organisations actually need, then chat the organisation directly to offer your item. If that organisation does not need it right now, your item stays in the marketplace. Other organisations can see it and approach you for as long as it is available. A small act of giving becomes easier when the next step is just a conversation.
 
 <img width="1440" alt="Available donations with needs-matching labels" src="https://github.com/user-attachments/assets/9aea79e4-49d4-4101-9416-6347eb4709dd" />
 

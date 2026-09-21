@@ -42,6 +42,8 @@ You begin with the people you serve. Create your organisation profile and publis
 
 The map lets you see what is going on across Vietnam. You can see who needs what, and where. You might come across a charity you are interested in and invite them to join, right from the map. Sometimes the most useful thing is simply connecting the right people.
 
+<img width="1280" alt="3goods relief map showing needs and community organisations across Vietnam" src="./3-cloud-browser-20260921-052834.png" />
+
 ## Please enjoy using the site
 
 The prototype is live at [3goods.vercel.app](https://3goods.vercel.app/).

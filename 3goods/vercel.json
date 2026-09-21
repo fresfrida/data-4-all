@@ -1,4 +1,5 @@
 {
   "redirects": [{ "source": "/video", "destination": "https://youtu.be/d5GxkMstZ1k", "permanent": false }],
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }],
+  "functions": { "api/*.js": { "includeFiles": "public/data/**" } }
 }

@@ -9,6 +9,7 @@
     "build": "npm run i18n:check && vite build",
     "preview": "vite preview",
     "i18n:check": "node scripts/check-i18n-keys.mjs",
+    "test": "node --test \"tests/*.test.js\"",
     "db:seed": "node scripts/seed-supabase.mjs"
   },
   "dependencies": {

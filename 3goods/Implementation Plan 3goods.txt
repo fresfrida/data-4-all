@@ -32,7 +32,7 @@
 - Design from a 375px base with large tap targets, stacked content, compact two-column item grids, and fixed mobile bottom navigation.
 - At desktop breakpoints, use a centered max-width application layout, top navigation, wider spacing, and 3–4 column grids rather than enlarging the phone layout.
 - Item details become a two-column image/content layout; filters become a contained desktop panel; forms use readable constrained widths.
-- The Vietnam map opens with a calm summary and uses province GeoJSON from `https://002-data-4-life.vercel.app/api/provinces`, plus `/api/meta`, `/api/metro-hubs`, and `/api/facilities` for suggested categories and restrained pin layers.
+- The Vietnam map opens with a calm summary and uses province GeoJSON from `/api/provinces` (originally the legacy deployment `https://002-data-4-life.vercel.app/api/provinces`; since 2026-09-21 same-origin on the 3goods deployment, see DECISIONS D-080), plus `/api/meta`, `/api/metro-hubs`, and `/api/facilities` for suggested categories and restrained pin layers.
 - `VietnamMapView` will use a lightweight SVG geographic projection, preserve Vietnam’s shape responsively, clean province labels where practical, limit default mobile pins, and place detailed information in cards below the map.
 - Province data will be inspected for `disaster_score` or another genuine score/risk/need field. A real field becomes “Community need level” with soft green, warm amber, and muted coral styling; otherwise provinces stay neutral and the UI states “Need score unavailable from API.” No values will be invented.
 - Keep warm cream surfaces, a distinct warm accent, rounded cards, clear contrast, and restrained interaction feedback without borrowing the reference brand styling.

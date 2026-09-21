@@ -34,9 +34,13 @@ You begin with the item you already have. Browse what organisations actually nee
 
 ## If you are an organisation
 
-You begin with the people you serve. Create your organisation profile and publish what is genuinely needed. When donors reach out, you can go straight to chat to see who is approaching you and what they are offering, then coordinate the handoff there.
+You begin with the people you serve. Create your organisation profile and publish what is genuinely needed, and star your priority items so people know what you actually need most. When donors reach out, you can go straight to chat to see who is approaching you and what they are offering, then coordinate the handoff there.
 
 <img width="1440" alt="Organisations directory" src="https://github.com/user-attachments/assets/5b1e22ab-a4e1-4d84-a934-d6734e7136b1" />
+
+## The bigger picture
+
+The map lets you see what is going on across Vietnam. You can see who needs what, and where. You might come across a charity you are interested in and invite them to join, right from the map. Sometimes the most useful thing is simply connecting the right people.
 
 ## Please enjoy using the site
 

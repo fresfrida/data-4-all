@@ -100,7 +100,12 @@
     "matchesOne": "Phù hợp với 1 nhu cầu đã xác minh",
     "matchesMany": "Phù hợp với {count} nhu cầu đã xác minh",
     "orgNeed": "Phù hợp với nhu cầu của {org}",
-    "orgUrgentNeed": "Phù hợp với nhu cầu cấp thiết của {org}"
+    "orgUrgentNeed": "Phù hợp với nhu cầu cấp thiết của {org}",
+    "matchesYou": "Vật phẩm này có thể phù hợp với bạn",
+    "matchesYouUrgent": "Vật phẩm này có thể phù hợp với nhu cầu cấp thiết của bạn",
+    "otherOrgsHeading": "Các tổ chức đã xác minh khác có nhu cầu phù hợp",
+    "otherOrgNeed": "{org}",
+    "otherOrgUrgentNeed": "{org} (nhu cầu cấp thiết)"
   },
   "itemStatus": {
     "available": "Còn nhận quyên góp",

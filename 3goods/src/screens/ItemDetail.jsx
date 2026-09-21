@@ -20,6 +20,7 @@ import { RequestRow } from "../components/requests/RequestRow.jsx";
 import { Spinner } from "../components/feedback/Spinner.jsx";
 import { ROUTES, ITEM_STATUS } from "../lib/constants.js";
 import { formatQuantity } from "../lib/quantity.js";
+import { ownNeedMatch, otherVerifiedMatches } from "../lib/needMatching.js";
 
 async function loadItemDetail(itemId, orgIdIfLoggedIn, donorIdIfLoggedIn) {
   const item = await getItemById(itemId);
@@ -30,12 +31,12 @@ async function loadItemDetail(itemId, orgIdIfLoggedIn, donorIdIfLoggedIn) {
     item.secondaryCategory ? getCategoryById(item.secondaryCategory) : null,
     getRequests({ itemId }),
   ]);
-  let orgNeeds = [];
-  if (orgIdIfLoggedIn) orgNeeds = await getNeeds({ organisationId: orgIdIfLoggedIn });
+  // A logged-in organisation needs every organisation's stated needs to see who else matches this item.
+  const needs = orgIdIfLoggedIn ? await getNeeds() : [];
   // The listing's own donor also sees who has requested it (and can accept), so
-  // load the organisations those request rows name.
-  const organisations = donorIdIfLoggedIn && item.donorId === donorIdIfLoggedIn ? await getOrganisations() : [];
-  return { itemId, item, area, category, secondaryCategory, requests, orgNeeds, organisations };
+  // load the organisations those request rows name. An organisation loads them for the "other matches" list.
+  const organisations = orgIdIfLoggedIn || (donorIdIfLoggedIn && item.donorId === donorIdIfLoggedIn) ? await getOrganisations() : [];
+  return { itemId, item, area, category, secondaryCategory, requests, needs, organisations };
 }
 
 export function ItemDetail() {
@@ -58,13 +59,15 @@ export function ItemDetail() {
   if (status === "error") return <ErrorState message={t("errors.generic")} onRetry={reload} />;
   if (!data.item) return <ErrorState message={t("screens.itemNoLongerExists")} />;
 
-  const { item, area, category, secondaryCategory, requests, orgNeeds, organisations } = data;
+  const { item, area, category, secondaryCategory, requests, needs, organisations } = data;
   const photo = item.photoPaths?.[0];
 
   const isOwnListing = identity && item.donorId === identity.id;
   const isOwnerDonor = role === "donor" && isOwnListing;
   const myRequest = orgId ? requests.find((r) => r.organisationId === orgId) : null;
-  const matchesNeed = orgNeeds.some((need) => need.category === item.category || need.category === item.secondaryCategory);
+  // Category-based suggestions only (D-006, lib/needMatching.js). Own match first, then the other verified organisations.
+  const ownMatch = orgId ? ownNeedMatch(needs, orgId, item) : null;
+  const otherMatches = orgId ? otherVerifiedMatches(needs, organisations, item, orgId) : [];
 
   const onRequest = () => {
     requireLogin(async (loggedInIdentity) => {
@@ -95,8 +98,29 @@ export function ItemDetail() {
           {secondaryCategory && ` · ${secondaryCategory[locale] ?? secondaryCategory.en}`} · {area?.[locale] ?? area?.en}
         </p>
 
-        {matchesNeed && (
-          <p className="rounded-lg bg-accent-50 px-3 py-2 text-xs text-accent-700">{t("screens.matchesNeedNote")}</p>
+        {(ownMatch || otherMatches.length > 0) && (
+          <div data-testid="item-match-summary" className="flex flex-col gap-1.5 rounded-lg bg-accent-50 px-3 py-2 text-xs text-accent-700">
+            {ownMatch && (
+              <div data-testid="item-own-match" className="flex flex-col gap-0.5">
+                <p className="font-bold">{t(ownMatch.urgent ? "itemMatch.matchesYouUrgent" : "itemMatch.matchesYou")}</p>
+                <p>{t("screens.matchesNeedNote")}</p>
+              </div>
+            )}
+            {otherMatches.length > 0 && (
+              <div data-testid="item-other-matches" className="flex flex-col gap-0.5">
+                <p className="font-semibold text-ink-700">{t("itemMatch.otherOrgsHeading")}</p>
+                <ul className="flex flex-wrap gap-x-3 gap-y-0.5">
+                  {otherMatches.map((org) => (
+                    <li key={org.id}>
+                      <Link to={ROUTES.organisation(org.id)} className="font-bold text-accent-600 hover:underline">
+                        {t(org.urgent ? "itemMatch.otherOrgUrgentNeed" : "itemMatch.otherOrgNeed", { org: org.name[locale] ?? org.name.en })}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
         )}
 
         {item.quantity !== null && item.quantity !== undefined && (

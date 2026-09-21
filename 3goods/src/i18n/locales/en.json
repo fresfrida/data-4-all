@@ -100,7 +100,12 @@
     "matchesOne": "Matches 1 verified need",
     "matchesMany": "Matches {count} verified needs",
     "orgNeed": "Matches {org}'s need",
-    "orgUrgentNeed": "Matches {org}'s urgent need"
+    "orgUrgentNeed": "Matches {org}'s urgent need",
+    "matchesYou": "This item may match you",
+    "matchesYouUrgent": "This item may match your urgent need",
+    "otherOrgsHeading": "Other verified organisations with a matching need",
+    "otherOrgNeed": "{org}",
+    "otherOrgUrgentNeed": "{org} (urgent need)"
   },
   "itemStatus": {
     "available": "Available",

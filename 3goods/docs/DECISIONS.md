@@ -1015,7 +1015,7 @@ page; `DonationForm`'s collection-windows section reads "Collection time windows
 ## D-074 — Copy pass: needs-first hero, "Available donations" catalogue, need-match badge, /video redirect (user-requested)
 - **Where the hero lives:** `Home.jsx` (the request named `DiscoverNeeds.jsx`, which only renders the board). The board sits directly under the
   hero on `/`, so the primary CTA ("See verified needs", key `hero.ctaBrowse`, emoji 📦 -> 📋) is an in-page anchor that smooth-scrolls to it
-  rather than navigating; the map button is unchanged.
+  rather than navigating; the map button is unchanged. (The hero subtitle later dropped "Verified": "Organisations post what communities need", D-079.)
 - **Rename:** nav label (`nav.itemsDonated`, key kept), page heading, and a one-line free-donation notice above the grid. No "buy/sell" wording
   beyond the requested negations.
 - **Need-match badge (display-only, no schema change):** `DiscoverItems` loads `getNeeds()` + `getOrganisations()`; a need matches an item on

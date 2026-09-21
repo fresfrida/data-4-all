@@ -1,6 +1,6 @@
 # 3goods
 
-*A Data for Life 2026 prototype for coordinating donations between donors and organisations.*
+*A Data for Life 2026 prototype for coordinating donations between donors and organisations, based on actual needs.*
 
 [Try the live site](https://3goods.vercel.app/)
 
@@ -26,21 +26,17 @@ This is a two-person hackathon prototype, not a finished donation service. It is
 
 ## If you are donating
 
-You begin with the item you already have. Browse the needs posted by organisations, or add a donation and describe what you can give. 3goods shows where that item may fit an actual need, so you can choose a suitable receiving organisation instead of sending it somewhere blindly.
+You begin with the item you already have. Browse what organisations actually need, then chat the organisation directly to offer your item. And if that organisation does not need it right now, your item stays in the marketplace - other organisations can see it and approach you for as long as it is available. A small act of giving becomes easier when the next step is just a conversation.
 
 <img width="1440" alt="Available donations with needs-matching labels" src="https://github.com/user-attachments/assets/9aea79e4-49d4-4101-9416-6347eb4709dd" />
-
-Open an item to understand the request, see the organisation behind it, and follow the donation from an available item towards a practical handoff. A small act of giving becomes easier when the next step is clear.
 
 <img width="1440" alt="Donation item detail" src="https://github.com/user-attachments/assets/6a5fe838-e22a-4b2e-937c-6788199250c5" />
 
 ## If you are an organisation
 
-You begin with the people you serve. Create your organisation profile, publish the items that are genuinely needed, and keep those needs up to date.
+You begin with the people you serve. Create your organisation profile and publish what is genuinely needed. When donors reach out, you can go straight to chat to see who is approaching you and what they are offering, then coordinate the handoff there.
 
 <img width="1440" alt="Organisations directory" src="https://github.com/user-attachments/assets/5b1e22ab-a4e1-4d84-a934-d6734e7136b1" />
-
-When a donor offers something relevant, the organisation can review it, coordinate the next step and help the item reach the right place. The hope is for a calmer flow for organisations and a clearer answer for donors asking, "Where will this help most?"
 
 ## Please enjoy using the site
 

@@ -34,9 +34,11 @@ You begin with the item you already have. Browse what organisations actually nee
 
 ## If you are an organisation
 
-You begin with the people you serve. Create your organisation profile and publish what is genuinely needed, and star your priority items so people know what you actually need most. When donors reach out, you can go straight to chat to see who is approaching you and what they are offering, then coordinate the handoff there.
+You begin with the people you serve. Create your organisation profile and publish what is genuinely needed, and star your priority items so people know what you actually need most. When you browse goods offered by donors, matching labels show which items may match you and which may match an urgent need you have starred as a priority. When donors reach out, you can go straight to chat to see who is approaching you and what they are offering, then coordinate the handoff there.
 
 <img width="1440" alt="Organisations directory" src="https://github.com/user-attachments/assets/5b1e22ab-a4e1-4d84-a934-d6734e7136b1" />
+
+[<img width="1440" alt="Goods offered by donors with organisation match labels" src="./organisation-matches.svg" />](./organisation-matches.svg)
 
 ## The bigger picture
 

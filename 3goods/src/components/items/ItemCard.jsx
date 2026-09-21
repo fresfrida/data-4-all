@@ -9,10 +9,11 @@ import { ROUTES, ITEM_STATUS } from "../../lib/constants.js";
 
 /**
  * `match` (optional, display-only): open needs in the item's category, `{count, org, urgent}` where `org` is the first
- * matching organisation. The whole card stays clickable through the title link's stretched ::after, so the
+ * matching organisation. `match.own` (organisation sessions only, `{urgent}`) replaces the count and organisation link with one
+ * "this item may match you" flag; DiscoverItems prepares the right shape for the session. The whole card stays clickable through the title link's stretched ::after, so the
  * organisation link can sit inside the card without nesting one <a> in another.
  *
- * @param {{item: import('../../data/types.js').Item, categoryLabel: string, secondaryCategoryLabel?: string, areaLabel: string, showStatus?: boolean, match?: {count: number, org?: {id: string, name: string}, urgent?: boolean}}} props
+ * @param {{item: import('../../data/types.js').Item, categoryLabel: string, secondaryCategoryLabel?: string, areaLabel: string, showStatus?: boolean, match?: {count: number, org?: {id: string, name: string}, urgent?: boolean, own?: {urgent: boolean}}}} props
  */
 export function ItemCard({ item, categoryLabel, secondaryCategoryLabel, areaLabel, showStatus = false, match }) {
   const { locale } = useLocale();
@@ -78,6 +79,11 @@ export function ItemCard({ item, categoryLabel, secondaryCategoryLabel, areaLabe
               {t("itemMatch.offered")}
               {match.count > 0 && <> • {match.count === 1 ? t("itemMatch.matchesOne") : t("itemMatch.matchesMany", { count: match.count })}</>}
             </span>
+            {match.own && (
+              <span data-testid="item-own-match" className="font-bold text-accent-600">
+                {t(match.own.urgent ? "itemMatch.matchesYouUrgent" : "itemMatch.matchesYou")}
+              </span>
+            )}
             {match.org && (
               <Link
                 to={ROUTES.organisation(match.org.id)}

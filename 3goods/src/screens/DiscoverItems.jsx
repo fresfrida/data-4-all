@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAsync } from "../lib/useAsync.js";
+import { ownNeedMatch } from "../lib/needMatching.js";
+import { useSession } from "../context/SessionContext.jsx";
 import { getItems } from "../services/itemsService.js";
 import { getNeeds } from "../services/needsService.js";
 import { getOrganisations } from "../services/organisationsService.js";
@@ -25,7 +27,7 @@ async function loadDiscoverItems() {
     getNeeds(),
     getOrganisations(),
   ]);
-  return { items, areas, categories, needsByCategory: groupNeedsByCategory(needs, organisations) };
+  return { items, areas, categories, needs, needsByCategory: groupNeedsByCategory(needs, organisations) };
 }
 
 /**
@@ -52,6 +54,7 @@ export function DiscoverItems() {
   const { status, data, error, reload } = useAsync(loadDiscoverItems, []);
   const { locale } = useLocale();
   const t = useTranslate();
+  const { role, identity } = useSession();
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState(null);
   // The page lives in the URL (?page=2) so Back from an item lands on the same page.
@@ -87,6 +90,12 @@ export function DiscoverItems() {
     return area?.[locale] ?? area?.en ?? areaId;
   };
   const matchFor = (item) => {
+    // Logged in as an organisation, the public cross-organisation badge is noise: the only question is whether the item
+    // matches this organisation's own stated needs. Guests and donors keep the public badge below.
+    if (role === "organisation") {
+      const own = ownNeedMatch(data.needs, identity?.organisationId, item);
+      return own ? { count: 0, own } : { count: 0 };
+    }
     const entry = data.needsByCategory.get(item.category);
     if (!entry) return { count: 0 };
     return { count: entry.count, org: { id: entry.org.id, name: entry.org.name[locale] ?? entry.org.name.en }, urgent: entry.urgent };

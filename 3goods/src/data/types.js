@@ -23,9 +23,12 @@
 
 /**
  * @typedef {Object} Area
- * @property {string} id
+ * A province (row of the live `provinces` table, DECISIONS.md D-062). Read via referenceDataService, never a static list.
+ * @property {string} id      the province slug; what organisations.city / items.area hold
  * @property {string} en
  * @property {string} vi
+ * @property {string} mapKey  the province name as the map data spells it ("HàTĩnh")
+ * @property {string|null} region
  */
 
 /**
@@ -44,6 +47,8 @@
  * @property {{en: string, vi: string}} name
  * @property {{en: string, vi: string}} mission
  * @property {string} areaId
+ * @property {{lat: number, lng: number}|null} [location]  exact position where one is known (D-073), else null; the
+ *   province in `areaId` is the general location. Used only to match map facility pins to this organisation.
  * @property {boolean} verified  demo trust indicator, not a real verification
  * @property {boolean} isDemo   always true in this prototype — surfaced in UI
  * @property {string[]} pastReceivedItemIds
@@ -54,9 +59,9 @@
  * @property {string} id
  * @property {string} organisationId
  * @property {Category} category
- * @property {string} tag              e.g. "Rice", "Sanitary pads"
  * @property {boolean} priority        true = priority need
  * @property {string} createdAt        ISO string
+ * One need per organisation per category (D-064).
  */
 
 /**
@@ -65,9 +70,10 @@
  */
 
 /**
- * @typedef {"available"|"reserved"|"unavailable"} ItemStatus
- * `reserved` = an organisation's request has been accepted (see D-009).
- * `unavailable` = donor withdrew the listing.
+ * @typedef {"available"|"reserved"|"collected"|"unavailable"} ItemStatus
+ * The item's only status (D-075), stored in `items.status`; screens read it as-is.
+ * available -> reserved (an organisation's request was accepted, D-009) -> collected (goods handed over).
+ * `unavailable` = the donor withdrew the listing (not a step of that lifecycle).
  */
 
 /**
@@ -77,7 +83,9 @@
  * @property {string} donorName
  * @property {string} title
  * @property {Category} category
- * @property {string[]} needTags        subset of tags relevant to `category`
+ * @property {Category} [secondaryCategory]  optional 2nd category (e.g. a children's
+ *   book lists under both Books and Children Items) — see DECISIONS.md D-047.
+ *   Deliberately capped at one extra, never unbounded many.
  * @property {string} condition         e.g. "Like new", "Well used, still functional"
  * @property {string} areaId
  * @property {string} description
@@ -91,9 +99,9 @@
  */
 
 /**
- * @typedef {"requested"|"accepted"|"arranging_collection"|"completed"|"declined"} RequestStatus
- * Display-only "no longer available" is derived (item.status !== 'available'
- * and this isn't the accepted request), not a stored status — see D-009.
+ * @typedef {"pending"|"accepted"|"declined"} RequestStatus
+ * Only whether this organisation was chosen (D-075). Accepting one request declines the item's other pending requests
+ * in the database; handover progress lives on the item (`ItemStatus`), not here.
  */
 
 /**
@@ -108,8 +116,9 @@
 
 /**
  * @typedef {Object} Conversation
+ * One thread per (item, organisation, donor); it exists only once its first message has been sent (D-075).
  * @property {string} id
- * @property {string} [requestId]
+ * @property {string} [itemId]
  * @property {string} donorId
  * @property {string} organisationId
  */

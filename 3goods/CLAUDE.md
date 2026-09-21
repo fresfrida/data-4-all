@@ -44,18 +44,30 @@ file's comment for why.
 - **Components never import seed data or touch Supabase directly.** All data access goes through
   `src/services/*.js` (async functions: `getItems`, `createDonation`, `getNeeds`, `createRequest`,
   `getMessages`, etc.). Services call `src/lib/db.js`, the one storage engine, backed by Supabase/
-  Postgres (see `supabase/schema.sql` for tables + RLS, `docs/DECISIONS.md` D-041 for why/how). No
-  real auth — every table and the `item-photos` bucket use a single permissive policy; don't reuse
-  this pattern for real user data without adding real auth first. `.env.local` needs
-  `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` (see `.env.example`); `npm run db:seed` pushes
-  `src/data/*.js` into the real tables (idempotent, safe to re-run).
-- **Donation photos are persisted** (D-041 supersedes D-008): `DonationForm` uploads selected files
-  to the public `item-photos` Storage bucket via `services/storageService.js`, and the returned
-  public URL(s) go in `photoPaths` — the same field seed items already used for bundled
-  `public/demo-items/` images.
+  Postgres (see `supabase/schema.sql` for tables + RLS). No real auth — every table uses a single
+  permissive policy; don't reuse this pattern for real user data without adding real auth first.
+  `.env.local` needs `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` (see `.env.example`); `npm run
+  db:seed` pushes `src/data/*.js` into the real tables (idempotent via the fixed uuids in
+  `src/data/ids.js`, safe to re-run).
+  - **Areas are rows of the live `provinces` table** (all 63 provinces, D-062), read through `referenceDataService.getAreas()`;
+    an "area id" is a province `slug`, stored as text in `organisations.city` / `items.area`. There is no static area list.
+  - **The live database's column names/shapes don't match this app's camelCase model 1:1**
+    (uuid `category_id`/`org_id`/`donor_id` foreign keys instead of plain-text fields, a single
+    `image_base64` instead of a `photoPaths` array, `organisations.name`/`description` as plain
+    text instead of bilingual `{en, vi}`, no `updates` table in the original live schema, etc. — see
+    DECISIONS.md D-042 for the full reconciliation). Every service's `fromRow`/`toRow`-style
+    functions are the *only* place that translation happens — screens and components keep using
+    the same shapes documented in `src/data/types.js` regardless of what the DB column is actually
+    called. When adding a new service function, follow this pattern rather than leaking a raw
+    Supabase row shape into a screen.
+- **Donation photos are stored as base64** (D-042 supersedes D-041's Storage-bucket approach):
+  `DonationForm` reads the first selected file as a base64 data URL via `services/storageService.js`
+  (no network call, no bucket), and it goes in `photoPaths[0]` — the same field seed items already
+  used for bundled `public/demo-items/` images. Only one photo per item is supported (the live
+  schema has room for exactly one).
 - **Business rules live in the service layer, not in screens.** E.g. `requestsService.acceptRequest`
   is responsible for enforcing "one accepted organisation per listing," updating item status, and
-  ensuring a conversation + update notification exist — a screen never orchestrates that by calling
+  declining the item's other pending requests, and pushing the update notification — a screen never orchestrates that by calling
   three services itself.
 - **`role` vs `session` are different concerns** (`SessionContext`): `role` picks which nav/UI
   renders (donor or organisation view) and is freely switchable for testing; `session` is the demo
@@ -82,9 +94,16 @@ file's comment for why.
 - **Map vs organisation data stay separate records, never merged.** Disaster-context data (province
   scores, OSM facility pins) comes only from the map API client
   (`src/features/map/api/mapApiClient.js`) hitting the root site's deployed `/api/*` endpoints.
-  3goods organisations come only from `organisationsService`. A facility pin from OpenStreetMap is
+  3goods organisations come only from `organisationsService`. The client calls all five endpoints (`provinces`,
+  `facilities`, `metro-hubs`, `item-needs`, `meta`) on the deployed root map site (base URL
+  `VITE_MAP_API_BASE_URL`, default `https://002-data-4-life.vercel.app`). If the API is unreachable it falls back to
+  the bundled `public/data/` snapshot (a copy of what the API serves) and the map shows a notice — see D-057.
+  The vendored `mapView.js`/`geo.js` are verbatim copies of the root site's `web/` files (compare with `cmp`); the
+  base-map land around Vietnam is `neighbour_land.json`, built by `3goods-map/src/build_neighbour_land.mjs` (D-061). A facility pin from OpenStreetMap is
   never presented as a registered 3goods organisation, and no score is invented where the map API
-  returns `null`.
+  returns `null`. The one bridge is a *computed match*: a pin within 150 m of an organisation's optional exact `location` gets a popup
+  that links to that organisation (`features/map/facilityMatching.js`, D-073); the two records stay separate and the popup labels each
+  for what it is. Unmatched pins offer an interest form (`facility_interests`), not registration.
 
 ## Verification requirement
 

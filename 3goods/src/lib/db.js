@@ -16,14 +16,18 @@
  * service does its own `.filter()` on `getAll()`'s result), it's kept only
  * because a couple of screens/services still reference it in comments.
  *
- * IDs: seed records use stable ids like "item-001"; anything created at
- * runtime gets `${prefix}-${timestamp}-${random}` via `makeId`.
+ * IDs: every table's `id` column is a real Postgres `uuid` (see
+ * supabase/schema.sql). Seed records use fixed uuids from data/ids.js so
+ * re-seeding stays idempotent; anything created at runtime gets a fresh
+ * `crypto.randomUUID()` via `makeId` (the `prefix` param is unused now —
+ * kept so call sites didn't need to change when ids stopped being
+ * human-readable strings like "item-001", see DECISIONS.md D-042).
  */
 
 import { supabase } from "./supabaseClient.js";
 
-export function makeId(prefix) {
-  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+export function makeId(_prefix) {
+  return crypto.randomUUID();
 }
 
 export async function getAll(table) {
@@ -50,11 +54,27 @@ export async function insert(table, record, idPrefix) {
   return data;
 }
 
+/**
+ * Insert without reading the row back. For insert-only tables (e.g. `facility_interests`) whose policy lets the public key
+ * write but not read: `insert()` above asks for the row back and would be refused there.
+ */
+export async function insertBlind(table, record) {
+  const { error } = await supabase.from(table).insert(record);
+  if (error) throw error;
+}
+
 /** @returns the updated record, or null if no row matched `id`. */
 export async function update(table, id, patch) {
   const { data, error } = await supabase.from(table).update(patch).eq("id", id).select().maybeSingle();
   if (error) throw error;
   return data ?? null;
+}
+
+/** Calls a Postgres function (see supabase/schema.sql). @returns whatever the function returns. */
+export async function rpc(fn, args) {
+  const { data, error } = await supabase.rpc(fn, args);
+  if (error) throw error;
+  return data;
 }
 
 /** @returns true if a row was removed, false if `id` didn't exist. */

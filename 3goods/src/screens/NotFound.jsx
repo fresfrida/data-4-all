@@ -7,7 +7,7 @@ export function NotFound() {
   return (
     <div className="flex flex-col items-center gap-2 py-16 text-center">
       <p className="text-sm font-medium text-ink-700">{t("screens.notFoundTitle")}</p>
-      <Link to={ROUTES.discoverNeeds} className="text-sm font-semibold text-accent-600 hover:underline">
+      <Link to={ROUTES.home} className="text-sm font-semibold text-accent-600 hover:underline">
         {t("actions.backToHome")}
       </Link>
     </div>

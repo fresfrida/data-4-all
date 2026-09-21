@@ -1,15 +1,11 @@
 import { NavLink } from "react-router-dom";
-import { useSession } from "../../context/SessionContext.jsx";
 import { useTranslate } from "../../i18n/useTranslate.js";
 import { LanguageSwitcher } from "../controls/LanguageSwitcher.jsx";
 import { DemoLoginButton } from "../controls/DemoLoginButton.jsx";
 import { HeartHandshakeIcon } from "../icons.jsx";
-import { ROUTES } from "../../lib/constants.js";
 
 export function MobileHeader() {
-  const { role } = useSession();
   const t = useTranslate();
-  const homeRoute = role === "organisation" ? ROUTES.discoverItems : ROUTES.discoverNeeds;
 
   return (
     <header className="sticky top-0 z-30 border-b border-ink-600/10 bg-cream-50/95 px-4 py-2.5 backdrop-blur sm:hidden">

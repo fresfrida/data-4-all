@@ -9,10 +9,10 @@ import { MODES } from "./modes.js";
 // map and a panel need to be wired together, and where DOM ids live. Every
 // other module is usable without knowing this file exists.
 async function main() {
-  const { features, itemNeeds, facilities, metroHubs } = await loadAppData();
+  const { features, itemNeeds, facilities, metroHubs, land } = await loadAppData();
 
   const mapView = new MapView(document.getElementById("mapCol"), {
-    features, metroHubs, facilities,
+    features, metroHubs, facilities, land,
   });
 
   const state = new AppState();

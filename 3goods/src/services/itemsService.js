@@ -1,36 +1,108 @@
 /**
  * Item listings. Components call these, never src/lib/db.js or src/data
  * directly. Backed by Supabase — see src/lib/db.js.
+ *
+ * The live `items` table's columns don't match this file's app-facing shape
+ * 1:1 (uuid `category_id` instead of a plain-text `category`, a single
+ * `image_base64` instead of a `photoPaths` array, no cached `donorName`,
+ * etc. — see DECISIONS.md D-042). `fromRow`/`toRow` are the one place that
+ * translation happens, so every other service/screen keeps using the same
+ * camelCase `Item` shape (data/types.js) it always did.
  */
 
 import { getAll, getById, insert, update } from "../lib/db.js";
 import { AppError } from "../lib/errors.js";
+import { ITEM_STATUS } from "../lib/constants.js";
+import { isValidQuantity } from "../lib/quantity.js";
+import { getCategoryDbId, getCategorySlugFromDbId } from "./referenceDataService.js";
+
+/** Multiple collection windows are joined into the single `collection_windows` text column. */
+const WINDOW_SEP = " | ";
+
+async function fromRow(row, usersById) {
+  const donor = usersById?.get(row.donor_id);
+  return {
+    id: row.id,
+    donorId: row.donor_id,
+    donorName: donor?.name ?? "",
+    title: row.title,
+    titleVi: row.title_vi ?? undefined,
+    category: await getCategorySlugFromDbId(row.category_id),
+    secondaryCategory: (await getCategorySlugFromDbId(row.secondary_category_id)) ?? undefined,
+    condition: row.condition ?? "",
+    areaId: row.area ?? "",
+    description: row.description ?? "",
+    deliveryOption: row.delivery_option,
+    collectionWindows: row.collection_windows ? row.collection_windows.split(WINDOW_SEP).filter(Boolean) : [],
+    notes: row.notes ?? "",
+    quantity: row.quantity ?? null,
+    unit: row.unit ?? null,
+    photoPaths: row.image_base64 ? [row.image_base64] : [],
+    status: row.status,
+    acceptedRequestId: row.accepted_request_id ?? undefined,
+    createdAt: row.created_at,
+  };
+}
+
+async function toInsertRow(payload) {
+  const quantity = payload.quantity ?? null;
+  return {
+    // Only written when given: `items.quantity`/`unit` come from an additive SQL
+    // migration (D-052), and a listing with no quantity must keep working
+    // even against a database that hasn't had it applied yet.
+    ...(quantity !== null && { quantity, unit: payload.unit || null }),
+    title: payload.title.trim(),
+    title_vi: payload.titleVi || null,
+    category_id: await getCategoryDbId(payload.category),
+    secondary_category_id: payload.secondaryCategory ? await getCategoryDbId(payload.secondaryCategory) : null,
+    condition: payload.condition ?? "",
+    area: payload.areaId,
+    description: payload.description ?? "",
+    delivery_option: payload.deliveryOption,
+    collection_windows: (payload.collectionWindows ?? []).join(WINDOW_SEP),
+    notes: payload.notes ?? "",
+    image_base64: payload.photoPaths?.[0] ?? null,
+    status: ITEM_STATUS.available,
+    donor_id: payload.donorId,
+    created_at: new Date().toISOString(),
+  };
+}
+
+/** Browse order: available first, then reserved, then collected, then withdrawn; newest first inside each group. */
+const STATUS_ORDER = {
+  [ITEM_STATUS.available]: 0,
+  [ITEM_STATUS.reserved]: 1,
+  [ITEM_STATUS.collected]: 2,
+  [ITEM_STATUS.unavailable]: 3,
+};
+
+async function loadUsersById() {
+  const users = await getAll("users");
+  return new Map(users.map((u) => [u.id, u]));
+}
 
 /**
  * @param {Object} [filters]
  * @param {string} [filters.category]
  * @param {string} [filters.areaId]
  * @param {string} [filters.deliveryOption]
- * @param {string} [filters.status]              defaults to only "available" if omitted
+ * @param {string} [filters.status]              only this stored status; omitted = every status (D-067)
  * @param {string} [filters.donorId]              only this donor's items
- * @param {string[]} [filters.needTags]            item must include at least one of these tags
  * @returns {Promise<import('../data/types.js').Item[]>}
  */
 export async function getItems(filters = {}) {
-  let rows = await getAll("items");
+  const [rawRows, usersById] = await Promise.all([getAll("items"), loadUsersById()]);
+  let rows = await Promise.all(rawRows.map((row) => fromRow(row, usersById)));
 
   if (filters.donorId) {
     rows = rows.filter((item) => item.donorId === filters.donorId);
   } else if (filters.status) {
     rows = rows.filter((item) => item.status === filters.status);
-  } else {
-    // Default browsing view: only show what's still available unless the
-    // caller explicitly asked for a specific status or "my own items".
-    rows = rows.filter((item) => item.status === "available");
   }
+  // No status filter: items stay listed once reserved or collected (D-067), they just sort below the available ones.
 
   if (filters.category) {
-    rows = rows.filter((item) => item.category === filters.category);
+    rows = rows.filter((item) => item.category === filters.category || item.secondaryCategory === filters.category);
   }
   if (filters.areaId) {
     rows = rows.filter((item) => item.areaId === filters.areaId);
@@ -38,16 +110,17 @@ export async function getItems(filters = {}) {
   if (filters.deliveryOption) {
     rows = rows.filter((item) => item.deliveryOption === filters.deliveryOption);
   }
-  if (filters.needTags?.length) {
-    rows = rows.filter((item) => item.needTags.some((tag) => filters.needTags.includes(tag)));
-  }
 
-  return rows.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+  // A donor's own list ("Me") keeps plain newest-first; the browse list sorts by status first.
+  const rank = (item) => (filters.donorId ? 0 : STATUS_ORDER[item.status] ?? 99);
+  return rows.sort((a, b) => rank(a) - rank(b) || (a.createdAt < b.createdAt ? 1 : -1));
 }
 
 /** @returns {Promise<import('../data/types.js').Item|null>} */
 export async function getItemById(id) {
-  return getById("items", id);
+  const row = await getById("items", id);
+  if (!row) return null;
+  return fromRow(row, await loadUsersById());
 }
 
 /**
@@ -59,40 +132,45 @@ export async function createDonation(payload) {
   if (!payload.category) throw new AppError("categoryRequired");
   if (!payload.areaId) throw new AppError("areaRequired");
   if (!payload.deliveryOption) throw new AppError("deliveryOptionRequired");
+  if (!isValidQuantity(payload.quantity ?? null)) throw new AppError("quantityInvalid");
 
-  return insert(
-    "items",
-    {
-      donorId: payload.donorId,
-      donorName: payload.donorName,
-      title: payload.title.trim(),
-      category: payload.category,
-      needTags: payload.needTags ?? [],
-      condition: payload.condition ?? "",
-      areaId: payload.areaId,
-      description: payload.description ?? "",
-      deliveryOption: payload.deliveryOption,
-      collectionWindows: payload.collectionWindows ?? [],
-      notes: payload.notes ?? "",
-      photoPaths: payload.photoPaths ?? [],
-      status: "available",
-      createdAt: new Date().toISOString(),
-    },
-    "item",
-  );
+  const row = await insert("items", await toInsertRow(payload), "item");
+  const usersById = await loadUsersById();
+  return fromRow(row, usersById);
 }
 
-/** Donor withdraws their own listing. */
-export async function markItemUnavailable(itemId) {
-  return update("items", itemId, { status: "unavailable" });
+/**
+ * The item lifecycle (D-075) is available -> reserved -> collected, plus `unavailable` when the donor withdraws the listing.
+ * Every change of status that involves a request — reserving, un-reserving, collecting — is a database function that also
+ * updates the requests (requestsService: accept_request, undo_acceptance, mark_item_collected, D-076/D-077), so this file cannot
+ * write those statuses at all. What is left here is the donor's own withdraw / relist, and this table is its whole state machine.
+ */
+const TRANSITIONS = {
+  [ITEM_STATUS.available]: [ITEM_STATUS.unavailable],
+  [ITEM_STATUS.unavailable]: [ITEM_STATUS.available],
+};
+
+/**
+ * The only function in the app that writes `items.status` directly: withdraw (available -> unavailable) and relist
+ * (unavailable -> available). A reserved or collected item cannot be withdrawn: it throws `itemStatusChangeInvalid`.
+ *
+ * @param {string} itemId
+ * @param {"available"|"unavailable"} nextStatus
+ */
+export async function updateItemStatus(itemId, nextStatus) {
+  const row = await getById("items", itemId);
+  if (!row) throw new AppError("itemNotFound");
+  if (!TRANSITIONS[row.status]?.includes(nextStatus)) throw new AppError("itemStatusChangeInvalid", { from: row.status, to: nextStatus });
+
+  return fromRow(await update("items", itemId, { status: nextStatus, accepted_request_id: null }), await loadUsersById());
 }
 
-/** Restore item status back to available (Undo availability). */
-export async function reopenItemAvailability(itemId) {
-  return update("items", itemId, { status: "available", acceptedRequestId: null });
+/** Donor withdraws their own listing (only while it is still available). */
+export function markItemUnavailable(itemId) {
+  return updateItemStatus(itemId, ITEM_STATUS.unavailable);
 }
 
-/** Internal — used by requestsService when a request is accepted. */
-export async function _markItemReserved(itemId, requestId) {
-  return update("items", itemId, { status: "reserved", acceptedRequestId: requestId });
+/** Donor relists a withdrawn listing. Not for releasing a reservation: that is requestsService.undoAcceptance. */
+export function reopenItemAvailability(itemId) {
+  return updateItemStatus(itemId, ITEM_STATUS.available);
 }

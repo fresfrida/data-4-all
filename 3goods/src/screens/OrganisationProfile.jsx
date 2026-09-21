@@ -2,7 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { useAsync } from "../lib/useAsync.js";
 import { getOrganisationById } from "../services/organisationsService.js";
 import { getNeeds } from "../services/needsService.js";
-import { getAreaById, getTagsForCategory } from "../services/referenceDataService.js";
+import { getAreaById, getCategories } from "../services/referenceDataService.js";
 import { getItemById } from "../services/itemsService.js";
 import { useLocale } from "../i18n/LocaleContext.jsx";
 import { useTranslate } from "../i18n/useTranslate.js";
@@ -16,17 +16,17 @@ import { ROUTES } from "../lib/constants.js";
 async function loadOrganisationProfile(orgId) {
   const organisation = await getOrganisationById(orgId);
   if (!organisation) return { organisation: null };
-  const [area, needs] = await Promise.all([getAreaById(organisation.areaId), getNeeds({ organisationId: orgId })]);
-  const tagLabelsByCategory = {};
-  for (const need of needs) {
-    if (!tagLabelsByCategory[need.category]) tagLabelsByCategory[need.category] = await getTagsForCategory(need.category);
-  }
+  const [area, needs, categories] = await Promise.all([
+    getAreaById(organisation.areaId),
+    getNeeds({ organisationId: orgId }),
+    getCategories(),
+  ]);
   const pastItems = [];
   for (const itemId of organisation.pastReceivedItemIds) {
     const item = await getItemById(itemId);
     if (item) pastItems.push(item);
   }
-  return { organisation, area, needs, tagLabelsByCategory, pastItems };
+  return { organisation, area, needs, categories, pastItems };
 }
 
 /** Read-only public profile — any viewer, not gated by login. */
@@ -40,11 +40,13 @@ export function OrganisationProfile() {
   if (status === "error") return <ErrorState message={t("errors.generic")} onRetry={reload} />;
   if (!data.organisation) return <ErrorState message={t("screens.organisationNoLongerExists")} />;
 
-  const { organisation, area, needs, tagLabelsByCategory, pastItems } = data;
-  const tagLabel = (category, tagId) =>
-    tagLabelsByCategory[category]?.find((tag) => tag.id === tagId)?.[locale] ??
-    tagLabelsByCategory[category]?.find((tag) => tag.id === tagId)?.en ??
-    tagId;
+  const { organisation, area, needs, categories, pastItems } = data;
+  const categoryLabel = (categoryId) => {
+    const category = categories.find((c) => c.id === categoryId);
+    return category?.[locale] ?? category?.en ?? categoryId;
+  };
+  // One pill per category (an organisation can list several needs in the same category): category name + priority star only.
+  const needCategories = [...new Set(needs.map((need) => need.category))];
 
   const orgName = organisation.name[locale] ?? organisation.name.en;
 
@@ -75,8 +77,12 @@ export function OrganisationProfile() {
           <EmptyState title={t("emptyStates.noNeeds")} />
         ) : (
           <div className="flex flex-wrap gap-1.5">
-            {needs.map((need) => (
-              <NeedChip key={need.id} label={tagLabel(need.category, need.tag)} priority={need.priority} />
+            {needCategories.map((categoryId) => (
+              <NeedChip
+                key={categoryId}
+                label={categoryLabel(categoryId)}
+                priority={needs.some((need) => need.category === categoryId && need.priority)}
+              />
             ))}
           </div>
         )}

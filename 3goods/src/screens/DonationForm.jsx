@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAsync } from "../lib/useAsync.js";
-import { getAreas, getCategories, getTagsForCategory } from "../services/referenceDataService.js";
+import { getAreas, getCategories } from "../services/referenceDataService.js";
+import { UNITS, parseQuantity } from "../lib/quantity.js";
 import { createDonation } from "../services/itemsService.js";
 import { uploadItemPhotos } from "../services/storageService.js";
 import { translateError } from "../lib/errors.js";
@@ -9,6 +10,7 @@ import { useSession } from "../context/SessionContext.jsx";
 import { useLocale } from "../i18n/LocaleContext.jsx";
 import { useTranslate } from "../i18n/useTranslate.js";
 import { LoadingState } from "../components/feedback/LoadingState.jsx";
+import { EmptyState } from "../components/feedback/EmptyState.jsx";
 import { NeedChip } from "../components/needs/NeedChip.jsx";
 import { ROUTES } from "../lib/constants.js";
 
@@ -17,17 +19,21 @@ async function loadFormReferenceData() {
   return { areas, categories };
 }
 
-/** Donor posts a donation. Gated to donor role + demo login (D-004/D-005). */
+/** Donor posts a donation. Gated to donor role + demo login (D-045/D-005). */
 export function DonationForm() {
   const { status, data } = useAsync(loadFormReferenceData, []);
-  const { role, identity, requireLogin } = useSession();
+  const { role, isLoggedIn, requireLogin } = useSession();
   const { locale } = useLocale();
   const t = useTranslate();
   const navigate = useNavigate();
+  // "/donate/new?area=hanoi" (e.g. from the Relief Map's "Post a donation for …" link) starts with that area chosen.
+  const [searchParams] = useSearchParams();
+  const areaParam = searchParams.get("area");
 
   const [title, setTitle] = useState("");
+  const [titleVi, setTitleVi] = useState("");
   const [category, setCategory] = useState("");
-  const [tags, setTags] = useState([]);
+  const [secondaryCategory, setSecondaryCategory] = useState("");
   const [condition, setCondition] = useState("");
   const [areaId, setAreaId] = useState("");
   const [description, setDescription] = useState("");
@@ -35,6 +41,8 @@ export function DonationForm() {
   const [windowInput, setWindowInput] = useState("");
   const [collectionWindows, setCollectionWindows] = useState([]);
   const [notes, setNotes] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [unit, setUnit] = useState(UNITS[0]);
   const [photoFiles, setPhotoFiles] = useState([]);
   const [photoPreviews, setPhotoPreviews] = useState([]);
   const [uploadingPhotos, setUploadingPhotos] = useState(false);
@@ -43,9 +51,30 @@ export function DonationForm() {
   // instead of freezing it in whatever language was active when it was
   // thrown (found during 3G-017 verification; see DECISIONS.md D-017).
   const [submitError, setSubmitError] = useState(null);
-  const [tagOptions, setTagOptions] = useState([]);
+
+  useEffect(() => {
+    if (data?.areas.some((area) => area.id === areaParam)) setAreaId((current) => current || areaParam);
+  }, [data, areaParam]);
 
   if (status === "loading" || !data) return <LoadingState />;
+
+  if (!isLoggedIn) {
+    return (
+      <EmptyState
+        title={t("screens.guestBrowsingTitle")}
+        hint={t("demo.notSecure")}
+        action={
+          <button
+            type="button"
+            onClick={() => requireLogin(() => {})}
+            className="rounded-full bg-accent-500 px-4 py-2 text-sm font-semibold text-white hover:bg-accent-600"
+          >
+            {t("demo.loginAsDonor")}
+          </button>
+        }
+      />
+    );
+  }
 
   if (role !== "donor") {
     return (
@@ -55,14 +84,9 @@ export function DonationForm() {
     );
   }
 
-  const onCategoryChange = async (nextCategory) => {
+  const onCategoryChange = (nextCategory) => {
     setCategory(nextCategory);
-    setTags([]);
-    setTagOptions(await getTagsForCategory(nextCategory));
-  };
-
-  const toggleTag = (tagId) => {
-    setTags((prev) => (prev.includes(tagId) ? prev.filter((id) => id !== tagId) : [...prev, tagId]));
+    if (secondaryCategory === nextCategory) setSecondaryCategory("");
   };
 
   const addWindow = () => {
@@ -77,7 +101,7 @@ export function DonationForm() {
     setPhotoPreviews(files.map((file) => URL.createObjectURL(file)));
   };
 
-  const doSubmit = async () => {
+  const doSubmit = async (loggedInIdentity) => {
     setSubmitError(null);
     try {
       setUploadingPhotos(photoFiles.length > 0);
@@ -85,12 +109,15 @@ export function DonationForm() {
       setUploadingPhotos(false);
 
       const item = await createDonation({
-        donorId: identity.id,
-        donorName: identity.name,
+        donorId: loggedInIdentity.id,
+        donorName: loggedInIdentity.name,
         title,
+        titleVi,
         category,
-        needTags: tags,
+        secondaryCategory: secondaryCategory || undefined,
         condition,
+        quantity: parseQuantity(quantity),
+        unit,
         areaId,
         description,
         deliveryOption,
@@ -143,6 +170,16 @@ export function DonationForm() {
       </label>
 
       <label className="flex flex-col gap-1.5">
+        <span className="text-xs font-semibold text-ink-700">{t("fields.titleVi")}</span>
+        <input
+          value={titleVi}
+          onChange={(e) => setTitleVi(e.target.value)}
+          className="rounded-lg border border-ink-600/20 px-3 py-2 text-sm"
+          placeholder={t("fields.titleViPlaceholder")}
+        />
+      </label>
+
+      <label className="flex flex-col gap-1.5">
         <span className="text-xs font-semibold text-ink-700">{t("fields.category")}</span>
         <select
           required
@@ -161,27 +198,23 @@ export function DonationForm() {
         </select>
       </label>
 
-      {tagOptions.length > 0 && (
-        <div className="flex flex-col gap-1.5">
-          <span className="text-xs font-semibold text-ink-700">{t("fields.needTags")}</span>
-          <div className="flex flex-wrap gap-1.5">
-            {tagOptions.map((tag) => (
-              <button
-                type="button"
-                key={tag.id}
-                onClick={() => toggleTag(tag.id)}
-                className={`rounded-full border px-3 py-1.5 text-xs font-medium ${
-                  tags.includes(tag.id)
-                    ? "border-accent-500 bg-accent-100 text-accent-700"
-                    : "border-ink-600/20 bg-white text-ink-600"
-                }`}
-              >
-                {tag[locale] ?? tag.en}
-              </button>
+      <label className="flex flex-col gap-1.5">
+        <span className="text-xs font-semibold text-ink-700">{t("fields.secondaryCategory")}</span>
+        <select
+          value={secondaryCategory}
+          onChange={(e) => setSecondaryCategory(e.target.value)}
+          className="rounded-lg border border-ink-600/20 px-3 py-2 text-sm"
+        >
+          <option value="">{t("fields.secondaryCategoryNone")}</option>
+          {data.categories
+            .filter((c) => c.id !== category)
+            .map((c) => (
+              <option key={c.id} value={c.id}>
+                {c[locale] ?? c.en}
+              </option>
             ))}
-          </div>
-        </div>
-      )}
+        </select>
+      </label>
 
       <label className="flex flex-col gap-1.5">
         <span className="text-xs font-semibold text-ink-700">{t("fields.condition")}</span>
@@ -192,6 +225,37 @@ export function DonationForm() {
           placeholder={t("fields.conditionPlaceholder")}
         />
       </label>
+
+      <div className="flex gap-3">
+        <label className="flex flex-1 flex-col gap-1.5">
+          <span className="text-xs font-semibold text-ink-700">{t("fields.quantityOptional")}</span>
+          <input
+            type="number"
+            inputMode="numeric"
+            min="1"
+            step="1"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+            placeholder={t("fields.quantityPlaceholder")}
+            className="rounded-lg border border-ink-600/20 px-3 py-2 text-sm"
+          />
+        </label>
+        <label className="flex flex-1 flex-col gap-1.5">
+          <span className="text-xs font-semibold text-ink-700">{t("fields.unit")}</span>
+          <select
+            value={unit}
+            onChange={(e) => setUnit(e.target.value)}
+            disabled={quantity === ""}
+            className="rounded-lg border border-ink-600/20 px-3 py-2 text-sm disabled:opacity-50"
+          >
+            {UNITS.map((u) => (
+              <option key={u} value={u}>
+                {t(`units.${u}`)}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
 
       <label className="flex flex-col gap-1.5">
         <span className="text-xs font-semibold text-ink-700">{t("fields.description")}</span>
@@ -214,7 +278,9 @@ export function DonationForm() {
           <option value="" disabled>
             {t("fields.selectArea")}
           </option>
-          {data.areas.map((a) => (
+          {[...data.areas]
+            .sort((a, b) => (a[locale] ?? a.en).localeCompare(b[locale] ?? b.en, locale))
+            .map((a) => (
             <option key={a.id} value={a.id}>
               {a[locale] ?? a.en}
             </option>
@@ -247,7 +313,7 @@ export function DonationForm() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <span className="text-xs font-semibold text-ink-700">{t("fields.collectionWindows")}</span>
+        <span className="text-xs font-semibold text-ink-700">{t("fields.collectionWindowsOptional")}</span>
         <div className="flex gap-2">
           <input
             value={windowInput}
@@ -256,7 +322,7 @@ export function DonationForm() {
             placeholder={t("fields.collectionWindowPlaceholder")}
           />
           <button type="button" onClick={addWindow} className="rounded-lg border border-ink-600/20 px-3 text-sm font-semibold">
-            {t("actions.addNeed")}
+            {t("actions.addWindow")}
           </button>
         </div>
         {collectionWindows.length > 0 && (

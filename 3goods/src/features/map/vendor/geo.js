@@ -2,27 +2,27 @@
 // pixel-space bounding boxes. Knows nothing about scores, colors, or DOM --
 // MapView decides what to do with what this module produces.
 
+// Web Mercator projection, same approach as the Singapore project this map
+// is modeled on: project then fit to a bounding box client-side so raw
+// lon/lat never leaks into the SVG.
 export function project([lon, lat]) {
-  const x = (lon * 20037508) / 180;
-  const y = (Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI) / 360)) * 20037508) / Math.PI;
+  const x = lon * 20037508 / 180;
+  const y = Math.log(Math.tan(Math.PI / 4 + lat * Math.PI / 360)) * 20037508 / Math.PI;
   return [x, -y];
 }
 
+// Builds one SVG path per feature, scaled/translated to fit targetWidth,
+// plus a pixel-space bounding box per shape (used later to zoom-to-province).
 export function buildShapes(features, targetWidth) {
-  let minx = 1e9,
-    miny = 1e9,
-    maxx = -1e9,
-    maxy = -1e9;
-  const polysByFeature = features.map((f) => {
+  let minx = 1e9, miny = 1e9, maxx = -1e9, maxy = -1e9;
+  const polysByFeature = features.map(f => {
     const poly = f.geometry.type === "Polygon" ? [f.geometry.coordinates] : f.geometry.coordinates;
     for (const rings of poly) {
       for (const ring of rings) {
-        ring.forEach((c) => {
+        ring.forEach(c => {
           const [x, y] = project(c);
-          minx = Math.min(minx, x);
-          maxx = Math.max(maxx, x);
-          miny = Math.min(miny, y);
-          maxy = Math.max(maxy, y);
+          minx = Math.min(minx, x); maxx = Math.max(maxx, x);
+          miny = Math.min(miny, y); maxy = Math.max(maxy, y);
         });
       }
     }
@@ -30,25 +30,19 @@ export function buildShapes(features, targetWidth) {
   });
 
   const pad = 10;
-  const span = Math.max(maxx - minx, ((maxy - miny) * targetWidth) / 900);
+  const span = Math.max(maxx - minx, (maxy - miny) * targetWidth / 900);
   const s = (targetWidth - 2 * pad) / span;
 
   const shapes = polysByFeature.map(({ poly, p }) => {
     let d = "";
-    let bx0 = 1e9,
-      by0 = 1e9,
-      bx1 = -1e9,
-      by1 = -1e9;
+    let bx0 = 1e9, by0 = 1e9, bx1 = -1e9, by1 = -1e9;
     for (const rings of poly) {
       for (const ring of rings) {
         ring.forEach((c, i) => {
           const [x, y] = project(c);
-          const px = (x - minx) * s + pad,
-            py = (y - miny) * s + pad;
-          bx0 = Math.min(bx0, px);
-          bx1 = Math.max(bx1, px);
-          by0 = Math.min(by0, py);
-          by1 = Math.max(by1, py);
+          const px = (x - minx) * s + pad, py = (y - miny) * s + pad;
+          bx0 = Math.min(bx0, px); bx1 = Math.max(bx1, px);
+          by0 = Math.min(by0, py); by1 = Math.max(by1, py);
           d += (i ? "L" : "M") + px.toFixed(1) + " " + py.toFixed(1);
         });
         d += "Z";
@@ -61,6 +55,8 @@ export function buildShapes(features, targetWidth) {
   return { shapes, width: targetWidth, height, minx, miny, s, pad };
 }
 
+// Projects a single lon/lat into the same pixel space buildShapes() used,
+// for placing point markers (metro hubs, facility pins) on top of the map.
 export function projectToPixel(lon, lat, extent) {
   const [x, y] = project([lon, lat]);
   return { x: (x - extent.minx) * extent.s + extent.pad, y: (y - extent.miny) * extent.s + extent.pad };
@@ -68,7 +64,33 @@ export function projectToPixel(lon, lat, extent) {
 
 export function minmaxSqrt(vals, rMin, rMax) {
   const roots = vals.map(Math.sqrt);
-  const lo = Math.min(...roots),
-    hi = Math.max(...roots);
-  return roots.map((r) => (hi === lo ? (rMin + rMax) / 2 : rMin + ((r - lo) / (hi - lo)) * (rMax - rMin)));
+  const lo = Math.min(...roots), hi = Math.max(...roots);
+  return roots.map(r => hi === lo ? (rMin + rMax) / 2 : rMin + (r - lo) / (hi - lo) * (rMax - rMin));
+}
+
+// Projects neighbouring-country polygons (Laos, Cambodia, ...) into the same
+// pixel space buildShapes() used, so the map can draw land around Vietnam.
+export function buildLandPaths(features, extent) {
+  return features.map(f => {
+    const poly = f.geometry.type === "Polygon" ? [f.geometry.coordinates] : f.geometry.coordinates;
+    let d = "";
+    for (const rings of poly) {
+      for (const ring of rings) {
+        ring.forEach(([lon, lat], i) => {
+          const { x, y } = projectToPixel(lon, lat, extent);
+          d += (i ? "L" : "M") + x.toFixed(1) + " " + y.toFixed(1);
+        });
+        d += "Z";
+      }
+    }
+    return { d, name: f.properties.name };
+  });
+}
+
+// The lon/lat rectangle {west, south, east, north} the map may ever show, as a
+// pixel-space rectangle {x0, y0, x1, y1}. Zoom-out and panning stop at its edges.
+export function worldPixelRect(world, extent) {
+  const topLeft = projectToPixel(world.west, world.north, extent);
+  const bottomRight = projectToPixel(world.east, world.south, extent);
+  return { x0: topLeft.x, y0: topLeft.y, x1: bottomRight.x, y1: bottomRight.y };
 }

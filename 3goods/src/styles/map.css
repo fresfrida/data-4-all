@@ -3,10 +3,10 @@
   position: relative;
   width: 100%;
   height: 480px;
-  background: #0a0e1a;
+  background: #82bfe9; /* sea blue, same as the map's ocean */
   border-radius: 1rem;
   overflow: hidden;
-  touch-action: none;
+  /* touch-action is set by MapView (pan-y: one finger scrolls the page, two fingers move/zoom the map) */
 }
 
 #svgRoot {
@@ -104,8 +104,26 @@
   fill: #f8fafc;
 }
 
-.facility-pin-group:hover .facility-pin {
+.facility-pin-group:hover .facility-pin,
+.facility-pin-group:focus-visible .facility-pin {
+  fill: #475569;
+}
+
+/* A registered 3goods organisation is at this pin (D-073). */
+.facility-pin-group.matched .facility-pin {
   fill: #2563eb;
+}
+.facility-pin-group.matched:hover .facility-pin {
+  fill: #1d4ed8;
+}
+
+/* The pin whose popup is open. */
+.facility-pin-group.selected .facility-pin {
+  stroke: #f59e0b;
+  stroke-width: 2.6;
+}
+.facility-pin-group:focus {
+  outline: none;
 }
 
 #facilityTip {
@@ -120,4 +138,36 @@
   max-width: 220px;
   z-index: 20;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Wrapper-controlled toggle for the vendored MapView's big-city circles (see VietnamMapView). */
+.hide-metro-hubs .metro-hub,
+.hide-metro-hubs .metro-hub-ring,
+.hide-metro-hubs .metro-hub-ring-dark,
+.hide-metro-hubs .metro-hub-pulse {
+  display: none;
+}
+
+/* Shown by the vendored MapView when the wheel is used without Ctrl/Cmd, or a finger drags the map on a touch screen
+   (text is set from the translated locale strings). At the bottom so it never covers the zoom buttons. */
+#zoomHint {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  max-width: calc(100% - 24px);
+  text-align: center;
+  background: rgba(15, 23, 42, 0.88);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 999px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+}
+#zoomHint.visible {
+  opacity: 1;
 }

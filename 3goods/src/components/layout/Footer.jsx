@@ -16,18 +16,26 @@ export function Footer() {
           </div>
           <span className="font-extrabold text-ink-900 text-sm tracking-tight">{t("app.name")}</span>
           <span className="hidden sm:inline text-ink-300">•</span>
-          <p className="hidden sm:block text-ink-600 font-medium">{t("footer.copyright")}</p>
+          <p className="hidden sm:block text-ink-600 font-medium">
+            {t("footer.copyrightLine1")}
+            <br />
+            {t("footer.copyrightLine2")}
+          </p>
         </div>
 
-        {/* Navigation & Links */}
-        <div className="flex flex-wrap items-center gap-4 font-medium text-ink-600 text-xs">
-          <Link to={ROUTES.discoverNeeds} className="hover:text-accent-600 transition-colors">{t("nav.discoverNeeds")}</Link>
-          <Link to={ROUTES.discoverItems} className="hover:text-accent-600 transition-colors">{t("nav.discover")}</Link>
-          <Link to={ROUTES.map} className="hover:text-accent-600 transition-colors">🗺️ {t("nav.map")}</Link>
-          <span className="text-ink-300">•</span>
-          <span className="hover:underline cursor-pointer">{t("footer.privacy")}</span>
-          <span className="hover:underline cursor-pointer">{t("footer.aboutUs")}</span>
-          <span className="hover:underline cursor-pointer">{t("footer.contactUs")}</span>
+        {/* Navigation & Links: site links on the top line, legal links on the bottom line */}
+        <div className="flex flex-col items-center md:items-end gap-2 font-medium text-ink-600 text-xs">
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <Link to={ROUTES.discoverNeeds} className="hover:text-accent-600 transition-colors">{t("nav.organisations")}</Link>
+            <Link to={ROUTES.discoverItems} className="hover:text-accent-600 transition-colors">{t("nav.itemsDonated")}</Link>
+            <Link to={ROUTES.map} className="hover:text-accent-600 transition-colors">🗺️ {t("nav.map")}</Link>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-6">
+            {/* Plain <a>, not <Link>: /video is a Vercel redirect (vercel.json), not a client-side route. */}
+            <a href="/video" target="_blank" rel="noopener noreferrer" className="hover:underline">▶ {t("footer.watchVideo")}</a>
+            {/* The proposal PDF lives in public/; `download` saves it directly instead of opening it. */}
+            <a href="/3goods-proposal.pdf" download="3goods-proposal.pdf" className="hover:underline">{t("footer.aboutUs")}</a>
+          </div>
         </div>
       </div>
     </footer>

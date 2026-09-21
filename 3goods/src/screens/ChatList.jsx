@@ -2,8 +2,10 @@ import { Link } from "react-router-dom";
 import { useAsync } from "../lib/useAsync.js";
 import { getConversations, getMessages } from "../services/chatService.js";
 import { getOrganisationById } from "../services/organisationsService.js";
+import { getUserById } from "../services/usersService.js";
 import { getMessageText } from "../lib/messageText.js";
 import { useSession } from "../context/SessionContext.jsx";
+import { useUnreadChats } from "../context/UnreadChatsContext.jsx";
 import { useLocale } from "../i18n/LocaleContext.jsx";
 import { useTranslate } from "../i18n/useTranslate.js";
 import { LoadingState } from "../components/feedback/LoadingState.jsx";
@@ -19,7 +21,9 @@ async function loadChatList(role, identity) {
   for (const conversation of conversations) {
     const messages = await getMessages(conversation.id);
     const org = await getOrganisationById(conversation.organisationId);
-    rows.push({ conversation, lastMessage: messages[messages.length - 1], org });
+    // The organisation side sees the donor's real name, not a generic "Donor" label.
+    const donor = role === "organisation" ? await getUserById(conversation.donorId) : null;
+    rows.push({ conversation, lastMessage: messages[messages.length - 1], org, donor });
   }
   return rows;
 }
@@ -30,6 +34,7 @@ export function ChatList() {
   const { locale } = useLocale();
   const t = useTranslate();
   const { status, data, error, reload } = useAsync(() => loadChatList(role, identity), [role, identity?.id]);
+  const { unreadIds } = useUnreadChats();
 
   if (!isLoggedIn) {
     return (
@@ -65,10 +70,11 @@ export function ChatList() {
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 flex flex-col gap-4">
       <h1 className="text-xl font-bold text-ink-800">{t("nav.chat")}</h1>
-      {data.map(({ conversation, lastMessage, org }) => {
-        const partnerName = role === "organisation" ? t("screens.chatPartnerDonor") : org?.name[locale] ?? org?.name.en;
+      {data.map(({ conversation, lastMessage, org, donor }) => {
+        const partnerName = role === "organisation" ? donor?.name ?? t("screens.chatPartnerDonor") : org?.name[locale] ?? org?.name.en;
         const partnerType = role === "organisation" ? "donor" : "organisation";
         const partnerId = role === "organisation" ? conversation.donorId : org?.id;
+        const unread = unreadIds.has(conversation.id);
 
         return (
           <Link
@@ -79,8 +85,13 @@ export function ChatList() {
             <Avatar name={partnerName} id={partnerId} type={partnerType} size="md" />
             <div className="flex flex-col min-w-0 flex-1">
               <span className="text-sm font-bold text-ink-800">{partnerName}</span>
-              <span className="line-clamp-1 text-xs text-ink-600">{getMessageText(lastMessage, t)}</span>
+              <span className={`line-clamp-1 text-xs ${unread ? "font-semibold text-ink-800" : "text-ink-600"}`}>{lastMessage ? getMessageText(lastMessage, t) : t("screens.chatNoMessages")}</span>
             </div>
+            {unread && (
+              <span data-testid="chat-unread-row" className="shrink-0 rounded-full bg-rose-500 px-2 py-0.5 text-[10px] font-bold uppercase text-white">
+                {t("screens.chatUnread")}
+              </span>
+            )}
           </Link>
         );
       })}

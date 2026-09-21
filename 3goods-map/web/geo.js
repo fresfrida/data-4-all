@@ -67,3 +67,30 @@ export function minmaxSqrt(vals, rMin, rMax) {
   const lo = Math.min(...roots), hi = Math.max(...roots);
   return roots.map(r => hi === lo ? (rMin + rMax) / 2 : rMin + (r - lo) / (hi - lo) * (rMax - rMin));
 }
+
+// Projects neighbouring-country polygons (Laos, Cambodia, ...) into the same
+// pixel space buildShapes() used, so the map can draw land around Vietnam.
+export function buildLandPaths(features, extent) {
+  return features.map(f => {
+    const poly = f.geometry.type === "Polygon" ? [f.geometry.coordinates] : f.geometry.coordinates;
+    let d = "";
+    for (const rings of poly) {
+      for (const ring of rings) {
+        ring.forEach(([lon, lat], i) => {
+          const { x, y } = projectToPixel(lon, lat, extent);
+          d += (i ? "L" : "M") + x.toFixed(1) + " " + y.toFixed(1);
+        });
+        d += "Z";
+      }
+    }
+    return { d, name: f.properties.name };
+  });
+}
+
+// The lon/lat rectangle {west, south, east, north} the map may ever show, as a
+// pixel-space rectangle {x0, y0, x1, y1}. Zoom-out and panning stop at its edges.
+export function worldPixelRect(world, extent) {
+  const topLeft = projectToPixel(world.west, world.north, extent);
+  const bottomRight = projectToPixel(world.east, world.south, extent);
+  return { x0: topLeft.x, y0: topLeft.y, x1: bottomRight.x, y1: bottomRight.y };
+}

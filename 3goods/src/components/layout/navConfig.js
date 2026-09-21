@@ -3,7 +3,9 @@ import { BellIcon, MapPinIcon, PlusIcon, ChatIcon, UserIcon, SearchIcon, Buildin
 
 /**
  * The exact navigation items per session state (logged-out vs donor vs organisation).
+ * "Available donations" is the middle item for guest (slot 2 of 3) and organisation (slot 3 of 5), so it sits at the same visual centre when someone logs in or out.
  * Both MobileBottomNav and DesktopTopNav read from here so they can never drift apart.
+ * `badge: "chat"` marks the item that carries the unread-chat bubble (donor and organisation alike, D-069).
  */
 export function getNavItems(session, t) {
   const role = typeof session === "string" ? session : session?.role;
@@ -11,7 +13,8 @@ export function getNavItems(session, t) {
 
   if (!isLoggedIn) {
     return [
-      { to: ROUTES.discoverNeeds, label: t("nav.discover"), Icon: SearchIcon },
+      { to: ROUTES.discoverNeeds, label: t("nav.organisations"), Icon: BuildingIcon },
+      { to: ROUTES.discoverItems, label: t("nav.itemsDonated"), Icon: SearchIcon },
       { to: ROUTES.map, label: t("nav.map"), Icon: MapPinIcon },
     ];
   }
@@ -20,8 +23,8 @@ export function getNavItems(session, t) {
     return [
       { to: ROUTES.updates, label: t("nav.updates"), Icon: BellIcon },
       { to: ROUTES.map, label: t("nav.map"), Icon: MapPinIcon },
-      { to: ROUTES.discoverItems, label: t("nav.discover"), Icon: SearchIcon },
-      { to: ROUTES.chatList, label: t("nav.chat"), Icon: ChatIcon },
+      { to: ROUTES.discoverItems, label: t("nav.itemsDonated"), Icon: SearchIcon },
+      { to: ROUTES.chatList, label: t("nav.chat"), Icon: ChatIcon, badge: "chat" },
       { to: ROUTES.myOrganisation, label: t("nav.myOrganisation"), Icon: BuildingIcon },
     ];
   }
@@ -30,7 +33,7 @@ export function getNavItems(session, t) {
     { to: ROUTES.updates, label: t("nav.updates"), Icon: BellIcon },
     { to: ROUTES.map, label: t("nav.map"), Icon: MapPinIcon },
     { to: ROUTES.donateNew, label: t("nav.donate"), Icon: PlusIcon, emphasise: true },
-    { to: ROUTES.chatList, label: t("nav.chat"), Icon: ChatIcon },
+    { to: ROUTES.chatList, label: t("nav.chat"), Icon: ChatIcon, badge: "chat" },
     { to: ROUTES.me, label: t("nav.me"), Icon: UserIcon },
   ];
 }

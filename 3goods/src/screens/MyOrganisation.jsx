@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAsync } from "../lib/useAsync.js";
 import { getOrganisationById } from "../services/organisationsService.js";
-import { getRequests, deriveDisplayStatus } from "../services/requestsService.js";
+import { getRequests } from "../services/requestsService.js";
 import { getItemById } from "../services/itemsService.js";
 import { getAreaById } from "../services/referenceDataService.js";
 import { useSession } from "../context/SessionContext.jsx";
@@ -14,10 +14,7 @@ import { StatusBadge } from "../components/status/StatusBadge.jsx";
 import { ROUTES } from "../lib/constants.js";
 
 async function loadMyOrganisation(organisationId) {
-  const [organisation, requests] = await Promise.all([
-    getOrganisationById(organisationId),
-    getRequests({ organisationId }),
-  ]);
+  const [organisation, requests] = await Promise.all([getOrganisationById(organisationId), getRequests({ organisationId })]);
   const area = organisation ? await getAreaById(organisation.areaId) : null;
   const requestsWithItems = [];
   for (const request of requests) {
@@ -33,6 +30,26 @@ export function MyOrganisation() {
   const t = useTranslate();
   const organisationId = identity?.organisationId;
   const { status, data, error, reload } = useAsync(() => loadMyOrganisation(organisationId), [organisationId]);
+
+  if (!isLoggedIn) {
+    return (
+      <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6">
+        <EmptyState
+          title={t("screens.guestBrowsingTitle")}
+          hint={t("demo.notSecure")}
+          action={
+            <button
+              type="button"
+              onClick={() => requireLogin(() => {})}
+              className="rounded-full bg-accent-500 px-4 py-2 text-sm font-semibold text-white hover:bg-accent-600"
+            >
+              {t("demo.loginAsOrganisation")}
+            </button>
+          }
+        />
+      </div>
+    );
+  }
 
   if (role !== "organisation") {
     return (
@@ -107,15 +124,15 @@ export function MyOrganisation() {
                   {item?.title ?? t("screens.itemFallbackLabel")}
                 </Link>
                 <div className="flex items-center gap-2">
-                  <StatusBadge status={item ? deriveDisplayStatus(request, item) : request.status} />
-                  {(request.status === "accepted" || request.status === "arranging_collection") && (
+                  {item && (
                     <Link
-                      to={ROUTES.chatList}
+                      to={ROUTES.chatCompose(item.id, organisationId, item.donorId)}
                       className="rounded-full border border-ink-600/20 px-3.5 py-1 text-xs font-semibold text-ink-700 hover:bg-ink-800/5 transition-colors"
                     >
                       {t("nav.chat")}
                     </Link>
                   )}
+                  <StatusBadge status={request.status} />
                 </div>
               </div>
             ))}

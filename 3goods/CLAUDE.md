@@ -15,8 +15,8 @@ This file is project-local to `3goods/` and does not apply to the sibling map si
   hosts the map API itself: Vercel serverless functions in `3goods/api/` (D-080), reading `public/data/`.
 - `002-data-4-life/{index.html,web/,data/,api/}` is the **existing Vietnam disaster-relief map
   site** — a separate, already-shipped product. Do not edit it while working on 3goods. Its `api/` is now the **legacy**
-  copy of the map API (deployed as the `002-data-4-life` Vercel project): kept live and untouched as the rollback source and a
-  deletion *candidate only* — never delete, unlink or redeploy that project without explicit human approval (D-080).
+  copy of the map API, kept in the repo as source only: the `002-data-4-life` Vercel project that deployed it has been deleted and its
+  URL is dead, so nothing deploys `3goods-map/` any more (D-080).
 - Map integration lives only in `3goods/src/features/map/`. Code under
   `src/features/map/vendor/` is a verbatim copy of the root site's rendering logic
   (`web/mapView.js`, `web/geo.js`, `web/scoring.js`). Treat it as read-only — wrap it, don't
@@ -37,7 +37,7 @@ npm run preview     # serve the production build locally
 npm run i18n:check  # fails if en.json/vi.json key sets don't match exactly
 ```
 
-Deploy (separate Vercel project from the root site; team scope is `jagaos`): from inside `3goods/`, `vercel deploy --prod --scope jagaos`.
+Deploy (separate Vercel project from the root site; team scope is `fresfrida`): from inside `3goods/`, `vercel deploy --prod --scope fresfrida`.
 Never commit a `.vercel/` folder (all are git-ignored); the deploy ships `api/` and `public/data/` too.
 First deploy will prompt to link/create a project — accept the suggested name or set one explicitly;
 record the resulting project name/URL in `docs/HANDOFF.md`. `vercel.json` in this folder rewrites all
@@ -102,7 +102,7 @@ file's comment for why.
   3goods organisations come only from `organisationsService`. The client calls all five endpoints (`provinces`,
   `facilities`, `metro-hubs`, `item-needs`, `meta`) on **this deployment's own same-origin `/api/*`** (`3goods/api/`, D-080;
   `VITE_MAP_API_BASE_URL` is an optional absolute override, default empty = same-origin; the legacy
-  `https://002-data-4-life.vercel.app` is only a rollback target). The functions read the same `public/data/` files the
+  `002-data-4-life` deployment no longer exists). The functions read the same `public/data/` files the
   client bundles as its fallback. If the API is unreachable the client falls back to that snapshot and the map shows a notice — see D-057.
   The vendored `mapView.js`/`geo.js` are verbatim copies of the root site's `web/` files (compare with `cmp`); the
   base-map land around Vietnam is `neighbour_land.json`, built by `3goods-map/src/build_neighbour_land.mjs` (D-061). A facility pin from OpenStreetMap is

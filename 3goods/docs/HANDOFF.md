@@ -24,17 +24,17 @@ category (3G-045 / D-047), populated real item photos (3G-044 / D-046), removed 
 `role` switcher state (3G-043 / D-045). See "Completed this session" below. Prior entry: session 5,
 first live `npm run db:seed` + full live-browser verification pass.
 
-**Live URL: https://3goods.vercel.app** (separate Vercel project from the map site at
-`002-data-4-life.vercel.app`, account `frescyliafrida-9461` (Vercel team slug is now **`jagaos`**, same id; deploy with `--scope jagaos`), project id
-`prj_nhnDkGhaFGNGYOX7wqY0x0ymKGpT`). Redeploy with `vercel deploy --prod --yes` from inside `3goods/`
+**Live URL: https://3goods.vercel.app** (the only Vercel project the app needs: the former map site `002-data-4-life.vercel.app` has been deleted, D-080;
+Vercel team slug is now **`fresfrida`**, dashboard https://vercel.com/fresfrida/3goods, team id unchanged, project name unchanged; earlier notes say `frescyliafrida-9461` or `jagaos`, same team), project id
+`prj_nhnDkGhaFGNGYOX7wqY0x0ymKGpT`). Redeploy with `vercel deploy --prod --yes --scope fresfrida` from inside `3goods/`
 after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY` are set as
 Production env vars on this project (`vercel env ls production` to confirm) — set in session 5.
 
 ## Current task
 **3G-065 / D-080 is done, deployed and verified live (2026-09-21):** the map API now runs as serverless functions inside this project (`3goods/api/`), so the map calls same-origin `/api/*` on `3goods.vercel.app`.
-The legacy `002-data-4-life` project and its URL are **unchanged and still live** as the rollback source; it is a deletion *candidate only* and nothing may delete it without separate human approval (it also serves the standalone relief-map site
-and any other consumer such as the Lovable-derived repo). Rollback and evidence are in D-080 and KANBAN 3G-065. Anything older in this file that says the map calls `002-data-4-life.vercel.app` describes the legacy setup.
-Open for the user: this change is deployed from the working tree but **not yet committed or pushed** (no push without approval); the API `Cache-Control` is 1 hour as before; `npm run dev` doesn't serve `/api` (use `VITE_MAP_API_BASE_URL=https://3goods.vercel.app` locally or accept the snapshot fallback).
+**Update: the legacy `002-data-4-life` Vercel project has since been DELETED and `https://002-data-4-life.vercel.app` is dead; the API is fully same-origin.** The rollback is now "redeploy the previous production build" (builds from before the migration call the dead URL and would fall back to the snapshot, so they are poor targets; see D-080).
+Anything older in this file that says the map calls, or that a rollback uses, `002-data-4-life.vercel.app` describes the legacy setup. Evidence is in D-080 and KANBAN 3G-065. The change is committed and pushed (`a47a1bf`, branch `claude/supabase-connection-status-9rhtx1`; not yet merged to `main`).
+Worth knowing: the API `Cache-Control` is 1 hour as before; `npm run dev` doesn't serve `/api` (use `VITE_MAP_API_BASE_URL=https://3goods.vercel.app` locally or accept the snapshot fallback); other former consumers of the old URL (e.g. the Lovable-derived repo) now get 404s and need repointing.
 **3G-063 / 3G-064 (D-078, D-079) are done, merged and deployed:** centred nav on mobile and desktop with "Available donations" as the middle item, a rebalanced magnifier icon, "24 of 31 verified" on Discover, organisation-view item matching (own-match flag on cards, ranked matches on item detail), and the hero subtitle without "Verified" ("Organisations post what communities need…"; the stat tile stays "Verified Organisations"). Nothing is open on these.
 **3G-061 / D-077 (atomic Undo + Mark as collected) is done, deployed and verified live** (see KANBAN 3G-061); the user ran `supabase/migration-status-transitions.sql`.
 All three status changes (Accept, Undo, Mark as collected) are now single database functions called with one `.rpc()`; the only direct status write left in JS is the donor's

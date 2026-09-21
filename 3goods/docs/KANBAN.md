@@ -58,7 +58,7 @@ suggested next task)
 
 ## Done
 
-- **3G-065** — Consolidate the map API into the 3goods deployment: same-origin `/api/*` (D-080). Done 2026-09-21. Legacy `002-data-4-life` left live and untouched as the rollback source and marked a deletion *candidate only*.
+- **3G-065** — Consolidate the map API into the 3goods deployment: same-origin `/api/*` (D-080). Done 2026-09-21. Legacy `002-data-4-life` was left live and untouched as the rollback source and marked a deletion *candidate only*; **it has since been deleted by the user (its URL is dead), so the API is fully same-origin and the rollback is "redeploy the previous production build"** (D-080). Team scope is now `fresfrida`.
   - Built: `3goods/api/*` (5 functions + `_lib`), `vercel.json` (`includeFiles`, `/api/` excluded from the SPA rewrite), `apiBase.js` + `mapApiClient.js` default to same-origin, `.env.example`, `npm test` (20 tests).
   - Checks: `npm test` 20/20; `npm run build` OK (i18n 277/277 in sync; no legacy URL in `dist/`); no lint tooling exists in 3goods. Every endpoint compared with the live legacy API locally, on a preview deployment and on production: status, headers, and body SHA-256 identical.
   - Production `https://3goods.vercel.app` (deployment `dpl_69CiUaDfxBdVitrkmMBquSTsKBmn`), headless Chrome at 1280 and 390 px against the live site: province heatmap from real data (63 provinces, 43 distinct fills; Poverty 6 / Coverage Gap 48 / Hazard 43 fill sets all differ);

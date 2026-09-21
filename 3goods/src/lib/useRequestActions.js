@@ -7,7 +7,7 @@ import { acceptRequest, undoAcceptance } from "../services/requestsService.js";
  *
  * `busy` ({requestId, action}) is set synchronously on tap — before any
  * network call — and only cleared once the action *and* the screen's
- * refetch (`refresh`) have both finished, so the button can't flash back to
+ * refetch (`refresh`, which runs after a refused action too) have both finished, so the button can't flash back to
  * "Accept" with stale data, and can't be tapped twice (a double tap would
  * notify the organisation twice).
  *
@@ -26,10 +26,12 @@ export function useRequestActions(refresh) {
       setError(null);
       try {
         await work();
-        await refresh();
       } catch (err) {
         setError(err);
       } finally {
+        // Refetch whether the action worked or was refused (e.g. another tab already decided the request), so the rows on
+        // screen always show the real state next to any error, instead of staying stale until a manual reload.
+        await refresh();
         setBusy(null);
       }
     });

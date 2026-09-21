@@ -20,7 +20,7 @@ We started with that gap and asked a simple question: what if organisations coul
 
 We brainstormed the donor and organisation journeys together, worked through the matching idea, and built the prototype with help from Claude Code.
 
-The stack is `Vite`, `React`, `TypeScript` and `Supabase`. From the first idea to a working prototype, the build took roughly four days.
+The stack is `Vite`, `React`, `TypeScript` and `Supabase`. The whole thing came together in roughly four days, built with Claude Code.
 
 This is a two-person hackathon prototype, not a finished donation service. It is our attempt to make the handoff between generosity and real need clearer, and to help every useful item find a more thoughtful next home.
 
@@ -42,7 +42,7 @@ You begin with the people you serve. Create your organisation profile and publis
 
 The map lets you see what is going on across Vietnam. You can see who needs what, and where. You might come across a charity you are interested in and invite them to join, right from the map. Sometimes the most useful thing is simply connecting the right people.
 
-<img width="1280" alt="3goods relief map showing needs and community organisations across Vietnam" src="./3-cloud-browser-20260921-052834.png" />
+<img width="1280" alt="3goods relief map showing needs and community organisations across Vietnam" src="./6-3goods-relief-map.png" />
 
 ## Please enjoy using the site
 

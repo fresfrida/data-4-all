@@ -1110,3 +1110,6 @@ looks like it contradicts the hero's verified-organisations stat.
 **Follow-up (mobile bar).** The magnifier itself was rebalanced by eye (pin-sized lens, up-left, short handle). The remaining "leans right" on mobile EN was the item's position, not the glyph: under `flex-auto`
 the middle item drifted right with its label width (icon 25.7px right of screen centre in EN guest, 11px in EN organisation, 13px in VI guest). `MobileBottomNav` is now a grid with `1fr` side columns and an `auto`
 middle column, so the middle item (Available donations, or Donate for donors) is at 0px from the centre in every state and language. Measured at 360/390/430px wide; the one exception is 2px off in VI organisation at 360px.
+**Follow-up (desktop bar).** `DesktopTopNav` uses the same idea: the middle item is centred and the other items pack toward it in two equal halves, with no fixed pill width. Before, every item had `min-w-[152px]`, so the visible gap
+between items depended on label length (EN guest: 34px Organisations -> Available donations, 66px -> Map; up to 95-112px in the 5-item bars). Now the gap is uniform (40px at xl/1280+, 20px below so the 5-item Vietnamese
+organisation bar fits at 1024px) in every state and language, and the middle item is at 0px from screen centre.

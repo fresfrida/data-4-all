@@ -11,6 +11,24 @@ export function DesktopTopNav() {
   const session = useSession();
   const t = useTranslate();
   const items = getNavItems(session, t);
+  const middle = Math.floor(items.length / 2);
+
+  const renderItem = ({ to, label, Icon, badge }) => (
+    <NavLink
+      key={to}
+      to={to}
+      end={to === "/"}
+      className={({ isActive }) =>
+        `flex shrink-0 items-center justify-center gap-1.5 rounded-full px-2 py-1.5 text-sm xl:px-4 font-semibold transition-all ${
+          isActive ? "bg-accent-100 text-accent-700 shadow-2xs" : "text-ink-600 hover:text-ink-900 hover:bg-cream-100"
+        }`
+      }
+    >
+      <Icon className="h-4 w-4 shrink-0" />
+      <span className="whitespace-nowrap">{label}</span>
+      {badge === "chat" && <UnreadBadge />}
+    </NavLink>
+  );
 
   return (
     <header className="sticky top-0 z-30 hidden border-b border-ink-600/10 bg-white/95 backdrop-blur sm:block shadow-xs">
@@ -23,24 +41,12 @@ export function DesktopTopNav() {
           <span className="shrink-0">{t("app.name")}</span>
         </NavLink>
 
-        {/* Navigation Items - Fixed Centered Middle Column */}
-        <nav aria-label={t("a11y.primaryNav")} className="flex items-center justify-center gap-2 justify-self-center">
-          {items.map(({ to, label, Icon, badge }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={to === "/"}
-              className={({ isActive }) =>
-                `flex min-w-[152px] shrink-0 items-center justify-center gap-1.5 rounded-full px-2 py-1.5 text-sm font-semibold transition-all ${
-                  isActive ? "bg-accent-100 text-accent-700 shadow-2xs" : "text-ink-600 hover:text-ink-900 hover:bg-cream-100"
-                }`
-              }
-            >
-              <Icon className="h-4 w-4 shrink-0" />
-              <span className="whitespace-nowrap">{label}</span>
-              {badge === "chat" && <UnreadBadge />}
-            </NavLink>
-          ))}
+        {/* Navigation Items - Middle Column. The middle item is pinned to the exact centre and the other items pack toward it in two equal halves,
+            so the gap between neighbouring items is the same everywhere and doesn't depend on label length. Spacing tightens below xl so the 5-item Vietnamese organisation bar fits at 1024px. */}
+        <nav aria-label={t("a11y.primaryNav")} className="flex w-full items-center gap-1 xl:gap-2">
+          <div className="flex flex-1 items-center justify-end gap-1 xl:gap-2">{items.slice(0, middle).map(renderItem)}</div>
+          {renderItem(items[middle])}
+          <div className="flex flex-1 items-center justify-start gap-1 xl:gap-2">{items.slice(middle + 1).map(renderItem)}</div>
         </nav>
 
         {/* Fixed Right Control Cluster - Fixed Right Column */}

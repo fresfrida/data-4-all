@@ -40,7 +40,7 @@ You begin with the people you serve. Create your organisation profile and publis
 
 ## The bigger picture
 
-The map lets you see what is going on across Vietnam. You can see who needs what, and where. You might come across a charity you are interested in and invite them to join, right from the map. Sometimes the most useful thing is simply connecting the right people.
+The map lets you see what is going on across Vietnam. You can see who needs what, and where. You might come across a charity you are interested in and invite them to join, right from the map.
 
 <img width="1440" alt="3goods map showing a registered organisation and the invite a facility flow" src="./map-stories.svg" />
 

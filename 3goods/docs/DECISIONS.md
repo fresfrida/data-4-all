@@ -1015,7 +1015,7 @@ page; `DonationForm`'s collection-windows section reads "Collection time windows
 ## D-074 — Copy pass: needs-first hero, "Available donations" catalogue, need-match badge, /video redirect (user-requested)
 - **Where the hero lives:** `Home.jsx` (the request named `DiscoverNeeds.jsx`, which only renders the board). The board sits directly under the
   hero on `/`, so the primary CTA ("See verified needs", key `hero.ctaBrowse`, emoji 📦 -> 📋) is an in-page anchor that smooth-scrolls to it
-  rather than navigating; the map button is unchanged.
+  rather than navigating; the map button is unchanged. (The hero subtitle later dropped "Verified": "Organisations post what communities need", D-079.)
 - **Rename:** nav label (`nav.itemsDonated`, key kept), page heading, and a one-line free-donation notice above the grid. No "buy/sell" wording
   beyond the requested negations.
 - **Need-match badge (display-only, no schema change):** `DiscoverItems` loads `getNeeds()` + `getOrganisations()`; a need matches an item on
@@ -1122,4 +1122,5 @@ organisation bar fits at 1024px) in every state and language, and the middle ite
   Nothing is said about the logged-in organisation when it doesn't match; with no matches the block is omitted. Request/chat actions are untouched; matching never creates a request, reservation or conversation (D-006).
 - **One rule for organisation views:** `src/lib/needMatching.js`: a need matches an item when its category equals the item's category **or** secondary category (the rule `ItemDetail` already used, D-059). The public
   guest/donor badge stays primary-category only, so an item listed under a secondary category can show no public badge for a category an organisation's own flag does count. Deliberate, not silently unified.
-- **Hero stat tile** reads "Organisations" / "Tổ chức" (was "Verified Organisations"). The number still counts **verified** organisations only (24 of 31); if the tile should show the total, change `verifiedOrgsCount` in `Home.jsx`.
+- **Hero subtitle** reads "Organisations post what communities need. …" / "Các tổ chức đăng những gì cộng đồng đang cần. …" ("Verified" dropped from that sentence). The stat tile stays "Verified Organisations" / "Tổ chức xác minh"
+  (its number is the verified count, 24 of 31), and the "See verified needs" button is unchanged. An earlier pass changed the stat tile by mistake and was reverted.

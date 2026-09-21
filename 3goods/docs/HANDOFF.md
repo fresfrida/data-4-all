@@ -1,6 +1,7 @@
 # 3goods Handoff
 
-Last updated: session 6, fifteenth checkpoint: 3G-057 (two QA polish fixes: 404 text key, VI map region/city names; demo freeze, no new features).
+Last updated: session 6, sixteenth checkpoint: 3G-063 / 3G-064 (nav centring + icon, organisation-view matching, hero subtitle; D-078, D-079; merged to `main` and deployed).
+Previous: fifteenth checkpoint: 3G-057 (two QA polish fixes: 404 text key, VI map region/city names; demo freeze, no new features).
 Previous: fourteenth checkpoint: 3G-056 / D-073 (clickable OSM pins linked to organisations; the coverage SQL now also carries the
 `lat/lng` columns + `facility_interests` table; **still not run by the user**). Previous: thirteenth checkpoint: 3G-055 / D-067 to D-072 (items stay listed with status banners, Discover Items pagination, shared unread-chat badge,
 tab title, coverage reseed as SQL, root map site redeployed; **coverage SQL not yet run by the user**). Previous: twelfth checkpoint: 3G-054 / D-062 to D-066 (provinces table, optional + generic need quantity, one need per
@@ -29,7 +30,7 @@ after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_AN
 Production env vars on this project (`vercel env ls production` to confirm) — set in session 5.
 
 ## Current task
-**3G-063 / 3G-064 (D-078, D-079) are done, merged and deployed:** centred nav on mobile and desktop with "Available donations" as the middle item, a rebalanced magnifier icon, "24 of 31 verified" on Discover, organisation-view item matching (own-match flag on cards, ranked matches on item detail), and the hero stat label "Organisations". Nothing is open on these.
+**3G-063 / 3G-064 (D-078, D-079) are done, merged and deployed:** centred nav on mobile and desktop with "Available donations" as the middle item, a rebalanced magnifier icon, "24 of 31 verified" on Discover, organisation-view item matching (own-match flag on cards, ranked matches on item detail), and the hero subtitle without "Verified" ("Organisations post what communities need…"; the stat tile stays "Verified Organisations"). Nothing is open on these.
 **3G-061 / D-077 (atomic Undo + Mark as collected) is done, deployed and verified live** (see KANBAN 3G-061); the user ran `supabase/migration-status-transitions.sql`.
 All three status changes (Accept, Undo, Mark as collected) are now single database functions called with one `.rpc()`; the only direct status write left in JS is the donor's
 withdraw/relist (`itemsService.updateItemStatus`, no screen button). Nothing is open on this task.

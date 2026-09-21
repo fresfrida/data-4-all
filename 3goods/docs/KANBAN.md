@@ -7,10 +7,6 @@ Only one task In Progress at a time. IDs are stable — never renumber, only re-
 
 ## In Progress
 
-- **3G-061** — Undo + Mark as collected atomic (D-077). Code done and building, NOT deployed: needs `supabase/migration-status-transitions.sql` run in the Supabase SQL
-  Editor first (the auto-mode classifier blocks Claude from applying migrations to the production database). Then deploy and verify Undo / Mark as collected / their
-  repeat + refused cases, EN + VI, mobile + desktop. (The stale-rows-after-refused-Accept fix from the same request is already live and verified.)
-
 (none — Phase 0 and the Phase 1 core journey are checkpointed below; see HANDOFF.md for the
 suggested next task)
 
@@ -62,6 +58,13 @@ suggested next task)
 
 ## Done
 
+- **3G-061** — Undo + Mark as collected atomic (D-077): `undo_acceptance` / `mark_item_collected` Postgres functions, one `.rpc()` call each; Mark as collected also got visible error
+  handling + refetch. Verified live (headless Chrome, EN at 1280px + VI at 390px, zero console errors, throwaway item + 3 pending requests + a real chat, all removed afterwards; DB rows
+  read at every step): Undo via UI -> item `available`, pointer cleared, all requests `pending`; re-accept works; stale Undo after another tab collected -> translated
+  `itemStatusChangeInvalid` error, page refreshes to Collected, DB untouched. Mark as collected via chat -> item `collected`, request stays `accepted`, item on the organisation's
+  past-received list, exactly 1 donor notification; repeat (other tab already collected) -> no error, no 2nd notification; stale click after another tab undid the acceptance ->
+  translated error, header refreshes to Available. Function level: undo on a non-accepted request `changed:false`; collect on an available item `itemStatusChangeInvalid`; unknown
+  ids `itemNotFound` / `requestNotFound`. Not tested: a failure injected mid-transaction to watch the rollback (the functions are single transactions by construction).
 - **3G-062** — Stale rows after a refused Accept/Undo (`useRequestActions` refetches in `finally`). Verified live: two-tab race (accept in one, stale accept in the other) in EN at
   1280px and VI at 390px: the error shows and the rows update by themselves to the real state (item Reserved, other tab's winner Accepted + Undo, rest "No longer available"), no reload.
 - **3G-060** — Atomic accept (D-076): `accept_request` Postgres function + one `.rpc()` call in `requestsService.acceptRequest`. Also: Chat before the status chip on

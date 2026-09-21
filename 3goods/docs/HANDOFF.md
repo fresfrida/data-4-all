@@ -69,7 +69,7 @@ Earlier: 3G-043 through 3G-053 done. The `items.quantity`/`unit` SQL from D-052 
   Use" and "Contact Us" removed (keys deleted). "5kg rice sacks" (Da Nang, reserved) got `public/demo-items/rice-sack-5kg.jpg`; its live
   `items.image_base64` was set to that path by a single-row SQL update (the row was created through the app, so it is not in `src/data/items.js`
   and a re-seed would not restore it). The `/video` redirect is deliberately a temporary 307 (the target may change; a 301 would be cached by browsers).
-  The deck (`public/3goods-proposal.pdf`) contains screenshots of this UI; re-export and replace the file if the hero/nav copy changes again.
+  The deck (`public/3goods-proposal.pdf`) contains screenshots of this UI; re-export and replace the file if the hero/nav copy changes again. Replaced on 2026-09-21 with the user's current 10-page deck (`~/Desktop/3goods.pdf`; its screenshots already show the centred nav, "24 of 31 verified" and the subtitle without "Verified"); same filename, so the footer link is unchanged.
 - **3G-056** (D-073). Pins on the Relief Map are clickable. `features/map/facilityMatching.js` (150 m, one-to-one, needs organisation `location`),
   `pinLayer.js` (decorates the vendored pins, delegated click), `components/FacilityPopup.jsx` (matched: link to the organisation profile;
   unmatched: "hasn't joined 3goods yet" + interest form), `services/facilityInterestService.js` -> `facility_interests` (insert-only; read it in the

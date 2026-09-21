@@ -18,7 +18,7 @@ We started with that gap and asked a simple question: what if organisations coul
 
 ## From an idea to a prototype
 
-We brainstormed the donor and organisation journeys together, worked through the matching idea, and built the prototype with Claude Code in roughly four days.
+We brainstormed the donor and organisation journeys together, worked through the matching idea, and built the prototype with Claude Code Pro subscription in roughly four days.
 
 The web application uses React, JavaScript, Vite, Tailwind CSS and Supabase, and is deployed on Vercel. A custom SVG map and small serverless API present data from OpenStreetMap, EM-DAT, UNDP/MOLISA and GADM. Python scripts were used offline to clean, combine and score the source data before the resulting map datasets were published for the JavaScript application.
 

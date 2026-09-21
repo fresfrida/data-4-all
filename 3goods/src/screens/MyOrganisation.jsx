@@ -124,7 +124,6 @@ export function MyOrganisation() {
                   {item?.title ?? t("screens.itemFallbackLabel")}
                 </Link>
                 <div className="flex items-center gap-2">
-                  <StatusBadge status={request.status} />
                   {item && (
                     <Link
                       to={ROUTES.chatCompose(item.id, organisationId, item.donorId)}
@@ -133,6 +132,7 @@ export function MyOrganisation() {
                       {t("nav.chat")}
                     </Link>
                   )}
+                  <StatusBadge status={request.status} />
                 </div>
               </div>
             ))}

@@ -29,6 +29,7 @@ after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_AN
 Production env vars on this project (`vercel env ls production` to confirm) — set in session 5.
 
 ## Current task
+**3G-063 / 3G-064 (D-078, D-079) are done, merged and deployed:** centred nav on mobile and desktop with "Available donations" as the middle item, a rebalanced magnifier icon, "24 of 31 verified" on Discover, organisation-view item matching (own-match flag on cards, ranked matches on item detail), and the hero stat label "Organisations". Nothing is open on these.
 **3G-061 / D-077 (atomic Undo + Mark as collected) is done, deployed and verified live** (see KANBAN 3G-061); the user ran `supabase/migration-status-transitions.sql`.
 All three status changes (Accept, Undo, Mark as collected) are now single database functions called with one `.rpc()`; the only direct status write left in JS is the donor's
 withdraw/relist (`itemsService.updateItemStatus`, no screen button). Nothing is open on this task.

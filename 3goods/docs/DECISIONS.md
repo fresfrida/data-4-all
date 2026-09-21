@@ -1113,3 +1113,13 @@ middle column, so the middle item (Available donations, or Donate for donors) is
 **Follow-up (desktop bar).** `DesktopTopNav` uses the same idea: the middle item is centred and the other items pack toward it in two equal halves, with no fixed pill width. Before, every item had `min-w-[152px]`, so the visible gap
 between items depended on label length (EN guest: 34px Organisations -> Available donations, 66px -> Map; up to 95-112px in the 5-item bars). Now the gap is uniform (40px at xl/1280+, 20px below so the 5-item Vietnamese
 organisation bar fits at 1024px) in every state and language, and the middle item is at 0px from screen centre.
+
+## D-079 — Item matching differs by session: public badge for guests/donors, own-match flag for organisations; hero stat label drops "Verified"
+- **Discover Items cards.** Guests and donors keep the public badge (verified-need count + first verified organisation, primary category only, D-074). Logged in as an organisation, the card shows only
+  "This item may match you" (urgent wording when the organisation's matching need is a priority need) or nothing: no count, no other organisation's name. `DiscoverItems` builds the display model from
+  `useSession()`; `ItemCard` stays display-only (`match.own`).
+- **Item detail (organisation only).** Own match first, then "Other verified organisations with a matching need" (one entry per organisation, urgent first, verified only, the logged-in organisation excluded).
+  Nothing is said about the logged-in organisation when it doesn't match; with no matches the block is omitted. Request/chat actions are untouched; matching never creates a request, reservation or conversation (D-006).
+- **One rule for organisation views:** `src/lib/needMatching.js`: a need matches an item when its category equals the item's category **or** secondary category (the rule `ItemDetail` already used, D-059). The public
+  guest/donor badge stays primary-category only, so an item listed under a secondary category can show no public badge for a category an organisation's own flag does count. Deliberate, not silently unified.
+- **Hero stat tile** reads "Organisations" / "Tổ chức" (was "Verified Organisations"). The number still counts **verified** organisations only (24 of 31); if the tile should show the total, change `verifiedOrgsCount` in `Home.jsx`.

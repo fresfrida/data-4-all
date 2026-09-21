@@ -7,6 +7,10 @@ Only one task In Progress at a time. IDs are stable — never renumber, only re-
 
 ## In Progress
 
+- **3G-060** — Atomic accept (D-076). Code done and building, NOT deployed: needs `supabase/migration-accept-request.sql` run in the Supabase SQL Editor first
+  (the auto-mode classifier blocks Claude from applying migrations to the production database). After that: deploy, then verify accept (two pending
+  requests -> one accepted, the other `declined` in the DB, item `reserved`), the stale-tap no-op, and the error path, EN + VI, mobile + desktop.
+
 (none — Phase 0 and the Phase 1 core journey are checkpointed below; see HANDOFF.md for the
 suggested next task)
 

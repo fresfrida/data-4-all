@@ -13,9 +13,10 @@
  *
  * Accepting a request reserves the item, marks that request accepted and
  * *actually declines* every other pending request on the item in the
- * database, so there is nothing left to derive at display time. The one way a
- * request becomes declined is through another request's acceptance, which is
- * what lets `undoAcceptance` put them back exactly.
+ * database, so there is nothing left to derive at display time. Those three
+ * writes are one database transaction (the `accept_request` function, D-076).
+ * The one way a request becomes declined is through another request's
+ * acceptance, which is what lets `undoAcceptance` put them back exactly.
  *
  * Making a request does not start a conversation: a chat only exists once
  * someone sends its first message (chatService.startConversation, D-075).
@@ -25,7 +26,7 @@
  * since nothing displays it.
  */
 
-import { getAll, getById, insert, update as dbUpdate, updateMany } from "../lib/db.js";
+import { getAll, getById, insert, update as dbUpdate, updateMany, rpc } from "../lib/db.js";
 import { getItemById, updateItemStatus } from "./itemsService.js";
 import { getOrganisationById } from "./organisationsService.js";
 import { pushUpdate } from "./updatesService.js";
@@ -107,10 +108,16 @@ export async function createRequest({ itemId, organisationId }) {
   return request;
 }
 
+/** Rule violations `accept_request` raises; the database error message is the code, which becomes an `AppError`. */
+const ACCEPT_ERROR_CODES = ["requestNotFound", "itemForRequestNotFound", "requestNotPending", "itemAlreadyReserved"];
+
 /**
  * The one place "only one accepted organisation per listing" is enforced
  * (D-009): reserves the item for this request, marks the request accepted,
- * and declines every other pending request on the item.
+ * and declines every other pending request on the item, all in one database
+ * transaction (`accept_request`, D-076), so a failure part-way cannot leave
+ * the item and its requests disagreeing. The organisation is notified
+ * afterwards, separately: a lost notification must not undo an acceptance.
  *
  * Throws rather than silently no-op-ing if the item is not available (another
  * organisation was accepted from a second tab, the listing was withdrawn) or
@@ -119,30 +126,24 @@ export async function createRequest({ itemId, organisationId }) {
  * no-op, so a stale tap can't notify the organisation twice.
  */
 export async function acceptRequest(requestId) {
-  const request = await getRequestById(requestId);
-  if (!request) throw new AppError("requestNotFound");
-  if (request.status === REQUEST_STATUS.accepted) return request;
+  let result;
+  try {
+    result = await rpc("accept_request", { p_request_id: requestId });
+  } catch (err) {
+    throw ACCEPT_ERROR_CODES.includes(err?.message) ? new AppError(err.message) : err;
+  }
 
-  const item = await getItemById(request.itemId);
-  if (!item) throw new AppError("itemForRequestNotFound");
-  if (request.status !== REQUEST_STATUS.pending) throw new AppError("requestNotPending");
-  if (item.status !== ITEM_STATUS.available) throw new AppError("itemAlreadyReserved");
-
-  await updateItemStatus(item.id, ITEM_STATUS.reserved, { acceptedRequestId: requestId });
-  const [acceptedRow] = await Promise.all([
-    dbUpdate("requests", requestId, { status: REQUEST_STATUS.accepted }),
-    updateMany("requests", { item_id: item.id, status: REQUEST_STATUS.pending }, { status: REQUEST_STATUS.declined }, requestId),
-  ]);
+  const request = fromRow(result.request);
+  if (!result.changed) return request;
 
   await pushUpdate({
     userId: request.organisationId,
     type: "request_accepted",
-    params: { itemTitle: item.title },
-    linkItemId: item.id,
+    params: { itemTitle: result.item.title },
+    linkItemId: request.itemId,
     linkRequestId: requestId,
   });
-
-  return fromRow(acceptedRow);
+  return request;
 }
 
 /**

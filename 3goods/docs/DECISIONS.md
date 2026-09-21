@@ -1067,4 +1067,17 @@ Chat: a conversation row was created when a request was made (D-058) and a syste
 - **Needs:** quantity/unit dropped from the UI and services (D-063/D-064 superseded); `needs.quantity`/`unit` columns untouched. Item quantity/unit on donations is unchanged.
 - **Data migration:** `supabase/migration-status-model.sql` rewrites the live values (no schema change beyond a column default) and deletes the empty
   conversation shells from D-058. The `requests.status` and `items.status` columns are plain text, so nothing else was needed.
-- **Not atomic:** accept is several sequential writes (item, request, siblings), not one transaction. Only chat uses a database function.
+- **Not atomic (closed by D-076):** accept was several sequential writes (item, request, siblings), not one transaction. D-076 moves it into a database function, like chat.
+
+## D-076 — Accepting a request is one database transaction (`accept_request`); closes the gap flagged in D-075
+**Why.** D-075 left `acceptRequest` as three separate JS-side writes (item -> reserved, request -> accepted, siblings -> declined). A failure or a lost
+connection between them could leave the item reserved with siblings still pending (or the reverse), the same kind of drift D-075 removed.
+**What.** `supabase/migration-accept-request.sql` (also in `schema.sql`) adds the Postgres function `accept_request(p_request_id uuid)`. It locks the item
+row, re-checks the rules, then does all three writes in one transaction and returns `{changed, request, item}`. Its rule violations are raised with the error
+code as the message (`requestNotFound`, `itemForRequestNotFound`, `requestNotPending`, `itemAlreadyReserved`); `requestsService.acceptRequest` calls it with one
+`.rpc()` and turns those messages into the same `AppError`s as before. Locking the item row also serialises two people accepting different requests on the
+same item at once: the second gets `itemAlreadyReserved`. Accepting an already-accepted request returns `changed: false` and changes nothing.
+**Still in JS, on purpose.** The "request accepted" notification is pushed after the atomic core succeeds (a lost notification must not undo an acceptance).
+**Rule duplication.** "An item can only be reserved from available" now exists twice: in `itemsService`'s transition table and in this function. `updateItemStatus`
+still owns every other status change; only accepting goes through the function.
+**Not covered.** `undoAcceptance` and `markItemCollected` are still several sequential writes; they were not part of this change.

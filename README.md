@@ -18,9 +18,7 @@ We started with that gap and asked a simple question: what if organisations coul
 
 ## From an idea to a prototype
 
-We brainstormed the donor and organisation journeys together, worked through the matching idea, and built the prototype with help from Claude Code.
-
-The stack is `Vite`, `React`, `TypeScript` and `Supabase`. The whole thing came together in roughly four days, built with Claude Code.
+We brainstormed the donor and organisation journeys together, worked through the matching idea, and built the prototype with Claude Code in roughly four days. The stack is React, JavaScript, Vite, Tailwind CSS and Supabase, with a custom SVG map and a small serverless map API, deployed on Vercel. Map data comes from OpenStreetMap, EM-DAT, UNDP/MOLISA and GADM.
 
 This is a two-person hackathon prototype, not a finished donation service. It is our attempt to make the handoff between generosity and real need clearer, and to help every useful item find a more thoughtful next home.
 

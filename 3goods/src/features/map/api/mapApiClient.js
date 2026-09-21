@@ -1,6 +1,7 @@
 /**
- * The only module in 3goods that talks to the root map site's serverless API
- * (`3goods-map/api/*`, deployed as the `002-data-4-life` Vercel project). See
+ * The only module in 3goods that talks to the map API: the serverless functions in
+ * `3goods/api/`, served same-origin by this deployment (D-080). The legacy copy in
+ * `3goods-map/api/` (the `002-data-4-life` Vercel project) is only a rollback source. See
  * CLAUDE.md's map data-separation rule and DECISIONS.md D-056.
  *
  * Endpoints (all read-only GET, CORS `*`):
@@ -18,8 +19,10 @@
  * dataset with neither source is `null`/`[]` and reported as "unavailable".
  */
 
-// Override per environment with VITE_MAP_API_BASE_URL (no trailing slash needed).
-const API_BASE = (import.meta.env.VITE_MAP_API_BASE_URL || "https://002-data-4-life.vercel.app").replace(/\/+$/, "");
+import { buildApiUrl, resolveApiBase } from "./apiBase.js";
+
+// Same-origin unless VITE_MAP_API_BASE_URL is set (absolute URL; trailing slash optional). See apiBase.js.
+const API_BASE = resolveApiBase(import.meta.env.VITE_MAP_API_BASE_URL);
 const TIMEOUT_MS = 8000;
 
 const DATASETS = {
@@ -57,7 +60,7 @@ async function loadDataset(name) {
     }
   }
   try {
-    return { data: await fetchJson(`${API_BASE}${api}`), source: "api" };
+    return { data: await fetchJson(buildApiUrl(API_BASE, api)), source: "api" };
   } catch (apiErr) {
     console.warn(`[3goods] map API ${api} unreachable (${apiErr.message})${snapshot ? ", using bundled snapshot" : ""}`);
   }

@@ -664,6 +664,7 @@ page; `DonationForm`'s collection-windows section reads "Collection time windows
   `scripts/seed-supabase.mjs`), leaving items/requests/conversations in their current state.
 
 ## D-057 — The map client now uses all five map-site API endpoints (with a labelled snapshot fallback)
+- **Superseded in part by D-080 (2026-09-21):** the API is now served same-origin by the 3goods deployment. Everything below describes the *legacy* deployment (`002-data-4-life`) that was the API base until then; kept as written for history.
 - **Audit (before this change):** `mapApiClient.js`'s header said it called the root site's API, but its base path was
   `/data` and it fetched four static JSON copies from `3goods/public/data/`. Zero API calls; `/api/meta` unused. The
   data in those copies was verified byte-identical to what the live API serves (provinces incl. geometry, facilities
@@ -1124,3 +1125,32 @@ organisation bar fits at 1024px) in every state and language, and the middle ite
   guest/donor badge stays primary-category only, so an item listed under a secondary category can show no public badge for a category an organisation's own flag does count. Deliberate, not silently unified.
 - **Hero subtitle** reads "Organisations post what communities need. …" / "Các tổ chức đăng những gì cộng đồng đang cần. …" ("Verified" dropped from that sentence). The stat tile stays "Verified Organisations" / "Tổ chức xác minh"
   (its number is the verified count, 24 of 31), and the "See verified needs" button is unchanged. An earlier pass changed the stat tile by mistake and was reverted.
+
+## D-080 — The map API moved into the 3goods deployment (same-origin `/api/*`); the `002-data-4-life` project was kept only as a rollback source (2026-09-21), since deleted
+- **Update (after the migration): the legacy `002-data-4-life` Vercel project has been DELETED (by the user, outside this repo's tooling) and `https://002-data-4-life.vercel.app` is dead (404).** The 3goods map API is now fully same-origin with no external dependency.
+  The rollback and deletion-candidate bullets below were rewritten to match; the rest of this entry is the record of the migration as it happened. Nothing in `3goods/` referenced that URL at runtime after the migration (the bundle contained none).
+  `3goods-map/` stays in the repo as source and the data build source, but nothing deploys it now. Any older text in these docs that says the legacy site is "live" or a "rollback target" is historical.
+- **Why:** the 3goods map depended on a second Vercel project. Consolidating removes the cross-origin hop, the CORS reliance and the risk of the legacy project changing or disappearing under the live app.
+- **What now serves the API:** `3goods/api/{provinces,facilities,metro-hubs,item-needs,meta}.js` (+ `_lib/cors.js`, `_lib/data.js`) on the existing `3goods` Vercel project (Root Directory `.`, Vite preset, CLI deploys from `3goods/`).
+  They are ESM ports of `3goods-map/api/*` (the package is `"type": "module"`, so the legacy CommonJS could not be copied as-is). Same routes, JSON shapes, status codes, `Access-Control-*: *`, `OPTIONS` -> 204,
+  500 `{error:"internal_error",message}` body, `?fields=properties` on provinces, and `Cache-Control: public, max-age=3600, stale-while-revalidate=86400` in code (Vercel's edge serves it as `public, max-age=3600`, exactly what the legacy site served).
+- **Data: one copy, not two.** The functions read `3goods/public/data/*.json` — the same files the browser bundles as its offline fallback snapshot, already byte-identical to what the legacy API served (D-057).
+  Paths resolve from the module's own URL (not `process.cwd()`), and `vercel.json` `functions."api/*.js".includeFiles = "public/data/**"` guarantees the files are in every function bundle (each ~270 KB).
+  `3goods-map/data/` remains the build source; when the map data changes, re-copy to `public/data/` and redeploy — both the API and the snapshot then update together (this replaces D-057's "snapshot upkeep" note).
+  **Do not run a formatter over `public/data/*.json`** — `vn_provinces.geojson` is served byte-for-byte (D-072's lesson).
+- **`vercel.json` SPA rewrite** is now `/((?!api/).*)` so an unknown `/api/x` is a 404 (as on the legacy site) instead of the SPA's HTML.
+- **Client:** `src/features/map/api/apiBase.js` (`resolveApiBase`, `buildApiUrl`; pure, unit-tested). Default base is empty = same-origin relative `/api/...`. `VITE_MAP_API_BASE_URL` stays as an optional absolute override
+  (trailing slashes and whitespace normalised); leave it unset in Vercel. `npm run dev` does not serve `/api`, so locally either set the override to `https://3goods.vercel.app` or accept the labelled snapshot fallback.
+  Behaviour on failure is unchanged: 8 s timeout, fall back to the bundled snapshot with the notice, `ErrorState` only if provinces are unavailable from both.
+- **Tests:** `npm test` (`node --test tests/*.test.js`, 20 tests: every endpoint's status/headers/body/OPTIONS/500 path, and URL construction). They live in `tests/`, not `api/`, because everything in `api/` becomes a function. There is no lint tooling in 3goods.
+- **Verification (2026-09-21):** locally over HTTP and on a preview deployment, all six responses (five routes + `?fields=properties`) were byte-identical (SHA-256) to the live legacy responses with identical CORS/cache/content-type headers; `OPTIONS` 204 and unknown `/api/x` 404 matched.
+  Production (`3goods.vercel.app`, deployment `dpl_69CiUaDfxBdVitrkmMBquSTsKBmn`) repeated the same comparison, then a headless-Chrome run at 1280 and 390 px checked the map end to end (see KANBAN 3G-065).
+  Browser network log: all five map requests went to `https://3goods.vercel.app/api/*` (200); zero requests to `002-data-4-life.vercel.app`; zero console errors; the served JS bundle contains no legacy URL.
+- **Rollback path:** redeploy the previous production build of the `3goods` project (dashboard: https://vercel.com/fresfrida/3goods, Deployments -> the previous Production deployment -> Promote / Instant Rollback; or `vercel rollback <deployment-url> --scope fresfrida`).
+  Only builds from the migration onward (`dpl_69CiUaDfxBdVitrkmMBquSTsKBmn`, commit `a47a1bf`, and later) carry `3goods/api/`. **Builds from before the migration call the now-dead legacy URL**: they would still render the map, but only from the bundled snapshot with the "saved copy" notice,
+  so they are not useful rollback targets for the API. Rolling back is not needed for the API itself: the API is just the files in `api/` + `public/data/`, redeployed with the app. There is no longer any env-var rollback to a remote API.
+- **Legacy project status: it was a deletion *candidate only* at migration time, pending separate human approval; that approval was given and the project has since been deleted (see the update at the top).** It had also served the standalone Vietnam relief-map site (`index.html`, `web/`) and was the API base for any other consumer
+  (e.g. the separate Lovable-derived repo, not touched here): those now get 404s and would need repointing to `https://3goods.vercel.app/api/*` (CORS is still `*`). `3goods-map/` stays in the repo as the data build source.
+- **Deploy scope:** the Vercel team has been renamed twice; the slug is now **`fresfrida`** (dashboard https://vercel.com/fresfrida/3goods; team id unchanged, `team_AokvQEnWfqJ0MfshVcCOkmCd`; project name `3goods` unchanged, so `3goods/.vercel/project.json` stays valid).
+  Use `--scope fresfrida`. Older notes that say `jagaos` (used at migration time) or `frescyliafrida-9461` mean the same team.
+- **Side effect to know about:** running `vercel curl` against the protected preview auto-generated a Deployment Protection *automation bypass* secret on the `3goods` project (Settings -> Deployment Protection). Harmless to production, but revoke it there if unwanted.

@@ -58,6 +58,13 @@ suggested next task)
 
 ## Done
 
+- **3G-065** — Consolidate the map API into the 3goods deployment: same-origin `/api/*` (D-080). Done 2026-09-21. Legacy `002-data-4-life` was left live and untouched as the rollback source and marked a deletion *candidate only*; **it has since been deleted by the user (its URL is dead), so the API is fully same-origin and the rollback is "redeploy the previous production build"** (D-080). Team scope is now `fresfrida`.
+  - Built: `3goods/api/*` (5 functions + `_lib`), `vercel.json` (`includeFiles`, `/api/` excluded from the SPA rewrite), `apiBase.js` + `mapApiClient.js` default to same-origin, `.env.example`, `npm test` (20 tests).
+  - Checks: `npm test` 20/20; `npm run build` OK (i18n 277/277 in sync; no legacy URL in `dist/`); no lint tooling exists in 3goods. Every endpoint compared with the live legacy API locally, on a preview deployment and on production: status, headers, and body SHA-256 identical.
+  - Production `https://3goods.vercel.app` (deployment `dpl_69CiUaDfxBdVitrkmMBquSTsKBmn`), headless Chrome at 1280 and 390 px against the live site: province heatmap from real data (63 provinces, 43 distinct fills; Poverty 6 / Coverage Gap 48 / Hazard 43 fill sets all differ);
+    5 big-city rings, toggle hides/shows them; 89 pins; province click shows the real detail panel; unmatched pin popup -> "Invite this facility to join" form opened and filled (**not submitted**, to avoid writing a row to the live database); matched pin popup -> "View organisation profile" -> `/organisation/<id>` loads (1280 px);
+    blocking `/api/*` -> all 63 provinces from the bundled snapshot plus the "saved copy" notice; blocking `/api/*` and the snapshot -> the "Something went wrong" ErrorState. Network log: 5 map requests, all `https://3goods.vercel.app/api/*` 200; 0 requests to `002-data-4-life.vercel.app`; 0 failed requests; 0 console errors or warnings.
+  - Not verified: an invite form *submission* end to end (unchanged by this task: it talks to Supabase, not the map API); the matched-pin click-through at 390 px (no matched pin was hit-testable in that view; the 1280 px run covers it).
 - **3G-064** — Organisation-view matching (D-079): cards show only "This item may match you" for organisations, item detail lists own match then other verified matches (`lib/needMatching.js`); guests/donors unchanged.
   Hero subtitle drops "Verified" ("Organisations post what communities need"). Verified with a headless-Chrome scenario run against real data (352 checks each in EN and VI, guest/donor/organisation grid + 6 detail cases, incl. A-only and no-match via a
   browser-side filter of the needs response), and again on the live site after deploy.

@@ -214,7 +214,7 @@
     "conversationNoLongerExists": "This conversation no longer exists.",
     "chatPartnerDonor": "Donor",
     "itemsNeeded": "{count} items needed",
-    "orgsCount": "{count} organisations"
+    "orgsVerifiedOfTotal": "{verified} of {count} verified"
   },
   "footer": {
     "description": "Direct disaster relief & item coordination in Vietnam. Connecting generous donors with verified local relief organisations.",

@@ -70,7 +70,7 @@ export function OrganisationsBoard({ headingLevel = "h1" }) {
         <div className="flex items-center justify-between gap-3">
           <Heading className="text-xl font-bold text-ink-800">{t("screens.discoverNeedsByOrgTitle")}</Heading>
           <span className="shrink-0 whitespace-nowrap text-xs text-ink-600 font-medium">
-            {t("screens.orgsCount", { count: needsByOrg.length })}
+            {t("screens.orgsVerifiedOfTotal", { verified: needsByOrg.filter(({ org }) => org.verified).length, count: needsByOrg.length })}
           </span>
         </div>
         <p className="text-sm text-ink-600">{t("screens.discoverNeedsIntro")}</p>

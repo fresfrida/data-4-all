@@ -214,7 +214,7 @@
     "conversationNoLongerExists": "Cuộc trò chuyện này không còn tồn tại.",
     "chatPartnerDonor": "Người quyên góp",
     "itemsNeeded": "{count} vật phẩm cần thiết",
-    "orgsCount": "{count} tổ chức"
+    "orgsVerifiedOfTotal": "{verified} trên {count} tổ chức đã xác minh"
   },
   "footer": {
     "description": "Nền tảng cứu trợ thiên tai trực tiếp kết nối người quyên góp với các tổ chức địa phương đã xác minh trên khắp Việt Nam.",

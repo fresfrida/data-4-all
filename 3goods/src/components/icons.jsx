@@ -48,11 +48,12 @@ export function UserIcon({ className }) {
   );
 }
 
-export function SearchIcon({ className }) {
+export function PackageIcon({ className }) {
   return (
     <svg viewBox="0 0 24 24" className={className} {...base} aria-hidden="true">
-      <circle cx="10.5" cy="10.5" r="6" />
-      <path d="M20 20l-4.8-4.8" />
+      <rect x="4" y="9" width="16" height="11" rx="1" />
+      <rect x="3" y="5" width="18" height="4" rx="1" />
+      <path d="M12 5v15" />
     </svg>
   );
 }

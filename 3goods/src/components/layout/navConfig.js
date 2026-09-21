@@ -1,8 +1,10 @@
 import { ROUTES } from "../../lib/constants.js";
-import { BellIcon, MapPinIcon, PlusIcon, ChatIcon, UserIcon, SearchIcon, BuildingIcon } from "../icons.jsx";
+import { BellIcon, MapPinIcon, PlusIcon, ChatIcon, UserIcon, PackageIcon, BuildingIcon } from "../icons.jsx";
 
 /**
  * The exact navigation items per session state (logged-out vs donor vs organisation).
+ * Items shared between states keep the same relative order and slot (Map is always slot 2, Available donations slot 3 for guest and
+ * organisation), so nothing jumps when someone logs in or out.
  * Both MobileBottomNav and DesktopTopNav read from here so they can never drift apart.
  * `badge: "chat"` marks the item that carries the unread-chat bubble (donor and organisation alike, D-069).
  */
@@ -13,8 +15,8 @@ export function getNavItems(session, t) {
   if (!isLoggedIn) {
     return [
       { to: ROUTES.discoverNeeds, label: t("nav.organisations"), Icon: BuildingIcon },
-      { to: ROUTES.discoverItems, label: t("nav.itemsDonated"), Icon: SearchIcon },
       { to: ROUTES.map, label: t("nav.map"), Icon: MapPinIcon },
+      { to: ROUTES.discoverItems, label: t("nav.itemsDonated"), Icon: PackageIcon },
     ];
   }
 
@@ -22,7 +24,7 @@ export function getNavItems(session, t) {
     return [
       { to: ROUTES.updates, label: t("nav.updates"), Icon: BellIcon },
       { to: ROUTES.map, label: t("nav.map"), Icon: MapPinIcon },
-      { to: ROUTES.discoverItems, label: t("nav.itemsDonated"), Icon: SearchIcon },
+      { to: ROUTES.discoverItems, label: t("nav.itemsDonated"), Icon: PackageIcon },
       { to: ROUTES.chatList, label: t("nav.chat"), Icon: ChatIcon, badge: "chat" },
       { to: ROUTES.myOrganisation, label: t("nav.myOrganisation"), Icon: BuildingIcon },
     ];

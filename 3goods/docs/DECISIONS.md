@@ -1107,3 +1107,6 @@ so it sits at the same horizontal position when logging in or out (measured: x=1
 Map line up: an earlier attempt moved it in the guest list and pushed Available donations off-centre. The "slant" on that item was never CSS (no rotate/transform exists); it was the
 magnifier glyph, now a standard lens-plus-handle centred in its 24x24 box. The Discover count is "{verified} of {count} verified" (over the currently filtered list) so it no longer
 looks like it contradicts the hero's verified-organisations stat.
+**Follow-up (mobile bar).** The magnifier itself was rebalanced by eye (pin-sized lens, up-left, short handle). The remaining "leans right" on mobile EN was the item's position, not the glyph: under `flex-auto`
+the middle item drifted right with its label width (icon 25.7px right of screen centre in EN guest, 11px in EN organisation, 13px in VI guest). `MobileBottomNav` is now a grid with `1fr` side columns and an `auto`
+middle column, so the middle item (Available donations, or Donate for donors) is at 0px from the centre in every state and language. Measured at 360/390/430px wide; the one exception is 2px off in VI organisation at 360px.

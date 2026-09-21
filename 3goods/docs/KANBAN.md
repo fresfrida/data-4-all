@@ -7,10 +7,6 @@ Only one task In Progress at a time. IDs are stable — never renumber, only re-
 
 ## In Progress
 
-- **3G-060** — Atomic accept (D-076). Code done and building, NOT deployed: needs `supabase/migration-accept-request.sql` run in the Supabase SQL Editor first
-  (the auto-mode classifier blocks Claude from applying migrations to the production database). After that: deploy, then verify accept (two pending
-  requests -> one accepted, the other `declined` in the DB, item `reserved`), the stale-tap no-op, and the error path, EN + VI, mobile + desktop.
-
 (none — Phase 0 and the Phase 1 core journey are checkpointed below; see HANDOFF.md for the
 suggested next task)
 
@@ -62,6 +58,11 @@ suggested next task)
 
 ## Done
 
+- **3G-060** — Atomic accept (D-076): `accept_request` Postgres function + one `.rpc()` call in `requestsService.acceptRequest`. Also: Chat before the status chip on
+  `/my-organisation` rows; mobile bottom nav no longer wraps "Available donations". Verified live (headless Chrome, EN + VI, mobile + desktop, zero console
+  errors, throwaway item + 3 pending requests, removed afterwards): accept one -> DB shows item `reserved` pointing at it, the other two `declined`, exactly one
+  notification, no conversation; re-accepting an accepted request returns `changed:false`; accepting a declined / unknown request raises `requestNotPending` /
+  `requestNotFound`; a real second-tab race shows "This request has already been decided." / "Yêu cầu này đã được quyết định.". Nav measured at 320/360/390px.
 - **3G-059** — One status per thing (D-075): item `available -> reserved -> collected`, request `pending | accepted | declined`, real auto-decline,
   chat created on first message (`start_conversation`), donor names in org chat threads, quantity/unit dropped from needs, `deriveDisplayStatus` deleted.
   Verified live (headless Chrome, 1280px + 390px, EN + VI, zero console errors) against the real database with a throwaway item + two pending requests

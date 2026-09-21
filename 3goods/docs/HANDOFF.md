@@ -29,11 +29,10 @@ after any change you want reflected there. `VITE_SUPABASE_URL`/`VITE_SUPABASE_AN
 Production env vars on this project (`vercel env ls production` to confirm) — set in session 5.
 
 ## Current task
-**3G-060 / D-076 (atomic accept) is coded but NOT deployed.** The new `acceptRequest` calls the Postgres function `accept_request`, which does not exist in the
-live database yet. Run `supabase/migration-accept-request.sql` (idempotent) in the SQL Editor, THEN deploy (`vercel deploy --prod --yes`), then verify. Deploying
-first breaks the Accept button. Done and live in the same session: Chat before the status chip on `/my-organisation` rows, and the mobile bottom nav no longer
-wraps "Available donations" (items size to their label, `MobileBottomNav.jsx`); verified at 320/360/390px, EN + VI, guest/donor/organisation.
-
+**3G-060 / D-076 (atomic accept) is done, deployed and verified live** (see KANBAN 3G-060); the user ran `supabase/migration-accept-request.sql`. Same session:
+Chat before the status chip on `/my-organisation` rows; the mobile bottom nav no longer wraps "Available donations" (items size to their label, `MobileBottomNav.jsx`).
+Known small gap found while testing: after a *failed* Accept (e.g. a stale second tab) the error shows but the rows are not refetched, so the page stays stale
+until reload (`useRequestActions` only refreshes after success). Undo and Mark as collected are still several sequential writes (not atomic).
 **3G-059 / D-075 (status model + chat) is done, deployed and verified live** (see KANBAN 3G-059). The user ran `supabase/migration-start-conversation.sql`
 and `supabase/migration-status-model.sql` in the SQL Editor (the auto-mode classifier had blocked Claude from applying them to the production database);
 both are idempotent. Live data after migration: 19 available + 4 reserved items, requests 4 accepted / 3 pending, 4 conversations (all with messages).

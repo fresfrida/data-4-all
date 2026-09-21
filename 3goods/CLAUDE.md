@@ -67,7 +67,7 @@ file's comment for why.
   schema has room for exactly one).
 - **Business rules live in the service layer, not in screens.** E.g. `requestsService.acceptRequest`
   is responsible for enforcing "one accepted organisation per listing," updating item status, and
-  ensuring a conversation + update notification exist — a screen never orchestrates that by calling
+  declining the item's other pending requests, and pushing the update notification — a screen never orchestrates that by calling
   three services itself.
 - **`role` vs `session` are different concerns** (`SessionContext`): `role` picks which nav/UI
   renders (donor or organisation view) and is freely switchable for testing; `session` is the demo

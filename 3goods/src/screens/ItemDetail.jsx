@@ -3,10 +3,9 @@ import { useParams, Link } from "react-router-dom";
 import { useAsync } from "../lib/useAsync.js";
 import { useRequestActions } from "../lib/useRequestActions.js";
 import { getItemById } from "../services/itemsService.js";
-import { getRequests, createRequest, deriveDisplayStatus } from "../services/requestsService.js";
+import { getRequests, createRequest } from "../services/requestsService.js";
 import { getNeeds } from "../services/needsService.js";
 import { getOrganisations } from "../services/organisationsService.js";
-import { getConversations } from "../services/chatService.js";
 import { getAreaById, getCategoryById } from "../services/referenceDataService.js";
 import { translateError } from "../lib/errors.js";
 import { useSession } from "../context/SessionContext.jsx";
@@ -19,7 +18,7 @@ import { StatusBadge } from "../components/status/StatusBadge.jsx";
 import { Avatar } from "../components/common/Avatar.jsx";
 import { RequestRow } from "../components/requests/RequestRow.jsx";
 import { Spinner } from "../components/feedback/Spinner.jsx";
-import { ROUTES } from "../lib/constants.js";
+import { ROUTES, ITEM_STATUS } from "../lib/constants.js";
 import { formatQuantity } from "../lib/quantity.js";
 
 async function loadItemDetail(itemId, orgIdIfLoggedIn, donorIdIfLoggedIn) {
@@ -34,15 +33,9 @@ async function loadItemDetail(itemId, orgIdIfLoggedIn, donorIdIfLoggedIn) {
   let orgNeeds = [];
   if (orgIdIfLoggedIn) orgNeeds = await getNeeds({ organisationId: orgIdIfLoggedIn });
   // The listing's own donor also sees who has requested it (and can accept), so
-  // load the organisations + conversations those request rows need.
-  let organisations = [];
-  let conversations = [];
-  if (donorIdIfLoggedIn && item.donorId === donorIdIfLoggedIn) {
-    [organisations, conversations] = await Promise.all([getOrganisations(), getConversations({ donorId: donorIdIfLoggedIn })]);
-  } else if (orgIdIfLoggedIn) {
-    conversations = await getConversations({ organisationId: orgIdIfLoggedIn });
-  }
-  return { itemId, item, area, category, secondaryCategory, requests, orgNeeds, organisations, conversations };
+  // load the organisations those request rows name.
+  const organisations = donorIdIfLoggedIn && item.donorId === donorIdIfLoggedIn ? await getOrganisations() : [];
+  return { itemId, item, area, category, secondaryCategory, requests, orgNeeds, organisations };
 }
 
 export function ItemDetail() {
@@ -65,13 +58,12 @@ export function ItemDetail() {
   if (status === "error") return <ErrorState message={t("errors.generic")} onRetry={reload} />;
   if (!data.item) return <ErrorState message={t("screens.itemNoLongerExists")} />;
 
-  const { item, area, category, secondaryCategory, requests, orgNeeds, organisations, conversations } = data;
+  const { item, area, category, secondaryCategory, requests, orgNeeds, organisations } = data;
   const photo = item.photoPaths?.[0];
 
   const isOwnListing = identity && item.donorId === identity.id;
   const isOwnerDonor = role === "donor" && isOwnListing;
   const myRequest = orgId ? requests.find((r) => r.organisationId === orgId) : null;
-  const myRequestConversation = myRequest ? conversations.find((c) => c.requestId === myRequest.id) : null;
   const matchesNeed = orgNeeds.some((need) => need.category === item.category || need.category === item.secondaryCategory);
 
   const onRequest = () => {
@@ -96,7 +88,7 @@ export function ItemDetail() {
       <div className="flex flex-1 flex-col gap-3">
         <div className="flex items-start justify-between gap-2">
           <h1 className="text-xl font-bold text-ink-800">{locale === "vi" ? (item.titleVi ?? item.title) : item.title}</h1>
-          <StatusBadge status={item.displayStatus ?? item.status} kind="item" />
+          <StatusBadge status={item.status} kind="item" />
         </div>
         <p className="text-sm text-ink-600">
           {category?.[locale] ?? category?.en}
@@ -162,7 +154,6 @@ export function ItemDetail() {
                   request={request}
                   item={item}
                   organisation={organisations.find((o) => o.id === request.organisationId)}
-                  conversation={conversations.find((c) => c.requestId === request.id)}
                   busy={busy}
                   onAccept={accept}
                   onRevert={revert}
@@ -172,22 +163,20 @@ export function ItemDetail() {
           </div>
         )}
 
-        {role === "organisation" && !isOwnListing && (item.status === "available" || myRequest) && (
+        {role === "organisation" && !isOwnListing && (item.status === ITEM_STATUS.available || myRequest) && (
           <>
             {myRequest || justRequested ? (
               <div className="flex flex-wrap items-center gap-2">
                 <p className="w-fit rounded-full bg-good-100 px-4 py-2 text-sm font-semibold text-good-600">
-                  {t(`requestStatus.${myRequest ? deriveDisplayStatus(myRequest, item) : "requested"}`)}
+                  {t(`requestStatus.${myRequest ? myRequest.status : "pending"}`)}
                 </p>
-                {/* The conversation exists from the moment the request is made (D-058), before any accept. */}
-                {myRequestConversation && (
-                  <Link
-                    to={ROUTES.chatDetail(myRequestConversation.id)}
-                    className="rounded-full border border-accent-500 bg-white px-4 py-2 text-sm font-bold text-accent-700 hover:bg-accent-50"
-                  >
-                    💬 {t("nav.chat")}
-                  </Link>
-                )}
+                {/* Opens the thread for this item; the conversation itself is only created once a message is sent (D-075). */}
+                <Link
+                  to={ROUTES.chatCompose(item.id, orgId, item.donorId)}
+                  className="rounded-full border border-accent-500 bg-white px-4 py-2 text-sm font-bold text-accent-700 hover:bg-accent-50"
+                >
+                  💬 {t("nav.chat")}
+                </Link>
               </div>
             ) : (
               <button
@@ -201,8 +190,8 @@ export function ItemDetail() {
           </>
         )}
 
-        {item.status !== "available" && role === "organisation" && !myRequest && (
-          <p className="text-sm text-ink-600">{t("itemStatus.unavailable")}</p>
+        {item.status !== ITEM_STATUS.available && role === "organisation" && !myRequest && (
+          <p className="text-sm text-ink-600">{t(`itemStatus.${item.status}`)}</p>
         )}
       </div>
     </div>

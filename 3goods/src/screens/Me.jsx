@@ -5,7 +5,6 @@ import { translateError } from "../lib/errors.js";
 import { getItems } from "../services/itemsService.js";
 import { getRequests } from "../services/requestsService.js";
 import { getOrganisations } from "../services/organisationsService.js";
-import { getConversations } from "../services/chatService.js";
 import { useSession } from "../context/SessionContext.jsx";
 import { useLocale } from "../i18n/LocaleContext.jsx";
 import { useTranslate } from "../i18n/useTranslate.js";
@@ -19,16 +18,12 @@ import { Spinner } from "../components/feedback/Spinner.jsx";
 import { ROUTES } from "../lib/constants.js";
 
 async function loadMyDonations(donorId) {
-  const [items, organisations, conversations] = await Promise.all([
-    getItems({ donorId }),
-    getOrganisations(),
-    getConversations({ donorId }),
-  ]);
+  const [items, organisations] = await Promise.all([getItems({ donorId }), getOrganisations()]);
   const requestsByItem = {};
   for (const item of items) {
     requestsByItem[item.id] = await getRequests({ itemId: item.id });
   }
-  return { donorId, items, organisations, requestsByItem, conversations };
+  return { donorId, items, organisations, requestsByItem };
 }
 
 /** Donor's own profile + donation/request tracking. */
@@ -134,7 +129,6 @@ export function Me() {
                           request={request}
                           item={item}
                           organisation={getOrg(request.organisationId)}
-                          conversation={data.conversations.find((c) => c.requestId === request.id)}
                           busy={busy}
                           onAccept={accept}
                           onRevert={revert}

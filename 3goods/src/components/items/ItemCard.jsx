@@ -5,7 +5,7 @@ import { Avatar } from "../common/Avatar.jsx";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useTranslate } from "../../i18n/useTranslate.js";
 import { formatQuantity } from "../../lib/quantity.js";
-import { ROUTES } from "../../lib/constants.js";
+import { ROUTES, ITEM_STATUS } from "../../lib/constants.js";
 
 /**
  * `match` (optional, display-only): open needs in the item's category, `{count, org, urgent}` where `org` is the first
@@ -20,8 +20,7 @@ export function ItemCard({ item, categoryLabel, secondaryCategoryLabel, areaLabe
   const quantityLabel = formatQuantity(item.quantity, item.unit, t);
   const photo = item.photoPaths?.[0];
   // Items stay in the list after they are accepted (D-067): anything not available gets a banner and a muted look.
-  const displayStatus = item.displayStatus ?? item.status;
-  const unavailable = displayStatus !== "available";
+  const unavailable = item.status !== ITEM_STATUS.available;
   const displayTitle = locale === "vi" ? (item.titleVi ?? item.title) : item.title;
 
   return (
@@ -38,10 +37,10 @@ export function ItemCard({ item, categoryLabel, secondaryCategoryLabel, areaLabe
           <span
             data-testid="item-status-banner"
             className={`absolute inset-x-0 bottom-0 py-1.5 text-center text-xs font-bold uppercase tracking-wide ${
-              displayStatus === "donated" ? "bg-good-600 text-white" : displayStatus === "reserved" ? "bg-accent-600 text-white" : "bg-ink-700 text-white"
+              item.status === ITEM_STATUS.collected ? "bg-good-600 text-white" : item.status === ITEM_STATUS.reserved ? "bg-accent-600 text-white" : "bg-ink-700 text-white"
             }`}
           >
-            {t(`itemStatus.${displayStatus}`)}
+            {t(`itemStatus.${item.status}`)}
           </span>
         )}
       </div>
@@ -53,7 +52,7 @@ export function ItemCard({ item, categoryLabel, secondaryCategoryLabel, areaLabe
           >
             {displayTitle}
           </Link>
-          {showStatus && <StatusBadge status={displayStatus} kind="item" />}
+          {showStatus && <StatusBadge status={item.status} kind="item" />}
         </div>
         <div className="flex flex-col items-start gap-1 text-xs text-ink-600 font-medium">
           <span className="text-xs font-semibold text-ink-700">📍 {areaLabel}</span>

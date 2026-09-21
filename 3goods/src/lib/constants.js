@@ -15,13 +15,29 @@ export const ROUTES = {
   organisation: (id) => `/organisation/${id}`,
   chatList: "/chat",
   chatDetail: (id) => `/chat/${id}`,
+  /** Compose view for a thread with no conversation row yet (D-075): one thread = one item + one organisation + that item's donor. */
+  chatCompose: (itemId, organisationId, donorId) => `/chat/new/${itemId}/${organisationId}/${donorId}`,
   updates: "/updates",
 };
 
-export const REQUEST_STATUSES = [
-  "requested",
-  "accepted",
-  "arranging_collection",
-  "completed",
-  "declined",
-];
+/**
+ * The item's own status, stored in `items.status` and nowhere else (D-075). The lifecycle is
+ * available -> reserved -> collected; `unavailable` is the donor withdrawing their listing (a separate exit, not a step).
+ * The only transitions are the ones in `itemsService.updateItemStatus`.
+ */
+export const ITEM_STATUS = {
+  available: "available",
+  reserved: "reserved",
+  collected: "collected",
+  unavailable: "unavailable",
+};
+
+/**
+ * A request only records the organisation's side of the decision: waiting, chosen, or not chosen (D-075).
+ * Handing the goods over is tracked on the item, not here.
+ */
+export const REQUEST_STATUS = {
+  pending: "pending",
+  accepted: "accepted",
+  declined: "declined",
+};

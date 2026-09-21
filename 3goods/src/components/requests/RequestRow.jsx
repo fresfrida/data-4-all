@@ -1,27 +1,31 @@
 import { Link } from "react-router-dom";
-import { deriveDisplayStatus } from "../../services/requestsService.js";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useTranslate } from "../../i18n/useTranslate.js";
 import { StatusBadge } from "../status/StatusBadge.jsx";
 import { Avatar } from "../common/Avatar.jsx";
 import { Spinner } from "../feedback/Spinner.jsx";
-import { ROUTES } from "../../lib/constants.js";
+import { ROUTES, ITEM_STATUS, REQUEST_STATUS } from "../../lib/constants.js";
 
 /**
  * One organisation's request on a donor's listing, with Chat / status /
  * Accept / Undo. Shared by Me.jsx and ItemDetail.jsx (the donor's view of
- * their own listing) so both offer exactly the same actions.
+ * their own listing) so both offer exactly the same actions. It shows the
+ * request's stored status as-is (D-075): pending can be accepted, an accepted
+ * one can be undone until the goods are collected, a declined one is just shown.
+ *
+ * Chat opens the thread for this item + organisation; the conversation itself is only created once a message is sent.
  *
  * `busy` is `{requestId, action}` from useRequestActions. Every button is
  * disabled while any action is in flight; only the tapped one shows the
  * spinner + "Accepting…".
  */
-export function RequestRow({ request, item, organisation, conversation, busy, onAccept, onRevert }) {
+export function RequestRow({ request, item, organisation, busy, onAccept, onRevert }) {
   const { locale } = useLocale();
   const t = useTranslate();
 
   const orgName = organisation?.name[locale] ?? organisation?.name.en ?? request.organisationId;
-  const displayStatus = deriveDisplayStatus(request, item);
+  const canAccept = request.status === REQUEST_STATUS.pending && item.status === ITEM_STATUS.available;
+  const canUndo = request.status === REQUEST_STATUS.accepted && item.status === ITEM_STATUS.reserved;
   const isThisBusy = busy?.requestId === request.id;
   const disabled = Boolean(busy);
 
@@ -40,18 +44,16 @@ export function RequestRow({ request, item, organisation, conversation, busy, on
       </div>
 
       <div className="flex items-center gap-2 self-end sm:self-auto flex-wrap">
-        {conversation && (
-          <Link
-            to={ROUTES.chatDetail(conversation.id)}
-            className="rounded-full border border-accent-500 bg-white px-3.5 py-1 text-xs font-bold text-accent-700 hover:bg-accent-50 transition-all"
-          >
-            💬 {t("nav.chat")}
-          </Link>
-        )}
+        <Link
+          to={ROUTES.chatCompose(item.id, request.organisationId, item.donorId)}
+          className="rounded-full border border-accent-500 bg-white px-3.5 py-1 text-xs font-bold text-accent-700 hover:bg-accent-50 transition-all"
+        >
+          💬 {t("nav.chat")}
+        </Link>
 
-        <StatusBadge status={displayStatus} />
+        <StatusBadge status={request.status} />
 
-        {displayStatus === "unavailable" ? null : displayStatus === "requested" ? (
+        {canAccept ? (
           <button
             type="button"
             onClick={() => onAccept(request.id)}
@@ -67,7 +69,7 @@ export function RequestRow({ request, item, organisation, conversation, busy, on
               t("actions.accept")
             )}
           </button>
-        ) : (
+        ) : canUndo ? (
           <button
             type="button"
             onClick={() => onRevert(request.id)}
@@ -79,13 +81,11 @@ export function RequestRow({ request, item, organisation, conversation, busy, on
               <>
                 <Spinner /> {t("actions.updating")}
               </>
-            ) : request.status === "completed" ? (
-              t("actions.reopen")
             ) : (
               t("actions.undo")
             )}
           </button>
-        )}
+        ) : null}
       </div>
     </div>
   );

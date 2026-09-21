@@ -185,8 +185,6 @@ async function main() {
       org_id: need.organisationId,
       category_id: categoryId(need.category),
       priority: need.priority ? "high" : "medium",
-      quantity: need.quantity ?? null,
-      unit: need.quantity != null ? "items" : null, // needs use one generic unit (D-064)
       status: "open",
       created_at: need.createdAt,
     })),
@@ -220,16 +218,12 @@ async function main() {
 
   await upsert(
     "conversations",
-    CONVERSATIONS.map((conversation) => {
-      const request = REQUESTS.find((r) => r.id === conversation.requestId);
-      return {
-        id: conversation.id,
-        item_id: request?.itemId ?? null,
-        org_id: conversation.organisationId,
-        donor_id: conversation.donorId,
-        request_id: conversation.requestId ?? null,
-      };
-    }),
+    CONVERSATIONS.map((conversation) => ({
+      id: conversation.id,
+      item_id: conversation.itemId,
+      org_id: conversation.organisationId,
+      donor_id: conversation.donorId,
+    })),
   );
 
   await upsert(

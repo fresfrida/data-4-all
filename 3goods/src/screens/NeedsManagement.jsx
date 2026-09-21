@@ -3,7 +3,6 @@ import { useAsync } from "../lib/useAsync.js";
 import { getNeeds, createNeed, setNeedPriority, removeNeed } from "../services/needsService.js";
 import { getCategories } from "../services/referenceDataService.js";
 import { translateError } from "../lib/errors.js";
-import { parseQuantity, formatNeedQuantity } from "../lib/quantity.js";
 import { useSession } from "../context/SessionContext.jsx";
 import { useLocale } from "../i18n/LocaleContext.jsx";
 import { useTranslate } from "../i18n/useTranslate.js";
@@ -27,7 +26,6 @@ export function NeedsManagement() {
 
   const [category, setCategory] = useState("");
   const [priority, setPriority] = useState(false);
-  const [quantity, setQuantity] = useState("");
   // Raw error object, not a pre-translated string — see D-017.
   const [formError, setFormError] = useState(null);
 
@@ -69,11 +67,9 @@ export function NeedsManagement() {
           organisationId: loggedInIdentity.organisationId,
           category,
           priority,
-          quantity: parseQuantity(quantity),
         });
         setCategory("");
         setPriority(false);
-        setQuantity("");
         reload();
       } catch (err) {
         setFormError(err);
@@ -114,11 +110,6 @@ export function NeedsManagement() {
             <div key={need.id} className="flex items-center justify-between gap-2 rounded-card border border-ink-600/10 bg-white p-3">
               <div className="flex flex-wrap items-center gap-2">
                 <NeedChip label={categoryLabel(need.category)} priority={need.priority} onRemove={() => onRemove(need.id)} />
-                {/* Quantity is shown here, in the editor, as plain text — not inside the pill (pills are category + star only).
-                    No quantity means an ongoing, open-ended need (D-063), which is meaningful, so it is labelled rather than left blank. */}
-                <span className="text-xs font-medium text-ink-600">
-                  {need.quantity === null ? t("needs.ongoing") : `× ${formatNeedQuantity(need.quantity, t)}`}
-                </span>
               </div>
               <button type="button" onClick={() => onTogglePriority(need)} className="text-xs font-medium text-accent-600 hover:underline">
                 {need.priority ? t("actions.unmarkPriority") : t("actions.markPriority")}
@@ -147,23 +138,6 @@ export function NeedsManagement() {
             ))}
           </select>
         </div>
-        <label className="flex flex-col gap-1.5">
-          <span className="text-xs font-semibold text-ink-700">{t("needs.quantityLabel")}</span>
-          <input
-            type="number"
-            inputMode="numeric"
-            min="1"
-            step="1"
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
-            placeholder={t("needs.quantityPlaceholder")}
-            aria-describedby="need-quantity-hint"
-            className="rounded-lg border border-ink-600/20 px-3 py-2 text-sm"
-          />
-          <span id="need-quantity-hint" className="text-xs text-ink-600">
-            {t("needs.quantityHint")}
-          </span>
-        </label>
         <label className="flex items-center gap-2 text-sm text-ink-700">
           <input type="checkbox" checked={priority} onChange={(e) => setPriority(e.target.checked)} />
           {t("fields.markAsPriority")}

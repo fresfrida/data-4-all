@@ -1,32 +1,20 @@
 /**
  * @typedef {import('./types.js').Conversation} Conversation
- * A conversation is created automatically when a request is *made*
- * (requestsService.createRequest, DECISIONS.md D-058), so every seeded request
- * has one: request-001 (accepted) plus the two pending requests on item-002.
+ * A conversation exists only once someone has sent a message (D-075), so only the thread that has messages is seeded:
+ * the accepted request-001's item (item-001) between the donor and Hanoi Community Pantry. The pending requests on
+ * item-002 have no conversation until an organisation or the donor writes the first message.
  *
  * IDs are fixed UUIDs from data/ids.js — see DECISIONS.md D-042.
  */
 
-import { CONVERSATION_IDS, REQUEST_IDS, USER_IDS, ORG_IDS } from "./ids.js";
+import { CONVERSATION_IDS, ITEM_IDS, USER_IDS, ORG_IDS } from "./ids.js";
 
 /** @type {Conversation[]} */
 export const CONVERSATIONS = [
   {
     id: CONVERSATION_IDS.conversation001,
-    requestId: REQUEST_IDS.request001,
+    itemId: ITEM_IDS.item001,
     donorId: USER_IDS.donorDemo,
     organisationId: ORG_IDS.hanoiPantry,
-  },
-  {
-    id: CONVERSATION_IDS.conversation002,
-    requestId: REQUEST_IDS.request002,
-    donorId: USER_IDS.donorDemo,
-    organisationId: ORG_IDS.foodShare,
-  },
-  {
-    id: CONVERSATION_IDS.conversation003,
-    requestId: REQUEST_IDS.request003,
-    donorId: USER_IDS.donorDemo,
-    organisationId: ORG_IDS.warmHomes,
   },
 ];

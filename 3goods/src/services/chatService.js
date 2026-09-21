@@ -3,22 +3,24 @@
  * just persists it to Supabase via db.js; there is no real-time transport,
  * push notification, or read receipt from another device.
  *
- * Deliberately has no dependency on requestsService, so requestsService can
- * call into this file when a request is accepted without a circular import.
+ * A conversation is one thread per (item, organisation, donor) and does not
+ * exist until its first message is sent: `startConversation` creates the
+ * conversation row and that message together (D-075). Nothing else creates one,
+ * so there is never an empty or blank conversation.
  *
  * The live `messages` table's `sender_id` is a `uuid` column, so a system
- * message (previously `senderId: "system"`) stores `sender_id: null`
- * instead — `fromMessageRow` maps that back to the `"system"` sentinel the
- * screens already check for (see DECISIONS.md D-042).
+ * message stores `sender_id: null` — `fromMessageRow` maps that back to the
+ * `"system"` sentinel the screens check for (see DECISIONS.md D-042). New
+ * system messages are no longer written; old ones (e.g. "Request accepted.")
+ * still render.
  */
 
-import { getAll, insert } from "../lib/db.js";
+import { getAll, insert, rpc } from "../lib/db.js";
 import { AppError } from "../lib/errors.js";
 
 function fromConversationRow(row) {
   return {
     id: row.id,
-    requestId: row.request_id ?? undefined,
     itemId: row.item_id ?? undefined,
     donorId: row.donor_id,
     organisationId: row.org_id,
@@ -55,23 +57,33 @@ export async function getConversationById(id) {
 }
 
 /**
- * Idempotent — if a conversation already exists for this requestId, returns
- * it instead of creating a duplicate. Called when a request is *made*
- * (requestsService.createRequest) and again, as find-or-create, when it is
- * accepted. `request_id`/`item_id` are nullable on the table, so a
- * conversation with no request (e.g. a donor messaging a recommended
- * organisation directly) can reuse this shape later without restructuring.
+ * The existing thread between this organisation and donor about this item, or null if no message has been sent yet.
+ * @param {{itemId: string, organisationId: string, donorId: string}} thread
  */
-export async function ensureConversationForRequest({ requestId, itemId, donorId, organisationId }) {
+export async function findConversation({ itemId, organisationId, donorId }) {
   const rows = (await getAll("conversations")).map(fromConversationRow);
-  const existing = rows.find((c) => c.requestId === requestId);
-  if (existing) return existing;
-  const row = await insert(
-    "conversations",
-    { item_id: itemId, donor_id: donorId, org_id: organisationId, request_id: requestId },
-    "conversation",
-  );
-  return fromConversationRow(row);
+  return rows.find((c) => c.itemId === itemId && c.organisationId === organisationId && c.donorId === donorId) ?? null;
+}
+
+/**
+ * Sends the first message of a thread: creates the conversation row and the message together in one database
+ * transaction (the `start_conversation` function in supabase/schema.sql), so a conversation can never exist without a
+ * message. If the thread already has a conversation, the message is added to it.
+ *
+ * @param {{itemId: string, organisationId: string, donorId: string, senderId: string, senderRole: "donor"|"organisation", text: string}} payload
+ * @returns {Promise<{conversation: import('../data/types.js').Conversation, message: import('../data/types.js').Message}>}
+ */
+export async function startConversation(payload) {
+  if (!payload.text?.trim()) throw new AppError("messageTextRequired");
+  const result = await rpc("start_conversation", {
+    p_item_id: payload.itemId,
+    p_org_id: payload.organisationId,
+    p_donor_id: payload.donorId,
+    p_sender_id: payload.senderId,
+    p_sender_role: payload.senderRole,
+    p_body: payload.text,
+  });
+  return { conversation: fromConversationRow(result.conversation), message: fromMessageRow(result.message) };
 }
 
 /**
@@ -115,31 +127,6 @@ export async function sendMessage(payload) {
       sender_id: payload.senderId,
       sender_role: payload.senderRole,
       body: payload.text.trim(),
-      created_at: new Date().toISOString(),
-    },
-    "message",
-  );
-  return fromMessageRow(row);
-}
-
-/**
- * A `senderId: "system"` message, e.g. the "Request accepted." status
- * change. Stored as `systemCode` + `params` (language-independent), never
- * literal text — see DECISIONS.md D-016. `systemCode` must match a key
- * under `systemMessages.*` in both locale files.
- */
-export async function postSystemMessage(conversationId, systemCode, params = {}, systemRole = "organisation") {
-  // A system message's only content is its code (`body` is null by design),
-  // so a row without one would be genuinely blank — refuse to write it.
-  if (!systemCode) throw new AppError("systemCodeRequired");
-  const row = await insert(
-    "messages",
-    {
-      conversation_id: conversationId,
-      sender_id: null,
-      sender_role: systemRole,
-      system_code: systemCode,
-      params,
       created_at: new Date().toISOString(),
     },
     "message",

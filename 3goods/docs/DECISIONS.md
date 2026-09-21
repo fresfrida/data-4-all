@@ -1031,3 +1031,40 @@ page; `DonationForm`'s collection-windows section reads "Collection time windows
 - **Follow-ups (user-requested, same day):** hero title/subline reworded; footer restructured (site links top, video + About Us bottom; Privacy and
   Contact removed); About Us is a `download` link to `public/3goods-proposal.pdf`; a photo for the "5kg rice sacks" item follows D-046 (static path
   in `public/demo-items/`, stored in `items.image_base64`), set on the live row only. `/video` stays a 307 on purpose (see HANDOFF).
+
+## D-075 — One status per thing: item status is `available -> reserved -> collected`, request status is `pending | accepted | declined`
+**Why.** Availability was being *derived* in several places from two stored statuses that drifted apart: `items.status` (available / reserved /
+unavailable) and `requests.status` (requested / accepted / arranging_collection / completed / declined). Accepting one request left its siblings
+`requested` in the database and only *displayed* them as "unavailable" (`deriveDisplayStatus`), and the item showed a third, separately derived
+"donated" (D-067). Screens each recomputed the answer, so an item could read "Available" and "No longer available" at once. Live evidence: an
+available item still pointed at an accepted request (`items.accepted_request_id` left over from an undo).
+
+**Before.** item: available / reserved / unavailable (+ display-only "donated"). request: requested -> accepted -> arranging_collection ->
+completed, or declined (rarely written); siblings of an accepted request stayed `requested` and were shown as "unavailable" by `deriveDisplayStatus`.
+Chat: a conversation row was created when a request was made (D-058) and a system "request accepted" message on accept.
+
+**After.**
+- **Item** (`items.status`, written only by `itemsService.updateItemStatus`, which holds the transition table): `available -> reserved -> collected`.
+  `unavailable` is kept as an orthogonal 4th value: the donor withdrawing their own listing (`markItemUnavailable` / `reopenItemAvailability`,
+  still no screen button, as before). `reserved -> available` exists only for undoing an acceptance. `collected` is final. `accepted_request_id` follows
+  the status (set on reserve, kept on collected, cleared otherwise).
+- **Request** (`requests.status`): `pending | accepted | declined`. It only says whether that organisation was chosen. `arranging_collection` and
+  `completed` are gone; the physical handover is the item's `reserved -> collected`, and the accepted request just stays `accepted`.
+- **Accept** (`requestsService.acceptRequest`, the one place): item -> reserved, request -> accepted, and every other `pending` request on the item ->
+  `declined` **in the database** (one UPDATE). `deriveDisplayStatus` is deleted; every screen reads `item.status` / `request.status` directly.
+  "No longer available" is now only the label of a `declined` request (`requestStatus.declined`); an item shows Available, Reserved or Collected
+  (or "Withdrawn by donor").
+- **Undo** (`undoAcceptance`) is kept: item -> available, the request -> pending, and the requests that acceptance declined -> pending again. This is exact
+  because a request only ever becomes `declined` through another request's acceptance. **If a manual "decline" is ever added, undo must stop restoring
+  every declined request** (it would need to remember which ones the acceptance declined).
+- **Handover** (`requestsService.markItemCollected`, button in `ChatDetail`): item reserved -> collected, adds the item to the organisation's
+  past-received list, notifies the donor. It replaces `updateRequestStatus(..., "completed")`.
+- **Chat:** no conversation row exists until the first message is sent. A thread is (item, organisation, donor); "Chat" links open
+  `/chat/new/:itemId/:orgId/:donorId` (redirects to `/chat/:chatId` if the thread already exists). The first send calls the Postgres function
+  `start_conversation` (`supabase/migration-start-conversation.sql`, also in `schema.sql`), which creates the conversation and the message in one
+  transaction. Requests and accepting no longer create conversations or post "request accepted" system messages; old system messages still render.
+  This also removes the "blank first message row" debt. Organisation-side threads show the donor's real name (`usersService.getUserById`).
+- **Needs:** quantity/unit dropped from the UI and services (D-063/D-064 superseded); `needs.quantity`/`unit` columns untouched. Item quantity/unit on donations is unchanged.
+- **Data migration:** `supabase/migration-status-model.sql` rewrites the live values (no schema change beyond a column default) and deletes the empty
+  conversation shells from D-058. The `requests.status` and `items.status` columns are plain text, so nothing else was needed.
+- **Not atomic:** accept is several sequential writes (item, request, siblings), not one transaction. Only chat uses a database function.

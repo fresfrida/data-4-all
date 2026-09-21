@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useAsync } from "../lib/useAsync.js";
 import { getConversations, getMessages } from "../services/chatService.js";
 import { getOrganisationById } from "../services/organisationsService.js";
+import { getUserById } from "../services/usersService.js";
 import { getMessageText } from "../lib/messageText.js";
 import { useSession } from "../context/SessionContext.jsx";
 import { useUnreadChats } from "../context/UnreadChatsContext.jsx";
@@ -20,7 +21,9 @@ async function loadChatList(role, identity) {
   for (const conversation of conversations) {
     const messages = await getMessages(conversation.id);
     const org = await getOrganisationById(conversation.organisationId);
-    rows.push({ conversation, lastMessage: messages[messages.length - 1], org });
+    // The organisation side sees the donor's real name, not a generic "Donor" label.
+    const donor = role === "organisation" ? await getUserById(conversation.donorId) : null;
+    rows.push({ conversation, lastMessage: messages[messages.length - 1], org, donor });
   }
   return rows;
 }
@@ -67,8 +70,8 @@ export function ChatList() {
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 flex flex-col gap-4">
       <h1 className="text-xl font-bold text-ink-800">{t("nav.chat")}</h1>
-      {data.map(({ conversation, lastMessage, org }) => {
-        const partnerName = role === "organisation" ? t("screens.chatPartnerDonor") : org?.name[locale] ?? org?.name.en;
+      {data.map(({ conversation, lastMessage, org, donor }) => {
+        const partnerName = role === "organisation" ? donor?.name ?? t("screens.chatPartnerDonor") : org?.name[locale] ?? org?.name.en;
         const partnerType = role === "organisation" ? "donor" : "organisation";
         const partnerId = role === "organisation" ? conversation.donorId : org?.id;
         const unread = unreadIds.has(conversation.id);

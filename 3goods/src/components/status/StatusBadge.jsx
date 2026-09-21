@@ -1,20 +1,18 @@
 import { useTranslate } from "../../i18n/useTranslate.js";
 
 /**
- * One shared badge for both item status and request status. Colour is
- * derived from a small fixed map here — adding a new status value later
- * means editing this one object, not hunting through screens (OCP).
+ * One shared badge for both item status (available / reserved / collected / unavailable) and request status
+ * (pending / accepted / declined). It only ever displays a stored status — nothing is derived here or anywhere else (D-075).
+ * Colour comes from a small fixed map, so a new status means editing this one object.
  */
 const STYLE_BY_STATUS = {
   available: "bg-good-100 text-good-600",
-  requested: "bg-accent-100 text-accent-700",
-  accepted: "bg-accent-100 text-accent-700",
-  arranging_collection: "bg-accent-100 text-accent-700",
   reserved: "bg-accent-100 text-accent-700",
-  donated: "bg-good-100 text-good-600",
-  completed: "bg-good-100 text-good-600",
-  declined: "bg-ink-600/10 text-ink-600",
+  collected: "bg-good-100 text-good-600",
   unavailable: "bg-ink-600/10 text-ink-600",
+  pending: "bg-accent-100 text-accent-700",
+  accepted: "bg-accent-100 text-accent-700",
+  declined: "bg-ink-600/10 text-ink-600",
 };
 
 export function StatusBadge({ status, kind = "request" }) {

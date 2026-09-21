@@ -60,7 +60,6 @@
  * @property {string} organisationId
  * @property {Category} category
  * @property {boolean} priority        true = priority need
- * @property {number|null} [quantity]  whole number of "items", or null = an ongoing, open-ended need (D-063)
  * @property {string} createdAt        ISO string
  * One need per organisation per category (D-064).
  */
@@ -71,9 +70,10 @@
  */
 
 /**
- * @typedef {"available"|"reserved"|"unavailable"} ItemStatus
- * `reserved` = an organisation's request has been accepted (see D-009).
- * `unavailable` = donor withdrew the listing.
+ * @typedef {"available"|"reserved"|"collected"|"unavailable"} ItemStatus
+ * The item's only status (D-075), stored in `items.status`; screens read it as-is.
+ * available -> reserved (an organisation's request was accepted, D-009) -> collected (goods handed over).
+ * `unavailable` = the donor withdrew the listing (not a step of that lifecycle).
  */
 
 /**
@@ -94,16 +94,14 @@
  * @property {string} [notes]
  * @property {string[]} photoPaths      paths under /demo-items/, or [] for icon fallback
  * @property {ItemStatus} status
- * @property {"available"|"reserved"|"donated"|"unavailable"} [displayStatus]  what to show (D-067): a reserved item whose accepted
- *   request is completed shows as "donated". Set by itemsService.getItems/getItemById (not by createDonation).
  * @property {string} [acceptedRequestId]
  * @property {string} createdAt
  */
 
 /**
- * @typedef {"requested"|"accepted"|"arranging_collection"|"completed"|"declined"} RequestStatus
- * Display-only "no longer available" is derived (item.status !== 'available'
- * and this isn't the accepted request), not a stored status — see D-009.
+ * @typedef {"pending"|"accepted"|"declined"} RequestStatus
+ * Only whether this organisation was chosen (D-075). Accepting one request declines the item's other pending requests
+ * in the database; handover progress lives on the item (`ItemStatus`), not here.
  */
 
 /**
@@ -118,8 +116,9 @@
 
 /**
  * @typedef {Object} Conversation
+ * One thread per (item, organisation, donor); it exists only once its first message has been sent (D-075).
  * @property {string} id
- * @property {string} [requestId]
+ * @property {string} [itemId]
  * @property {string} donorId
  * @property {string} organisationId
  */

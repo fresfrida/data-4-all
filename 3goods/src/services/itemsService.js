@@ -12,6 +12,7 @@
 
 import { getAll, getById, insert, update } from "../lib/db.js";
 import { AppError } from "../lib/errors.js";
+import { ITEM_STATUS } from "../lib/constants.js";
 import { isValidQuantity } from "../lib/quantity.js";
 import { getCategoryDbId, getCategorySlugFromDbId } from "./referenceDataService.js";
 
@@ -61,26 +62,19 @@ async function toInsertRow(payload) {
     collection_windows: (payload.collectionWindows ?? []).join(WINDOW_SEP),
     notes: payload.notes ?? "",
     image_base64: payload.photoPaths?.[0] ?? null,
-    status: "available",
+    status: ITEM_STATUS.available,
     donor_id: payload.donorId,
     created_at: new Date().toISOString(),
   };
 }
 
-/**
- * What an item should *show* (D-067). `status` is what is stored: available / reserved / unavailable.
- * A reserved item whose accepted request has reached "completed" was actually collected, so it is shown as
- * "donated"; a reserved one still being arranged stays "reserved". Withdrawn listings stay "unavailable".
- * @returns {"available"|"reserved"|"donated"|"unavailable"}
- */
-function deriveItemDisplayStatus(item, acceptedRequest) {
-  if (item.status === "available") return "available";
-  if (item.status === "unavailable") return "unavailable";
-  return acceptedRequest?.status === "completed" ? "donated" : "reserved";
-}
-
-/** Browse order: available first, then reserved, then donated, then withdrawn; newest first inside each group. */
-const DISPLAY_ORDER = { available: 0, reserved: 1, donated: 2, unavailable: 3 };
+/** Browse order: available first, then reserved, then collected, then withdrawn; newest first inside each group. */
+const STATUS_ORDER = {
+  [ITEM_STATUS.available]: 0,
+  [ITEM_STATUS.reserved]: 1,
+  [ITEM_STATUS.collected]: 2,
+  [ITEM_STATUS.unavailable]: 3,
+};
 
 async function loadUsersById() {
   const users = await getAll("users");
@@ -97,21 +91,15 @@ async function loadUsersById() {
  * @returns {Promise<import('../data/types.js').Item[]>}
  */
 export async function getItems(filters = {}) {
-  const [rawRows, usersById, requestRows] = await Promise.all([getAll("items"), loadUsersById(), getAll("requests")]);
-  const requestsById = new Map(requestRows.map((r) => [r.id, r]));
-  let rows = await Promise.all(
-    rawRows.map(async (row) => {
-      const item = await fromRow(row, usersById);
-      return { ...item, displayStatus: deriveItemDisplayStatus(item, requestsById.get(row.accepted_request_id)) };
-    }),
-  );
+  const [rawRows, usersById] = await Promise.all([getAll("items"), loadUsersById()]);
+  let rows = await Promise.all(rawRows.map((row) => fromRow(row, usersById)));
 
   if (filters.donorId) {
     rows = rows.filter((item) => item.donorId === filters.donorId);
   } else if (filters.status) {
     rows = rows.filter((item) => item.status === filters.status);
   }
-  // No status filter: items stay listed once accepted (D-067), they just sort below the available ones.
+  // No status filter: items stay listed once reserved or collected (D-067), they just sort below the available ones.
 
   if (filters.category) {
     rows = rows.filter((item) => item.category === filters.category || item.secondaryCategory === filters.category);
@@ -123,8 +111,8 @@ export async function getItems(filters = {}) {
     rows = rows.filter((item) => item.deliveryOption === filters.deliveryOption);
   }
 
-  // A donor's own list ("Me") keeps plain newest-first; the browse list sorts by display status first.
-  const rank = (item) => (filters.donorId ? 0 : DISPLAY_ORDER[item.displayStatus]);
+  // A donor's own list ("Me") keeps plain newest-first; the browse list sorts by status first.
+  const rank = (item) => (filters.donorId ? 0 : STATUS_ORDER[item.status] ?? 99);
   return rows.sort((a, b) => rank(a) - rank(b) || (a.createdAt < b.createdAt ? 1 : -1));
 }
 
@@ -132,10 +120,7 @@ export async function getItems(filters = {}) {
 export async function getItemById(id) {
   const row = await getById("items", id);
   if (!row) return null;
-  const usersById = await loadUsersById();
-  const item = await fromRow(row, usersById);
-  const acceptedRequest = row.accepted_request_id ? await getById("requests", row.accepted_request_id) : null;
-  return { ...item, displayStatus: deriveItemDisplayStatus(item, acceptedRequest) };
+  return fromRow(row, await loadUsersById());
 }
 
 /**
@@ -154,19 +139,51 @@ export async function createDonation(payload) {
   return fromRow(row, usersById);
 }
 
-/** Donor withdraws their own listing. */
-export async function markItemUnavailable(itemId) {
-  const row = await update("items", itemId, { status: "unavailable" });
-  return row ? fromRow(row, await loadUsersById()) : null;
+/**
+ * Where an item may go from each status. This table is the whole state machine (D-075):
+ * available -> reserved (a request is accepted) -> collected (goods handed over);
+ * reserved -> available (the acceptance is undone); available <-> unavailable (the donor withdraws / relists).
+ * `collected` is final.
+ */
+const TRANSITIONS = {
+  [ITEM_STATUS.available]: [ITEM_STATUS.reserved, ITEM_STATUS.unavailable],
+  [ITEM_STATUS.reserved]: [ITEM_STATUS.collected, ITEM_STATUS.available],
+  [ITEM_STATUS.unavailable]: [ITEM_STATUS.available],
+  [ITEM_STATUS.collected]: [],
+};
+
+/**
+ * The only function that writes `items.status`. Every status change (accepting a request, undoing it, marking the goods
+ * collected, withdrawing or relisting) goes through here, so an invalid jump throws instead of leaving the item in a state no
+ * screen expects. `items.accepted_request_id` follows the status: set when reserving, kept once collected, cleared otherwise.
+ *
+ * @param {string} itemId
+ * @param {"available"|"reserved"|"collected"|"unavailable"} nextStatus
+ * @param {{acceptedRequestId?: string}} [options]  required when reserving
+ */
+export async function updateItemStatus(itemId, nextStatus, { acceptedRequestId } = {}) {
+  const row = await getById("items", itemId);
+  if (!row) throw new AppError("itemNotFound");
+  if (!TRANSITIONS[row.status]?.includes(nextStatus)) throw new AppError("itemStatusChangeInvalid", { from: row.status, to: nextStatus });
+
+  const patch = { status: nextStatus };
+  if (nextStatus === ITEM_STATUS.reserved) {
+    if (!acceptedRequestId) throw new AppError("requestNotFound");
+    patch.accepted_request_id = acceptedRequestId;
+  } else if (nextStatus !== ITEM_STATUS.collected) {
+    patch.accepted_request_id = null;
+  }
+  return fromRow(await update("items", itemId, patch), await loadUsersById());
 }
 
-/** Restore item status back to available (Undo availability). */
+/** Donor withdraws their own listing (only while it is still available). */
+export function markItemUnavailable(itemId) {
+  return updateItemStatus(itemId, ITEM_STATUS.unavailable);
+}
+
+/** Donor relists a withdrawn listing. Not for releasing a reservation: that is requestsService.undoAcceptance. */
 export async function reopenItemAvailability(itemId) {
-  const row = await update("items", itemId, { status: "available", accepted_request_id: null });
-  return row ? fromRow(row, await loadUsersById()) : null;
-}
-
-/** Internal — used by requestsService when a request is accepted. */
-export async function _markItemReserved(itemId, requestId) {
-  return update("items", itemId, { status: "reserved", accepted_request_id: requestId });
+  const item = await getItemById(itemId);
+  if (item?.status !== ITEM_STATUS.unavailable) throw new AppError("itemStatusChangeInvalid", { from: item?.status, to: ITEM_STATUS.available });
+  return updateItemStatus(itemId, ITEM_STATUS.available);
 }

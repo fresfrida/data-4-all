@@ -7,6 +7,12 @@ Only one task In Progress at a time. IDs are stable — never renumber, only re-
 
 ## In Progress
 
+- **3G-059** — One status per thing (D-075): item `available -> reserved -> collected`, request `pending | accepted | declined`, real auto-decline,
+  chat created on first message, donor names in org chat, quantity dropped from needs. **Code done and building; NOT deployed and NOT verified live:**
+  the two database steps (`supabase/migration-start-conversation.sql` function, `supabase/migration-status-model.sql` data rewrite) were blocked by the
+  auto-mode classifier. They must be run (by the user in the Supabase SQL Editor, or after approving Claude to) before deploying. Then verify the
+  two-pending-requests scenario (accept one, check the DB row of the other is `declined`) in EN + VI, mobile + desktop.
+
 (none — Phase 0 and the Phase 1 core journey are checkpointed below; see HANDOFF.md for the
 suggested next task)
 

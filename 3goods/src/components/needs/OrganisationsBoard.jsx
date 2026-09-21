@@ -150,7 +150,7 @@ export function OrganisationsBoard({ headingLevel = "h1" }) {
 
                   <div className="flex flex-wrap gap-1.5">
                     {[...new Map(needs.map((need) => [need.category, need])).values()].map((need) => {
-                      // Compact pill: category name only (quantities live on the organisation's own profile page).
+                      // Compact pill: category name + priority star only.
                       return (
                         <NeedChip
                           key={need.category}

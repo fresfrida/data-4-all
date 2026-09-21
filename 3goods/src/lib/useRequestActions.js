@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSession } from "../context/SessionContext.jsx";
-import { acceptRequest, revertRequestToPending } from "../services/requestsService.js";
+import { acceptRequest, undoAcceptance } from "../services/requestsService.js";
 
 /**
  * Accept / undo actions on a request, shared by Me.jsx and ItemDetail.jsx.
@@ -9,7 +9,7 @@ import { acceptRequest, revertRequestToPending } from "../services/requestsServi
  * network call — and only cleared once the action *and* the screen's
  * refetch (`refresh`) have both finished, so the button can't flash back to
  * "Accept" with stale data, and can't be tapped twice (a double tap would
- * post the "request accepted" chat message twice).
+ * notify the organisation twice).
  *
  * @param {() => Promise<void>} refresh from useAsync
  */
@@ -39,6 +39,6 @@ export function useRequestActions(refresh) {
     busy,
     error,
     accept: (requestId) => run(requestId, "accept", () => acceptRequest(requestId)),
-    revert: (requestId) => run(requestId, "revert", () => revertRequestToPending(requestId)),
+    revert: (requestId) => run(requestId, "revert", () => undoAcceptance(requestId)),
   };
 }

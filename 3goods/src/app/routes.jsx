@@ -37,6 +37,7 @@ export function AppRoutes() {
         <Route path="/organisation/:orgId" element={<OrganisationProfile />} />
         <Route path="/chat" element={<ChatList />} />
         <Route path="/chat/:chatId" element={<ChatDetail />} />
+        <Route path="/chat/new/:itemId/:orgId/:donorId" element={<ChatDetail />} />
         <Route path="/updates" element={<Updates />} />
         <Route path="*" element={<NotFound />} />
       </Route>

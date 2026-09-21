@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAsync } from "../lib/useAsync.js";
 import { getOrganisationById } from "../services/organisationsService.js";
-import { getRequests, deriveDisplayStatus } from "../services/requestsService.js";
-import { getConversations } from "../services/chatService.js";
+import { getRequests } from "../services/requestsService.js";
 import { getItemById } from "../services/itemsService.js";
 import { getAreaById } from "../services/referenceDataService.js";
 import { useSession } from "../context/SessionContext.jsx";
@@ -15,19 +14,14 @@ import { StatusBadge } from "../components/status/StatusBadge.jsx";
 import { ROUTES } from "../lib/constants.js";
 
 async function loadMyOrganisation(organisationId) {
-  const [organisation, requests, conversations] = await Promise.all([
-    getOrganisationById(organisationId),
-    getRequests({ organisationId }),
-    getConversations({ organisationId }),
-  ]);
-  const conversationByRequestId = Object.fromEntries(conversations.filter((c) => c.requestId).map((c) => [c.requestId, c]));
+  const [organisation, requests] = await Promise.all([getOrganisationById(organisationId), getRequests({ organisationId })]);
   const area = organisation ? await getAreaById(organisation.areaId) : null;
   const requestsWithItems = [];
   for (const request of requests) {
     const item = await getItemById(request.itemId);
     requestsWithItems.push({ request, item });
   }
-  return { organisation, area, requestsWithItems, conversationByRequestId };
+  return { organisation, area, requestsWithItems };
 }
 
 export function MyOrganisation() {
@@ -90,7 +84,7 @@ export function MyOrganisation() {
   if (status === "loading" || !data) return <LoadingState />;
   if (status === "error") return <ErrorState message={t("errors.generic")} onRetry={reload} />;
 
-  const { organisation, area, requestsWithItems, conversationByRequestId } = data;
+  const { organisation, area, requestsWithItems } = data;
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 flex flex-col gap-6">
@@ -130,10 +124,10 @@ export function MyOrganisation() {
                   {item?.title ?? t("screens.itemFallbackLabel")}
                 </Link>
                 <div className="flex items-center gap-2">
-                  <StatusBadge status={item ? deriveDisplayStatus(request, item) : request.status} />
-                  {conversationByRequestId[request.id] && (
+                  <StatusBadge status={request.status} />
+                  {item && (
                     <Link
-                      to={ROUTES.chatDetail(conversationByRequestId[request.id].id)}
+                      to={ROUTES.chatCompose(item.id, organisationId, item.donorId)}
                       className="rounded-full border border-ink-600/20 px-3.5 py-1 text-xs font-semibold text-ink-700 hover:bg-ink-800/5 transition-colors"
                     >
                       {t("nav.chat")}

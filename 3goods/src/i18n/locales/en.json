@@ -54,16 +54,14 @@
     "remove": "Remove",
     "send": "Send",
     "viewDetails": "View details",
-    "markArranging": "Mark as arranging collection",
-    "markCompleted": "Mark as completed",
+    "markCollected": "Mark as collected",
     "seeMatchingItems": "See matching items",
     "tryAgain": "Try again",
     "manageNeeds": "Manage needs",
     "markPriority": "Mark priority",
     "unmarkPriority": "Unmark priority",
     "backToHome": "Back to home",
-    "undo": "↩ Undo",
-    "reopen": "↩ Re-open"
+    "undo": "↩ Undo"
   },
   "footer": {
     "description": "Direct disaster relief & item coordination in Vietnam. Connecting generous donors with verified local relief organisations."
@@ -107,16 +105,13 @@
   "itemStatus": {
     "available": "Available",
     "reserved": "Reserved",
-    "donated": "Donated",
-    "unavailable": "No longer available"
+    "collected": "Collected",
+    "unavailable": "Withdrawn by donor"
   },
   "requestStatus": {
-    "requested": "Requested",
+    "pending": "Pending",
     "accepted": "Accepted",
-    "arranging_collection": "Arranging collection",
-    "completed": "Completed",
-    "declined": "Declined",
-    "unavailable": "No longer available"
+    "declined": "No longer available"
   },
   "emptyStates": {
     "noItems": "No items here yet.",
@@ -140,13 +135,14 @@
     "needCategoryExists": "You already have a need in this category. Remove it first if you want to change it.",
     "contactNameRequired": "Please enter your name.",
     "contactRequired": "Please enter an email or phone number.",
-    "systemCodeRequired": "A system message needs a message code.",
     "messageTextRequired": "Message text is required.",
     "itemNotFound": "This item no longer exists.",
     "itemNotAvailable": "This item is no longer available to request.",
     "requestNotFound": "This request no longer exists.",
     "itemForRequestNotFound": "The item for this request no longer exists.",
     "itemAlreadyReserved": "This item has already been reserved for a different organisation.",
+    "requestNotPending": "This request has already been decided.",
+    "itemStatusChangeInvalid": "This item can't change to that status right now.",
     "photoTooLarge": "Photo is too large ({sizeKb}KB). Please choose one under 2MB."
   },
   "notifications": {
@@ -172,9 +168,7 @@
     "cans": "cans",
     "cans_one": "can",
     "books": "books",
-    "books_one": "book",
-    "items": "items",
-    "items_one": "item"
+    "books_one": "book"
   },
   "systemMessages": {
     "request_accepted": "Request accepted. You can arrange collection here."
@@ -245,11 +239,7 @@
     "showing": "Showing {from}–{to} of {total}"
   },
   "needs": {
-    "ongoing": "Ongoing",
-    "categoryListed": "{category} (already listed)",
-    "quantityLabel": "Quantity (optional)",
-    "quantityPlaceholder": "e.g. 50",
-    "quantityHint": "Leave blank if you are always happy to receive this. It shows as an ongoing need. Quantities are counted in items."
+    "categoryListed": "{category} (already listed)"
   },
   "map": {
     "title": "Relief Map",

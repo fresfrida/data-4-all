@@ -1,8 +1,7 @@
 /**
  * @typedef {import('./types.js').Message} Message
- * The system message uses `systemCode` + `params`, not `text` — see
- * types.js and DECISIONS.md D-016. The two user-authored messages below
- * keep literal `text`, exactly as "typed," and are never translated.
+ * User-authored messages keep literal `text`, exactly as "typed," and are never translated. (System-generated messages use
+ * `systemCode` + `params` instead, see types.js and DECISIONS.md D-016; none are seeded or written any more, D-075.)
  *
  * IDs are fixed UUIDs from data/ids.js — see DECISIONS.md D-042.
  */
@@ -11,15 +10,6 @@ import { MESSAGE_IDS, CONVERSATION_IDS, USER_IDS } from "./ids.js";
 
 /** @type {Message[]} */
 export const MESSAGES = [
-  {
-    id: MESSAGE_IDS.message001,
-    conversationId: CONVERSATION_IDS.conversation001,
-    senderId: "system",
-    senderRole: "organisation",
-    systemCode: "request_accepted",
-    params: {},
-    createdAt: "2026-09-10T07:00:00.000Z",
-  },
   {
     id: MESSAGE_IDS.message002,
     conversationId: CONVERSATION_IDS.conversation001,

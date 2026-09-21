@@ -47,7 +47,7 @@ function groupNeedsByCategory(needs, organisations) {
   return grouped;
 }
 
-/** "/discover" — every listed item, available ones first, with the accepted/donated ones below carrying a status banner (D-067). Paginated (D-068). */
+/** "/discover" — every listed item, available ones first, with the reserved/collected ones below carrying a status banner (D-067). Paginated (D-068). */
 export function DiscoverItems() {
   const { status, data, error, reload } = useAsync(loadDiscoverItems, []);
   const { locale } = useLocale();

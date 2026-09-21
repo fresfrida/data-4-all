@@ -54,16 +54,14 @@
     "remove": "Xóa",
     "send": "Gửi",
     "viewDetails": "Xem chi tiết",
-    "markArranging": "Đánh dấu đang sắp xếp nhận",
-    "markCompleted": "Đánh dấu hoàn tất",
+    "markCollected": "Đánh dấu đã nhận hàng",
     "seeMatchingItems": "Xem vật phẩm phù hợp",
     "tryAgain": "Thử lại",
     "manageNeeds": "Quản lý nhu cầu",
     "markPriority": "Đánh dấu ưu tiên",
     "unmarkPriority": "Bỏ đánh dấu ưu tiên",
     "backToHome": "Về trang chủ",
-    "undo": "↩ Hoàn tác",
-    "reopen": "↩ Mở lại"
+    "undo": "↩ Hoàn tác"
   },
   "footer": {
     "description": "Nền tảng cứu trợ thiên tai trực tiếp kết nối người quyên góp với các tổ chức địa phương đã xác minh trên khắp Việt Nam."
@@ -107,16 +105,13 @@
   "itemStatus": {
     "available": "Còn nhận quyên góp",
     "reserved": "Đã được giữ",
-    "donated": "Đã quyên góp",
-    "unavailable": "Không còn khả dụng"
+    "collected": "Đã nhận hàng",
+    "unavailable": "Người quyên góp đã rút lại"
   },
   "requestStatus": {
-    "requested": "Đã yêu cầu",
+    "pending": "Đang chờ",
     "accepted": "Đã chấp nhận",
-    "arranging_collection": "Đang sắp xếp nhận",
-    "completed": "Đã hoàn tất",
-    "declined": "Đã từ chối",
-    "unavailable": "Không còn khả dụng"
+    "declined": "Không còn khả dụng"
   },
   "emptyStates": {
     "noItems": "Chưa có vật phẩm nào.",
@@ -140,13 +135,14 @@
     "needCategoryExists": "Bạn đã có nhu cầu cho danh mục này. Hãy xóa nhu cầu đó trước nếu muốn thay đổi.",
     "contactNameRequired": "Vui lòng nhập tên của bạn.",
     "contactRequired": "Vui lòng nhập email hoặc số điện thoại.",
-    "systemCodeRequired": "Tin nhắn hệ thống cần có mã tin nhắn.",
     "messageTextRequired": "Vui lòng nhập nội dung tin nhắn.",
     "itemNotFound": "Vật phẩm này không còn tồn tại.",
     "itemNotAvailable": "Vật phẩm này không còn có thể yêu cầu.",
     "requestNotFound": "Yêu cầu này không còn tồn tại.",
     "itemForRequestNotFound": "Vật phẩm của yêu cầu này không còn tồn tại.",
     "itemAlreadyReserved": "Vật phẩm này đã được giữ cho một tổ chức khác.",
+    "requestNotPending": "Yêu cầu này đã được quyết định.",
+    "itemStatusChangeInvalid": "Hiện chưa thể chuyển vật phẩm này sang trạng thái đó.",
     "photoTooLarge": "Ảnh quá lớn ({sizeKb}KB). Vui lòng chọn ảnh dưới 2MB."
   },
   "notifications": {
@@ -172,9 +168,7 @@
     "cans": "lon",
     "cans_one": "lon",
     "books": "cuốn",
-    "books_one": "cuốn",
-    "items": "món",
-    "items_one": "món"
+    "books_one": "cuốn"
   },
   "systemMessages": {
     "request_accepted": "Yêu cầu đã được chấp nhận. Bạn có thể sắp xếp việc nhận tại đây."
@@ -245,11 +239,7 @@
     "showing": "Hiển thị {from}–{to} trên {total}"
   },
   "needs": {
-    "ongoing": "Thường xuyên",
-    "categoryListed": "{category} (đã có trong danh sách)",
-    "quantityLabel": "Số lượng (tùy chọn)",
-    "quantityPlaceholder": "vd. 50",
-    "quantityHint": "Để trống nếu tổ chức luôn sẵn sàng nhận mặt hàng này; sẽ hiển thị là nhu cầu thường xuyên. Số lượng được tính theo món."
+    "categoryListed": "{category} (đã có trong danh sách)"
   },
   "map": {
     "title": "Bản đồ cứu trợ",

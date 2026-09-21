@@ -3,8 +3,14 @@
  * directly — see itemsService.js's header comment for why.
  */
 
-import { getAll } from "../lib/db.js";
+import { getAll, getById } from "../lib/db.js";
 import { getOrganisations } from "./organisationsService.js";
+
+/** @returns {Promise<import('../data/types.js').User|null>} a `users` row (name, role) by id. */
+export async function getUserById(id) {
+  const row = await getById("users", id);
+  return row ? { id: row.id, name: row.name, role: row.role, organisationId: row.org_id ?? undefined } : null;
+}
 
 /** @returns {Promise<number>} count of registered donor identities (for the hero stats strip). */
 export async function getDonorCount() {

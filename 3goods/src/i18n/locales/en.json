@@ -18,11 +18,11 @@
   },
   "hero": {
     "title": "Donation Item Coordination & Disaster Relief in Vietnam",
-    "subtitle": "Verified organisations post what communities need. Donors offer matching goods, then coordinate delivery or pickup.",
+    "subtitle": "Organisations post what communities need. Donors offer matching goods, then coordinate delivery or pickup.",
     "ctaBrowse": "See verified needs",
     "ctaMap": "Relief Map",
     "statDonors": "Registered Donors",
-    "statOrgs": "Organisations",
+    "statOrgs": "Verified Organisations",
     "statAreas": "Provinces Covered"
   },
   "nav": {

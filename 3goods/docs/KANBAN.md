@@ -59,7 +59,7 @@ suggested next task)
 ## Done
 
 - **3G-064** — Organisation-view matching (D-079): cards show only "This item may match you" for organisations, item detail lists own match then other verified matches (`lib/needMatching.js`); guests/donors unchanged.
-  Hero stat label "Verified Organisations" -> "Organisations". Verified with a headless-Chrome scenario run against real data (352 checks each in EN and VI, guest/donor/organisation grid + 6 detail cases, incl. A-only and no-match via a
+  Hero subtitle drops "Verified" ("Organisations post what communities need"). Verified with a headless-Chrome scenario run against real data (352 checks each in EN and VI, guest/donor/organisation grid + 6 detail cases, incl. A-only and no-match via a
   browser-side filter of the needs response), and again on the live site after deploy.
 - **3G-063** — Nav touch-up: "Available donations" is the middle nav item for guest (Organisations, Available donations, Map) and organisation (Updates, Map, Available donations, Chat, Us), same visual
   centre in both; magnifier icon redrawn centred and symmetric in its box (no CSS transform was ever involved). Discover count reads "24 of 31 verified". See D-078.

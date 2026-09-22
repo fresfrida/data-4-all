@@ -22,7 +22,7 @@ We brainstormed the donor and organisation journeys together, worked through the
 
 The web application uses React, JavaScript, Vite, Tailwind CSS and Supabase, and is deployed on Vercel. A custom SVG map and small serverless API present data from OpenStreetMap, EM-DAT, UNDP/MOLISA and GADM. Python scripts were used offline to clean, combine and score the source data before the resulting map datasets were published for the JavaScript application.
 
-This is a two-person hackathon prototype, not a finished donation service. It is our attempt to make the handoff between generosity and real need clearer, and to help every useful item find a more thoughtful next home.
+This is a two-person prototype, not a finished donation service. It is our attempt to make the handoff between generosity and real need clearer, and to help every useful item find a more thoughtful next home.
 
 ## If you are donating
 
@@ -51,5 +51,6 @@ Python data-processing scripts combine disaster exposure, regional poverty proxi
 ## Please enjoy using the site
 
 The prototype is live at [3goods.vercel.app](https://3goods.vercel.app/).
+You can find the video that we created at [https://3goods.vercel.app/video](https://3goods.vercel.app/video) and our pitch deck at [https://3goods.vercel.app/about-us](https://3goods.vercel.app/3goods-proposal.pdf).
 
 We hope it makes giving feel a little more thoughtful, receiving a little less overwhelming, and the distance between a generous person and a real need a little shorter.

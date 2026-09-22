@@ -1,6 +1,6 @@
 # 3goods
 
-*A Data for Life 2026 prototype for coordinating donations between donors and organisations.*
+*A Data for Life 2026 Hackathon prototype for coordinating donations between donors and organisations.*
 
 [Try the live site](https://3goods.vercel.app/)
 
@@ -26,7 +26,7 @@ This is a two-person hackathon prototype, not a finished donation service. It is
 
 ## If you are donating
 
-You begin with the item you already have. Browse what verified organisations currently need, list an item you can give, and contact an organisation when there is a potential match. When you list an item, you also say how it gets there: happy to deliver, or pickup only, so the organisation knows what to arrange. If one organisation does not need it, the item remains available for other organisations to discover and request. A small act of giving becomes easier when the next step is just a conversation.
+You begin with the item you already have. Browse what organisations currently need, list an item you can give, and contact an organisation when there is a potential match. When you list an item, you also say how it gets there: happy to deliver, or pickup only, so the organisation knows what to arrange. If one organisation does not need it, the item remains available for other organisations to discover and request. A small act of giving becomes easier when the next step is just a conversation.
 
 <img width="1440" alt="Available donations with needs-matching labels" src="https://github.com/user-attachments/assets/9aea79e4-49d4-4101-9416-6347eb4709dd" />
 
@@ -34,7 +34,7 @@ You begin with the item you already have. Browse what verified organisations cur
 
 ## If you are an organisation
 
-Using a demonstration organisation account, you can publish what your community currently needs and mark the most urgent needs as priorities. When you browse items offered by donors, matching labels show which items may fit your organisation's needs. You can request an item, chat with the donor, and coordinate the handoff directly.
+With an organisation account, you can publish what your community currently needs and mark the most urgent needs as priorities. When you browse items offered by donors, matching labels show which items may fit your organisation's needs. You can request an item, chat with the donor, and coordinate the handoff directly.
 
 <img width="1440" alt="Organisations directory" src="https://github.com/user-attachments/assets/5b1e22ab-a4e1-4d84-a934-d6734e7136b1" />
 

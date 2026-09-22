@@ -52,6 +52,7 @@ Python data-processing scripts combine disaster exposure, regional poverty proxi
 
 The prototype is live at [3goods.vercel.app](https://3goods.vercel.app/).
 
-You can find the video that we created at [https://3goods.vercel.app/video](https://3goods.vercel.app/video) and our pitch deck at [https://3goods.vercel.app/about-us](https://3goods.vercel.app/3goods-proposal.pdf).
+app video: [https://3goods.vercel.app/video](https://3goods.vercel.app/video)
+pitch deck: [https://3goods.vercel.app/about-us](https://3goods.vercel.app/3goods-proposal.pdf)
 
 We hope it makes giving feel a little more thoughtful, receiving a little less overwhelming, and the distance between a generous person and a real need a little shorter.

@@ -54,4 +54,5 @@ The prototype is live at [3goods.vercel.app](https://3goods.vercel.app/)
 - ⁠Video: [3goods.vercel.app/video](https://3goods.vercel.app/video)
 - ⁠Pitch deck: [3goods.vercel.app/about-us](https://3goods.vercel.app/3goods-proposal.pdf)
 
+
 We hope it makes giving feel a little more thoughtful, receiving a little less overwhelming, and the distance between a generous person and a real need a little shorter.

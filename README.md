@@ -1,6 +1,6 @@
 # 3goods
 
-*A Data for Life 2026 Hackathon prototype for coordinating donations between donors and organisations.*
+*A Data for Life 2026 Hackathon project for coordinating donations between donors and organisations.*
 
 [Try the live site](https://3goods.vercel.app/)
 
